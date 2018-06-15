@@ -28,7 +28,7 @@ void fb_write_cell(unsigned int i, char c, unsigned char fg, unsigned char bg) {
   fb[2 * i + 1] = ((fg & 0x0F) << 4) | (bg & 0x0F);
 }
 
-int write(char *buf, unsigned int len) {
+int fb_write(char *buf, unsigned int len) {
   unsigned int indexToBuffer = 0;
   while (indexToBuffer < len) {
     fb_write_cell(indexToBuffer, buf[indexToBuffer], FB_GREEN, FB_DARK_GREY);

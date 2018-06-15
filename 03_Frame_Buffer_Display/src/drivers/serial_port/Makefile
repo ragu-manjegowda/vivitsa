@@ -1,4 +1,4 @@
-all: libframe_buffer.a
+all: libserial_port.a
 
 # Include Common Makefile
 -include ${MAKE_UTILS_DIR}/Makefile.include
@@ -15,7 +15,7 @@ ASFLAGS = -f elf
 # Generate Static library
 SC_FLAG = ar -cvq
 
-libframe_buffer.a: $(C_OBJECTS)
+libserial_port.a: $(C_OBJECTS)
 	$(SC_FLAG) $(LIB_DIR)/$@ $^
 
 %.o: %.c

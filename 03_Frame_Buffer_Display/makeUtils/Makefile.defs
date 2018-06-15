@@ -17,4 +17,5 @@ install: $(SUBDIRS)
 	done
 
 rmBuild:
-	rm -rf build iso/boot/kernel.elf bochsrc.txt bochslog.txt os.iso .DS_Store
+	rm -rf build iso/boot/kernel.elf bochsrc.txt bochslog.txt os.iso .DS_Store \
+					com1.out

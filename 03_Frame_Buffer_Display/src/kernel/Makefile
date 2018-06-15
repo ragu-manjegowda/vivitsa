@@ -1,5 +1,5 @@
 LDFLAG += -T link.ld -melf_i386
-LIBS = -lframe_buffer
+LIBS = -lframe_buffer -lio -lserial_port
 
 all: kernel.elf
 
@@ -10,8 +10,9 @@ all: kernel.elf
 -include ${MAKE_UTILS_DIR}/Makefile.defs
 
 INCLUDE += \
-	-I. \
-	-I$(TOP_DIR)/src/drivers/frame_buffer
+	-I$(TOP_DIR)/src/drivers/frame_buffer \
+	-I$(TOP_DIR)/src/drivers/io \
+	-I$(TOP_DIR)/src/drivers/serial_port
 
 kernel.elf: $(C_OBJECTS) $(S_OBJECTS)
 	@echo $(C_OBJECTS) $(S_OBJECTS)
