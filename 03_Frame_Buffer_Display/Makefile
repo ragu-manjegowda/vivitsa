@@ -4,6 +4,7 @@ export TOP_DIR=$(PWD)
 export LIB_DIR=${OUT_DIR}/lib
 export BIN_DIR=${OUT_DIR}/bin
 export ETC_DIR=${OUT_DIR}/etc
+export LD_LIBRARY_PATH:=${LIB_DIR}:$(LD_LIBRARY_PATH)
 
 SUBDIRS = \
 	src
@@ -15,6 +16,7 @@ all: $(OUT_DIR)
 
 $(OUT_DIR):
 	${MKDIR_P} $(LIB_DIR) $(BIN_DIR) $(ETC_DIR)
+	@echo $(LD_LIBRARY_PATH)
 	@echo $(TOP_DIR)
 
 # Include Common Makefile

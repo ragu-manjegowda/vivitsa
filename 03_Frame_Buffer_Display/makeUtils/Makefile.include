@@ -11,6 +11,6 @@ C_OBJECTS = $(C_SOURCES:.c=.o)
 S_OBJECTS += $(S_SOURCES:.s=.o)
 
 LDFLAGS += \
-	-L$(LIB_DIR)/lib \
+	-L$(LIB_DIR) \
 
 INCLUDE += \

@@ -1,6 +1,4 @@
-#OBJECTS = io.o frame_buffer.o
-
-all: frame_buffer.so
+all: libframe_buffer.a
 
 # Include Common Makefile
 -include ${MAKE_UTILS_DIR}/Makefile.include
@@ -8,19 +6,17 @@ all: frame_buffer.so
 # Include Common Makefile
 -include ${MAKE_UTILS_DIR}/Makefile.defs
 
-LDFLAGS += -shared
-SO_FLAG = -c -fpic
 AS = nasm
 ASFLAGS = -f elf
 
-INCLUDE += \
-	-I. \
+# Generate Static library
+SC_FLAG = ar -cvq
 
-frame_buffer.so: $(C_OBJECTS) $(S_OBJECTS)
-	$(CC) $(CFLAGS) $(LDFLAGS) $(C_OBJECTS) $(S_OBJECTS) -o $(LIB_DIR)/$@
+libframe_buffer.a: $(C_OBJECTS) $(S_OBJECTS)
+	$(SC_FLAG) $(LIB_DIR)/$@ $^
 
 %.o: %.c
-	$(CC) $(CFLAGS) $(SO_FLAG) $< -o $@
+	$(CC) $(CFLAGS) $(INCLUDE) -c $< -o $@
 
 %.o: %.s
 	$(AS) $(ASFLAGS) $< -o $@
