@@ -2,21 +2,18 @@
 # Vivitsa
   My operating system - from scratch!!!
 
-Writing an operating operating system from scratch is fun. I am naming after
-Sanskrit word Vivitsa meaning Desire of knowledge which is exactly why I started
-this.
+Writing an operating operating system from scratch is fun. I am naming this OS after Sanskrit word Vivitsa meaning "desire of knowledge" which is exactly why I started this.
 
 
-I am naming folders starting with number followed by what I did so that it is
+I have named the folders starting with number followed by heading so that it is
 easy to maintain chronology.
 
-Operating system is targetting to run on x86 architecture, while devloping I am
-using [Bochs emulator](https://en.wikipedia.org/wiki/Bochs).
+This Operating system is targeted to run on x86 architecture, while developing I have used [Bochs emulator](https://en.wikipedia.org/wiki/Bochs).
 
-To build, run and test please use my 
+To build, run and test please use my
 [docker image](https://github.com/ragu-manjegowda/ragu-docker) by simply running
 
-```shell 
+```shell
 	$ docker pull ragumanjegowda/docker
 ```
 which has all the dependencies installed on it. I recommend running this image

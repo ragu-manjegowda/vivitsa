@@ -12,9 +12,8 @@ cursor appropriately.
 ### To build project
 
 ```shell
-   $ make
+	$ make
 ```
-or
 
 ### To run project
 
