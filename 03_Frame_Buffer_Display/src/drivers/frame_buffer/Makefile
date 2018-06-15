@@ -5,6 +5,9 @@ all: frame_buffer.so
 # Include Common Makefile
 -include ${MAKE_UTILS_DIR}/Makefile.include
 
+# Include Common Makefile
+-include ${MAKE_UTILS_DIR}/Makefile.defs
+
 LDFLAGS += -shared
 SO_FLAG = -c -fpic
 AS = nasm

@@ -7,8 +7,12 @@ all: kernel.elf
 INCLUDE += \
 	-I. \
 	-I$(TOP_DIR)/src/drivers/frame_buffer
+
 # Include Common Makefile
 -include ${MAKE_UTILS_DIR}/Makefile.include
+
+# Include Common Makefile
+-include ${MAKE_UTILS_DIR}/Makefile.defs
 
 C_SOURCES += $(TOP_DIR)/src/drivers/frame_buffer/frame_buffer.c
 

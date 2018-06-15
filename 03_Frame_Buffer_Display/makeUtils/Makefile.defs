@@ -8,6 +8,7 @@ all: $(SUBDIRS)
 clean: $(SUBDIRS) rmBuild
 	for subdir in $(SUBDIRS) ; do \
 		make -C $$subdir clean ; \
+		rm -rf .DS_Store ; \
 	done
 
 install: $(SUBDIRS)
