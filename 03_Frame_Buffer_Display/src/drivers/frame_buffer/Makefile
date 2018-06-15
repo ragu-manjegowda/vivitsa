@@ -1,4 +1,4 @@
-OBJECTS = io.o frame_buffer.o
+#OBJECTS = io.o frame_buffer.o
 
 all: frame_buffer.so
 
@@ -10,15 +10,17 @@ SO_FLAG = -c -fpic
 AS = nasm
 ASFLAGS = -f elf
 
-frame_buffer.so: $(OBJECTS)
-	$(CC) $(CFLAGS) $(LDFLAGS) $(OBJECTS) -o $(LIB_DIR)/$@
+INCLUDE += \
+	-I. \
 
+frame_buffer.so: $(C_OBJECTS) $(S_OBJECTS)
+	$(CC) $(CFLAGS) $(LDFLAGS) $(C_OBJECTS) $(S_OBJECTS) -o $(LIB_DIR)/$@
 
 %.o: %.c
-	$(CC) $(CFLAGS) $(SO_FLAG) $<
+	$(CC) $(CFLAGS) $(SO_FLAG) $< -o $@
 
 %.o: %.s
-	$(AS) $(ASFLAGS) $<
+	$(AS) $(ASFLAGS) $< -o $@
 
 clean:
 	rm -rf *.o *.so

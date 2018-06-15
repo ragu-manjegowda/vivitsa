@@ -1,7 +1,7 @@
-//#include <frame_buffer.h>
+#include <frame_buffer.h>
 
 /* The C function */
 int sum_of_three(int a, int b, int c) {
-  // write(NULL, 0);
+  write();
   return a + b + c;
 }
