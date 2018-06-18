@@ -20,7 +20,8 @@ which has all the dependencies installed on it. I recommend running this image
 on Ubuntu if you want to run emulator inside docker.
 
 References:
-1. https://github.com/tuhdo/os01
-2. http://mikeos.sourceforge.net/write-your-own-os.html
-3. https://littleosbook.github.io/
-4. https://wiki.osdev.org/Getting_Started
+1. http://www.jamesmolloy.co.uk/tutorial_html/
+2. https://littleosbook.github.io/
+3. https://wiki.osdev.org/Getting_Started
+4. https://github.com/tuhdo/os01
+5. http://mikeos.sourceforge.net/write-your-own-os.html

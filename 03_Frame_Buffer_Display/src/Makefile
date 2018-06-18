@@ -1,5 +1,5 @@
 SUBDIRS = \
-	common \
+	utils \
 	drivers \
 	kernel \
 
