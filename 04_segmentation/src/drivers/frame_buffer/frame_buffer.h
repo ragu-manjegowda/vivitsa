@@ -1,9 +1,6 @@
 #ifndef INCLUDE_FRAMEBUFFER_H
 #define INCLUDE_FRAMEBUFFER_H
 
-#pragma once
-#include "io.h"
-
 /* The I/O ports */
 #define FB_COMMAND_PORT 0x3D4
 #define FB_DATA_PORT 0x3D5
@@ -18,14 +15,6 @@
 
 /* Frame buffer base address */
 #define FB_BASE_ADDRESS 0xB8000
-
-/** outb:
- *  Sends the given data to the given I/O port. Defined in io.s
- *
- *  @param port The I/O port to send the data to
- *  @param data The data to send to the I/O port
- */
-void outb(unsigned short port, unsigned char data);
 
 /** fb_move_cursor:
  *  Moves the cursor of the framebuffer to the given position
@@ -53,4 +42,4 @@ void fb_write_cell(unsigned int i, char c, unsigned char fg, unsigned char bg);
  */
 int fb_write(char *buf, unsigned int len);
 
-#endif /* INCLUDE_IO_H */
+#endif /* INCLUDE_FRAMEBUFFER_H */

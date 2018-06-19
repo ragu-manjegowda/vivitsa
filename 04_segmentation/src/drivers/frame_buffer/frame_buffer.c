@@ -1,4 +1,5 @@
 #include "frame_buffer.h"
+#include "io.h"
 
 static char *fb = (char *)FB_BASE_ADDRESS;
 
