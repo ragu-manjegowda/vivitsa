@@ -5,9 +5,9 @@ CFLAGS += -m32 -nostdlib -nostdinc -fno-builtin -fno-stack-protector \
 AS = nasm
 ASFLAGS = -f elf
 
-C_SOURCES = $(wildcard *.c)
-S_SOURCES = $(wildcard *.s)
-C_OBJECTS = $(C_SOURCES:.c=.o)
+C_SOURCES += $(wildcard *.c)
+S_SOURCES += $(wildcard *.s)
+C_OBJECTS += $(C_SOURCES:.c=.o)
 S_OBJECTS += $(S_SOURCES:.s=.o)
 
 LDFLAGS += \

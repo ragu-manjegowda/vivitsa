@@ -1,8 +1,9 @@
 SUBDIRS = \
 	drivers \
 	mm \
-	kernel \
 	utils \
+	kernel \
+
 
 # Include Common Makefile
 -include ${MAKE_UTILS_DIR}/Makefile.defs

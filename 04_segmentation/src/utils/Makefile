@@ -1,5 +1,8 @@
 COPY_FILES = bochsConfig/bochsrc.txt
 
+SUBDIRS = \
+		logger
+
 all: copyConfigFiles
 
 # Include Common Makefile

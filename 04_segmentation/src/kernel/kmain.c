@@ -1,13 +1,21 @@
-#include <frame_buffer.h>
 #include <gdt.h>
+#include <logger.h>
 #include <serial_port.h>
 
-/* The C function */
-int sum_of_three(int a, int b, int c) {
+/* Function to initialize */
+void init() {
+  /* Initialize segment descriptor tables */
   init_descriptor_tables();
-  char buffer[25] = "Ragu, You are awesome!!!\n";
-  fb_write(buffer, 26);
+
+  /* Initialize serial port */
   serial_configure(SERIAL_COM1_BASE, Baud_115200);
-  serial_write(SERIAL_COM1_BASE, buffer, 26);
-  return a + b + c;
+}
+
+/* Kernel Main */
+int kmain() {
+  init();
+  char buffer[14] = "This works!!!\n";
+  kprint(buffer, 14);
+  log(buffer, 14);
+  return 0;
 }

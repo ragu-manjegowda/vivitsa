@@ -1,11 +1,11 @@
-# Frame buffer display
+# Segmentation
 
-To understand Memory mapped I/O, I/O ports.
+To understand and implement segments for code and data.
 
 ## Details:
 
-Implement functions to write a data in buffer to frame buffer and moving the
-cursor appropriately.
+Define descriptors for kernel code and data segments then load them when kernel
+starts.
 
 ## Usage:
 

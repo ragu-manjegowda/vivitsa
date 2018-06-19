@@ -6,9 +6,6 @@ all: libio.a
 # Include Common Makefile
 -include ${MAKE_UTILS_DIR}/Makefile.defs
 
-AS = nasm
-ASFLAGS = -f elf
-
 # Generate Static library
 SC_FLAG = ar -cvq
 
