@@ -6,6 +6,9 @@ all: libgdt.a
 # Include Common Makefile
 -include ${MAKE_UTILS_DIR}/Makefile.defs
 
+INCLUDE += \
+	-I$(TOP_DIR)/src/utils/data_types \
+
 AS = nasm
 ASFLAGS = -f elf
 

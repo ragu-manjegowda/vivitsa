@@ -5,7 +5,7 @@
 /* Function to initialize */
 void init() {
   /* Initialize segment descriptor tables */
-  init_descriptor_tables();
+  init_gdt();
 
   /* Initialize serial port */
   serial_configure(SERIAL_COM1_BASE, Baud_115200);

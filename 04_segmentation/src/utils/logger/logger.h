@@ -1,9 +1,6 @@
 #ifndef INCLUDE_LOGGER_H
 #define INCLUDE_LOGGER_H
 
-#pragma once
-
-
 /** log:
  *  writes the contents of the buffer buf of length len to serial console
  *

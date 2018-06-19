@@ -12,7 +12,8 @@ all: kernel.elf
 INCLUDE += \
 	-I$(TOP_DIR)/src/utils/logger \
 	-I$(TOP_DIR)/src/drivers/serial_port \
-	-I$(TOP_DIR)/src/mm/segmentation
+	-I$(TOP_DIR)/src/mm/segmentation \
+	-I$(TOP_DIR)/src/utils/data_types
 
 kernel.elf: $(C_OBJECTS) $(S_OBJECTS)
 	ld $(LDFLAG) $(LDFLAGS) $(C_OBJECTS) $(S_OBJECTS) $(LIBS) -o $(BIN_DIR)/$@
