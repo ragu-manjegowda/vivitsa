@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 
 cp build/bin/kernel.elf iso/boot/kernel.elf
-cp build/etc/bochsrc.txt .
 
 genisoimage -R                  \
 -b boot/grub/stage2_eltorito    \
@@ -11,7 +10,7 @@ genisoimage -R                  \
 -input-charset utf8             \
 -quiet                          \
 -boot-info-table                \
--o os.iso                       \
+-o vivitsa.iso                  \
 iso
 
-bochs -f bochsrc.txt -q
+qemu-system-i386 -cdrom vivitsa.iso -s -serial stdio -S

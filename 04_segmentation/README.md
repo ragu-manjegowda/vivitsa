@@ -15,8 +15,26 @@ starts.
 	$ make
 ```
 
+### To build with debug symbols
+
+```shell
+	$ make D=-g
+```
+
 ### To run project
 
 ```shell
 	$ ./run.sh
+```
+
+This time I switched to QEMU. run script starts QEMU in debug mode, you need to open GDB in new terminal and connect to remote debugging on port 1234.
+
+Writing to serial port now prints to screen, check run.sh!
+
+#### Note: Make sure to build with debug symbols
+
+```shell
+	$ gdb or gdbtui
+	$ target remote localhost:1234
+	$ file build/bin/kernel.elf  (loads debugging symbols from the file)
 ```

@@ -1,4 +1,9 @@
 CC = gcc
+
+# Pass gdb debug flag from command line
+# Usage `make D=-g`
+CC += $(D)
+
 CFLAGS += -m32 -nostdlib -nostdinc -fno-builtin -fno-stack-protector \
 				 -nostartfiles -nodefaultlibs -Wall -Wextra -Werror
 

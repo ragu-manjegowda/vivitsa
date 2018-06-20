@@ -1,4 +1,5 @@
 #include "gdt.h"
+#include <types.h>
 
 /* Access ASM function from C code. */
 extern void gdt_flush(u32int);

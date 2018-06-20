@@ -8,7 +8,7 @@ Writing an operating operating system from scratch is fun. I am naming this OS a
 I have named the folders starting with number followed by heading so that it is
 easy to maintain chronology.
 
-This Operating system is targeted to run on x86 architecture, while developing I have used [Bochs emulator](https://en.wikipedia.org/wiki/Bochs).
+This Operating system is targeted to run on x86 architecture, while developing I used [Bochs emulator](https://en.wikipedia.org/wiki/Bochs) initially. But, later I found [QEMU x86 Emulator](https://en.wikipedia.org/wiki/QEMU) more powerful.
 
 To build, run and test please use my
 [docker image](https://github.com/ragu-manjegowda/ragu-docker) by simply running
@@ -18,6 +18,8 @@ To build, run and test please use my
 ```
 which has all the dependencies installed on it. I recommend running this image
 on Ubuntu if you want to run emulator inside docker.
+
+### To run, debug and to know more please refer README.md in sub-folders.
 
 References:
 1. http://www.jamesmolloy.co.uk/tutorial_html/

@@ -16,8 +16,6 @@ all: $(OUT_DIR)
 
 $(OUT_DIR):
 	${MKDIR_P} $(LIB_DIR) $(BIN_DIR) $(ETC_DIR)
-	@echo $(LD_LIBRARY_PATH)
-	@echo $(TOP_DIR)
 
 # Include Common Makefile
 -include ${MAKE_UTILS_DIR}/Makefile.defs
