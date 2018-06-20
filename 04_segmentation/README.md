@@ -15,19 +15,25 @@ starts.
 	$ make
 ```
 
-### To build with debug symbols
-
-```shell
-	$ make D=-g
-```
-
 ### To run project
 
 ```shell
 	$ ./run.sh
 ```
 
-This time I switched to QEMU. run script starts QEMU in debug mode, you need to open GDB in new terminal and connect to remote debugging on port 1234.
+### To build with debug symbols
+
+```shell
+	$ make D=-g
+```
+
+### To run project in debug mode
+
+```shell
+	$ ./run.sh -d
+```
+
+This time I switched to QEMU. If run script starts QEMU in debug mode, you need to open GDB in new terminal and connect to remote debugging on port 1234.
 
 Writing to serial port now prints to screen, check run.sh!
 

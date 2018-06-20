@@ -42,10 +42,30 @@ static void gdt_set_gate(s32int num, u32int base, u32int limit, u8int access,
   gdt_entries[num].base_high = (base >> 24) & 0xFF;
 
   gdt_entries[num].limit_low = (limit & 0xFFFF);
-  gdt_entries[num].granularity = (limit >> 16) & 0x0F;
 
-  gdt_entries[num].granularity |= gran & 0xF0;
+  /*
+   * name | value | size | desc
+   * ---------------------------
+   * P    |     1 |    1 | segment present in memory
+   * DPL  |    pl |    2 | privilege level
+   * S    |     1 |    1 | descriptor type, 0 = system, 1 = code or data
+   * Type |  type |    4 | segment type, how the segment can be accessed
+   * Access = 0x9A privilege 0 code segment, Access = 0x92 for privilege 0 data
+   * segment
+   */
   gdt_entries[num].access = access;
+
+  /*
+   * name | value | size | desc
+   * ---------------------------
+   * G    |     1 |    1 | granularity, size of segment unit, 1 = 4kB
+   * D/B  |     1 |    1 | size of operation size, 0 = 16 bits, 1 = 32 bits
+   * L    |     0 |    1 | 1 = 64 bit code
+   * AVL  |     0 |    1 | "available for use by system software"
+   * LIM  |   0xF |    4 | the four highest bits of segment limit
+   * Granularity = 0xCF as far as highest bits of segment limit is 0xFFFFFFFF
+   */
+  gdt_entries[num].granularity = gran;
 }
 
 void init_gdt() {
