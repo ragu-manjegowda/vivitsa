@@ -14,8 +14,8 @@ void init() {
 /* Kernel Main */
 int kmain() {
   init();
-  char buffer[14] = "This works!!!\n";
-  kprint(buffer, 14);
-  log(buffer, 14);
+  char buffer[20] = "This works!!!!!!!\n";
+  kprint(buffer, 20);
+  log(buffer, 20);
   return 0;
 }
