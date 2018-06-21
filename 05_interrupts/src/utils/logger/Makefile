@@ -6,16 +6,13 @@ all: liblogger.a
 C_SOURCES += $(TOP_DIR)/src/drivers/frame_buffer/frame_buffer.c \
 	$(TOP_DIR)/src/drivers/serial_port/serial_port.c
 
-S_SOURCES += $(TOP_DIR)/src/drivers/io/io.s
-
 # Include Common Makefile
 -include ${MAKE_UTILS_DIR}/Makefile.defs
 
 INCLUDE += \
 	-I$(TOP_DIR)/src/drivers/frame_buffer \
 	-I$(TOP_DIR)/src/drivers/io \
-	-I$(TOP_DIR)/src/drivers/serial_port \
-
+	-I$(TOP_DIR)/src/drivers/serial_port 
 
 # Generate Static library
 SC_FLAG = ar -cvq
@@ -30,4 +27,4 @@ liblogger.a: $(C_OBJECTS) $(S_OBJECTS)
 	$(AS) $(ASFLAGS) $< -o $@
 
 clean:
-	rm -rf *.o *.so
+	rm -rf *.o *.so *.a

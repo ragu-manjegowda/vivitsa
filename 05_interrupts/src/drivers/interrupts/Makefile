@@ -8,7 +8,7 @@ all: libidt.a
 
 INCLUDE += \
 	-I$(TOP_DIR)/src/utils/data_types \
-	-I$(TOP_DIR)/src/utils/logger 
+	-I$(TOP_DIR)/src/utils/logger \
 
 # Generate Static library
 SC_FLAG = ar -cvq
@@ -23,4 +23,4 @@ libidt.a: $(C_OBJECTS) $(S_OBJECTS)
 	$(AS) $(ASFLAGS) $< -o $@
 
 clean:
-	rm -rf *.o *.so
+	rm -rf *.o *.so *.a

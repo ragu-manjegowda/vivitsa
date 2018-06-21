@@ -53,4 +53,7 @@ dkms.conf
 
 # Mac OS temp files
 .DS_Store
+
+# Project based
 build
+*.iso

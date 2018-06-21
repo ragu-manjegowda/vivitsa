@@ -1,5 +1,5 @@
 LDFLAG += -T link.ld -melf_i386
-LIBS = -llogger -lgdt -lidt
+LIBS = -llogger -lgdt -lidt -lio
 
 all: kernel.elf
 
@@ -26,4 +26,4 @@ kernel.elf: $(C_OBJECTS) $(S_OBJECTS)
 	$(AS) $(ASFLAGS) $< -o $@
 
 clean:
-	rm -rf *.o
+	rm -rf *.o *.so *.a

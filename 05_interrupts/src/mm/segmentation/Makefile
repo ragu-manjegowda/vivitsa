@@ -25,4 +25,4 @@ libgdt.a: $(C_OBJECTS) $(S_OBJECTS)
 	$(AS) $(ASFLAGS) $< -o $@
 
 clean:
-	rm -rf *.o *.so
+	rm -rf *.o *.so *.a

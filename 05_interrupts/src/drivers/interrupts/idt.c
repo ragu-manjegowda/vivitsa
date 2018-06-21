@@ -32,7 +32,7 @@ struct idt_ptr_struct {
 typedef struct idt_ptr_struct idt_ptr_t;
 
 /* 256 interrupts!!! */
-idt_entry_t idt_entries[1];
+idt_entry_t idt_entries[256];
 
 /* Set the value of IDT entry. */
 static void idt_set_gate(u8int num, u32int addressISR, u16int segmentSelector,
@@ -43,7 +43,7 @@ static void idt_set_gate(u8int num, u32int addressISR, u16int segmentSelector,
 
   idt_entries[num].access_gran = accessGran;
 
-  idt_entries[num].offset_high = (addressISR >> 16);
+  idt_entries[num].offset_high = addressISR >> 16;
 }
 
 /* The processor will sometimes need to signal your kernel. Something major may
@@ -114,7 +114,7 @@ extern void isr31();
 
 void init_idt() {
   idt_ptr_t idt_ptr;
-  idt_ptr.limit = sizeof(idt_entry_t) * 1 - 1;
+  idt_ptr.limit = sizeof(idt_entry_t) * 256 - 1;
   idt_ptr.base = (u32int)&idt_entries;
 
   /* Setting everything to 0 as handler for interrupts above 32 are not set */
