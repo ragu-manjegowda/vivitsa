@@ -27,6 +27,11 @@ enum BaudRate { Baud_115200 = 1, Baud_57600, Baud_19200, Baud_9600 };
  */
 #define SERIAL_LINE_ENABLE_DLAB 0x80
 
+/* SERIAL_FIFO_BUFFER_LENGTH:
+ * Define the macro for FIFO queue length
+ */
+#define SERIAL_FIFO_BUFFER_LENGTH 14
+
 /** serial_configure_baud_rate:
  *  Sets the speed of the data being sent. The default speed of a serial
  *  port is 115200 bits/s. The argument is a divisor of that number, hence
@@ -75,7 +80,7 @@ void serial_configure_modem(unsigned short com);
  */
 int serial_is_transmit_fifo_empty(unsigned short com);
 
-/** write:
+/** serial_write:
  *  writes the contents of the buffer buf of length len to the screen
  *
  *  @param buf  Buffer that has contents to be written to screen

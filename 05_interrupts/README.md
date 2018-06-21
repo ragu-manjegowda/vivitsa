@@ -1,11 +1,10 @@
-# Segmentation
+# Interrupts
 
-To understand and implement segments for code and data.
+To understand and implement interrupt service routines.
 
 ## Details:
 
-Define descriptors for kernel code and data segments then load them when kernel
-starts.
+Define ISRs, load them to processor and handle them appropriately when it occurs.
 
 ## Usage:
 
@@ -32,10 +31,6 @@ starts.
 ```shell
 	$ ./run.sh -d
 ```
-
-This time I switched to QEMU. If run script starts QEMU in debug mode, you need to open GDB in new terminal and connect to remote debugging on port 1234.
-
-Writing to serial port now prints to screen, check run.sh!
 
 #### Note: Make sure to build with debug symbols
 
