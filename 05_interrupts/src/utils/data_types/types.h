@@ -14,4 +14,6 @@ typedef short s16int;
 typedef unsigned char u8int;
 typedef char s8int;
 
+void integer_to_string(char *buffer, u32int number);
+
 #endif /* INCLUDE_TYPES_H */

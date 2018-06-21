@@ -19,8 +19,8 @@ void init() {
 int kmain() {
   init();
   char buffer[20] = "This works!!!!!!!\n";
-  kprint(buffer, 20);
-  log(buffer, 20);
+  print_screen(buffer, 20);
+  print_serial(buffer, 20);
   asm volatile("int $0x3");
   return 0;
 }

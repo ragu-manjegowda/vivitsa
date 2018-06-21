@@ -36,11 +36,11 @@ typedef struct registers {
 /* This gets called from our ASM interrupt handler stub. */
 void interrupt_handler(registers_t regs) {
   char buffer[27] = "recieved interrupt!!!!!!!\n";
-  log(buffer, 27);
-  char buffer2[2];
-  u8int number = regs.stack_contents.int_no % 10;
-  buffer2[0] = '0' + number;
-  log(buffer2, 2);
-  kprint(buffer, 27);
-  kprint(buffer2, 2);
+  print_serial(buffer, 27);
+  print_screen(buffer, 27);
+
+  char buffer2[10] = " ";
+  integer_to_string(buffer2, regs.stack_contents.int_no);
+  print_serial(buffer2, 10);
+  print_screen(buffer2, 10);
 }

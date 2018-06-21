@@ -1,5 +1,5 @@
 LDFLAG += -T link.ld -melf_i386
-LIBS = -llogger -lgdt -lidt -lio
+LIBS = -llogger -lgdt -lidt -lio -ltypes
 
 all: kernel.elf
 
