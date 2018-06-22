@@ -14,6 +14,3 @@ libio.a: $(S_OBJECTS)
 
 %.o: %.s
 	$(AS) $(ASFLAGS) $< -o $@
-
-clean:
-	rm -rf *.o *.so *.a

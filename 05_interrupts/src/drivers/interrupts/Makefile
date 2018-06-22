@@ -7,8 +7,9 @@ all: libidt.a
 -include ${MAKE_UTILS_DIR}/Makefile.defs
 
 INCLUDE += \
+	-I$(TOP_DIR)/src/drivers/io/ \
 	-I$(TOP_DIR)/src/utils/data_types \
-	-I$(TOP_DIR)/src/utils/logger \
+	-I$(TOP_DIR)/src/utils/logger
 
 # Generate Static library
 SC_FLAG = ar -cvq
@@ -21,6 +22,3 @@ libidt.a: $(C_OBJECTS) $(S_OBJECTS)
 
 %.o: %.s
 	$(AS) $(ASFLAGS) $< -o $@
-
-clean:
-	rm -rf *.o *.so *.a

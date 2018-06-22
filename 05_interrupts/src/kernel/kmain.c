@@ -22,5 +22,6 @@ int kmain() {
   print_screen(buffer, 20);
   print_serial(buffer, 20);
   asm volatile("int $0x3");
+  asm volatile("int $0x22");
   return 0;
 }

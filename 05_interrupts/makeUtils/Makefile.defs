@@ -5,17 +5,13 @@ all: $(SUBDIRS)
 		make -C $$subdir all || exit 1; \
 	done
 
-clean: $(SUBDIRS) rmBuild
+clean: $(SUBDIRS)
 	for subdir in $(SUBDIRS) ; do \
 		make -C $$subdir clean ; \
-		rm -rf .DS_Store ; \
+		rm -rf .DS_Store *.o *.so *.a; \
 	done
 
 install: $(SUBDIRS)
 	for subdir in $(SUBDIRS) ; do \
 		make -C $$subdir install || exit 1; \
 	done
-
-rmBuild:
-	rm -rf build iso/boot/kernel.elf bochsrc.txt bochslog.txt vivitsa.iso os.iso \
-					.DS_Store com1.out

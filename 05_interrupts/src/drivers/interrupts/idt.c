@@ -1,4 +1,5 @@
 #include "idt.h"
+#include <io.h>
 #include <types.h>
 
 /* Function call to load IDT implemented in assembly.
@@ -11,11 +12,11 @@ extern void idt_flush(u32int);
  * any of the alignment in the structure.
  */
 struct idt_entry_struct {
-  u16int offset_low;       // The lowest 16 bits of the 32 bit ISR address.
-  u16int segment_selector; // Segment Selector.
-  u8int alwaysZero;        // This 8 bits are always 0.
-  u8int access_gran;       // Access flags, granularity and few reserved bits.
-  u16int offset_high;      // The highest 16 bits of the 32 bit ISR address.
+  u16int offset_low;       /* The lowest 16 bits of the 32 bit ISR address. */
+  u16int segment_selector; /* Segment Selector. */
+  u8int alwaysZero;        /* This 8 bits are always 0. */
+  u8int access_gran;  /* Access flags, granularity and few reserved bits. */
+  u16int offset_high; /* The highest 16 bits of the 32 bit ISR address. */
 } __attribute__((packed));
 
 typedef struct idt_entry_struct idt_entry_t;
@@ -25,26 +26,14 @@ typedef struct idt_entry_struct idt_entry_t;
  * lidt instruction.
  */
 struct idt_ptr_struct {
-  u16int limit; // The upper 16 bits of the table with entries.
-  u32int base;  // The address of the first idt_entry_t struct.
+  u16int limit; /* The upper 16 bits of the table with entries. */
+  u32int base;  /* The address of the first idt_entry_t struct. */
 } __attribute__((packed));
 
 typedef struct idt_ptr_struct idt_ptr_t;
 
 /* 256 interrupts!!! */
 idt_entry_t idt_entries[256];
-
-/* Set the value of IDT entry. */
-static void idt_set_gate(u8int num, u32int addressISR, u16int segmentSelector,
-                         u8int accessGran) {
-  idt_entries[num].offset_low = (addressISR & 0xFFFF);
-  idt_entries[num].segment_selector = segmentSelector;
-  idt_entries[num].alwaysZero = 0;
-
-  idt_entries[num].access_gran = accessGran;
-
-  idt_entries[num].offset_high = addressISR >> 16;
-}
 
 /* The processor will sometimes need to signal your kernel. Something major may
  * have happened, such as a divide-by-zero, or a page fault. To do this, it uses
@@ -112,10 +101,121 @@ extern void isr29();
 extern void isr30();
 extern void isr31();
 
+/* Common Definitions for PIC */
+#define PIC1 0x20 /* IO base address for master PIC */
+#define PIC2 0xA0 /* IO base address for slave PIC */
+#define PIC1_COMMAND PIC1
+#define PIC1_DATA (PIC1 + 1)
+#define PIC2_COMMAND PIC2
+#define PIC2_DATA (PIC2 + 1)
+
+/* reinitialize the PIC controllers, giving them specified vector offsets
+ * rather than 8h and 70h, as configured by default
+ */
+#define INITIALISE_COMMAND 0x11
+#define PIC1_VECTOR_OFFSET 0x20 /* re-map to ISR 32 */
+#define PIC2_VECTOR_OFFSET 0x28 /* re-map to ISR 40 */
+#define PIC2_PORT_IN_PIC1 0x04  /* PIC1's port address for PIC2 - 00000100b */
+#define PIC2_CASCADED_IDEN 0x02 /* PIC2's identity is 2 for Master (PIC1)*/
+#define ICW4_8086 0x01          /* 8086/88 (MCS-80/85) mode */
+
+/* To start using hardware interrupts Programmable Interrupt Controller (PIC)
+ * needs to be configured. The PIC makes it possible to map signals from the
+ * hardware to interrupts. The reasons for configuring the PIC are: Remap the
+ * interrupts. The PIC uses interrupts 0 - 15 for hardware interrupts by
+ * default, which conflicts with the CPU interrupts. Therefore the PIC
+ * interrupts must be remapped to another interval. Select which interrupts to
+ * receive. Set up the correct mode for the PIC.
+ *
+ * The hardware interrupts are shown in the table below:
+ *
+ * PIC1:
+ *      0 - Timer
+ *      1 - Keyboard
+ *      2 - PIC 2
+ *      3 - COM 2
+ *      4 - COM 1
+ *      5 - LPT 2
+ *      6 - Floppy disk
+ *      7 - LPT 1
+ *
+ * PIC2:
+ *      8 - Real Time Clock
+ *      9 - General I/O
+ *     10 - General I/O
+ *     11 - General I/O
+ *     12 - General I/O
+ *     13 - Coprocessor
+ *     14 - IDE Bus
+ *     15 - IDE Bus
+ *
+ * Following are the function call to above 16 interrupt requests.
+ * Extern allows to access ASM from this C code.
+ */
+extern void irq0();
+extern void irq1();
+extern void irq2();
+extern void irq3();
+extern void irq4();
+extern void irq5();
+extern void irq6();
+extern void irq7();
+extern void irq8();
+extern void irq9();
+extern void irq10();
+extern void irq11();
+extern void irq12();
+extern void irq13();
+extern void irq14();
+extern void irq15();
+
+/* When processor enters protected mode the first command you will need to give
+ * the two PICs is the initialise command (code 0x11). This command makes the
+ * PIC wait for 3 extra "initialisation words" on the data port.
+ */
+void init_pic() {
+  /* Start the initialization sequence */
+  outb(PIC1, INITIALISE_COMMAND);
+  outb(PIC2, INITIALISE_COMMAND);
+
+  /* Set new interrupt vector offset instead of default oofset */
+  outb(PIC1_DATA, PIC1_VECTOR_OFFSET);
+  outb(PIC2_DATA, PIC2_VECTOR_OFFSET);
+
+  /* Tell PIC1 there is Slave at PIN 2 (0000 0100) */
+  outb(PIC1_DATA, PIC2_PORT_IN_PIC1);
+
+  /* Tell Slave PIC its cascade identity (0000 0010) */
+  outb(PIC2_DATA, PIC2_CASCADED_IDEN);
+
+  /* Set PICs to operate in 8086/88 (MCS-80/85) mode */
+  outb(PIC1_DATA, ICW4_8086);
+  outb(PIC2_DATA, ICW4_8086);
+
+  /* Null out the data registers */
+  outb(PIC1_DATA, 0x0);
+  outb(PIC2_DATA, 0x0);
+}
+
+/* Set the value of IDT entry. */
+static void idt_set_gate(u8int num, u32int addressISR, u16int segmentSelector,
+                         u8int accessGran) {
+  idt_entries[num].offset_low = (addressISR & 0xFFFF);
+  idt_entries[num].segment_selector = segmentSelector;
+  idt_entries[num].alwaysZero = 0;
+
+  idt_entries[num].access_gran = accessGran;
+
+  idt_entries[num].offset_high = addressISR >> 16;
+}
+
 void init_idt() {
   idt_ptr_t idt_ptr;
   idt_ptr.limit = sizeof(idt_entry_t) * 256 - 1;
   idt_ptr.base = (u32int)&idt_entries;
+
+  /* Initialise PIC */
+  init_pic();
 
   /* Setting everything to 0 as handler for interrupts above 32 are not set */
   // memset(&idt_entries, 0, sizeof(idt_entry_t) * 256);
@@ -153,6 +253,24 @@ void init_idt() {
   idt_set_gate(29, (u32int)isr29, 0x08, 0x8E); // ISR 29
   idt_set_gate(30, (u32int)isr30, 0x08, 0x8E); // ISR 30
   idt_set_gate(31, (u32int)isr31, 0x08, 0x8E); // ISR 31
+
+  /* Define handlers for 16 interrupt requests by pic */
+  idt_set_gate(32, (u32int)irq0, 0x08, 0x8E);  // IRQ 0
+  idt_set_gate(33, (u32int)irq1, 0x08, 0x8E);  // IRQ 1
+  idt_set_gate(34, (u32int)irq2, 0x08, 0x8E);  // IRQ 2
+  idt_set_gate(35, (u32int)irq3, 0x08, 0x8E);  // IRQ 3
+  idt_set_gate(36, (u32int)irq4, 0x08, 0x8E);  // IRQ 4
+  idt_set_gate(37, (u32int)irq5, 0x08, 0x8E);  // IRQ 5
+  idt_set_gate(38, (u32int)irq6, 0x08, 0x8E);  // IRQ 6
+  idt_set_gate(39, (u32int)irq7, 0x08, 0x8E);  // IRQ 7
+  idt_set_gate(40, (u32int)irq8, 0x08, 0x8E);  // IRQ 8
+  idt_set_gate(41, (u32int)irq9, 0x08, 0x8E);  // IRQ 9
+  idt_set_gate(42, (u32int)irq10, 0x08, 0x8E); // IRQ 10
+  idt_set_gate(43, (u32int)irq11, 0x08, 0x8E); // IRQ 11
+  idt_set_gate(44, (u32int)irq12, 0x08, 0x8E); // IRQ 12
+  idt_set_gate(45, (u32int)irq13, 0x08, 0x8E); // IRQ 13
+  idt_set_gate(46, (u32int)irq14, 0x08, 0x8E); // IRQ 14
+  idt_set_gate(47, (u32int)irq15, 0x08, 0x8E); // IRQ 15
 
   idt_flush((u32int)&idt_ptr);
 }

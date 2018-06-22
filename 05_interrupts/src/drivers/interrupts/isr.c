@@ -1,3 +1,4 @@
+#include <io.h>
 #include <logger.h>
 #include <types.h>
 
@@ -43,4 +44,30 @@ void interrupt_handler(registers_t regs) {
   integer_to_string(buffer2, regs.stack_contents.int_no);
   print_serial(buffer2, 10);
   print_screen(buffer2, 10);
+}
+
+// This gets called from our ASM interrupt handler stub.
+void irq_interrupt_handler(registers_t regs) {
+  // Send an EOI (end of interrupt) signal to the PICs.
+  // If this interrupt involved the slave.
+  if (regs.stack_contents.int_no >= 40) {
+    // Send reset signal to slave.
+    outb(0xA0, 0x20);
+  }
+  // Send reset signal to master. (As well as slave, if necessary).
+  outb(0x20, 0x20);
+
+  char buffer[27] = "recieved interrupt!!!!!!!\n";
+  print_serial(buffer, 27);
+  print_screen(buffer, 27);
+
+  char buffer2[10] = " ";
+  integer_to_string(buffer2, regs.stack_contents.int_no);
+  print_serial(buffer2, 10);
+  print_screen(buffer2, 10);
+
+  /*if (interrupt_handlers[regs.stack_contents.int_no] != 0) {
+    isr_t handler = interrupt_handlers[regs.int_no];
+    handler(regs);
+  }*/
 }

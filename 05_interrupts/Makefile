@@ -17,5 +17,11 @@ all: $(OUT_DIR)
 $(OUT_DIR):
 	${MKDIR_P} $(LIB_DIR) $(BIN_DIR) $(ETC_DIR)
 
+clean: rmBuild
+
+rmBuild:
+	rm -rf build iso/boot/kernel.elf bochsrc.txt bochslog.txt vivitsa.iso os.iso \
+					.DS_Store com1.out *.o *.so;
+
 # Include Common Makefile
 -include ${MAKE_UTILS_DIR}/Makefile.defs
