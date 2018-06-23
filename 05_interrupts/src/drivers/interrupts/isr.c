@@ -1,73 +1,43 @@
+#include "isr.h"
 #include <io.h>
 #include <logger.h>
-#include <types.h>
 
-typedef struct cpu_state {
-  u32int edi;
-  u32int esi;
-  u32int ebp;
-  u32int esp;
-  u32int ebx;
-  u32int edx;
-  u32int ecx;
-  u32int eax;
-} cpu_state_t;
+isr_t interrupt_handlers[256];
 
-typedef struct stack_state {
-  u32int int_no;
-  u32int err_code;
-  u32int eip;
-  u32int cs;
-  u32int eflags;
-  u32int useresp;
-  u32int ss;
-} stack_state_t;
-
-typedef struct registers {
-  /* Data segment selector */
-  u32int ds;
-  /* Pushed by pusha */
-  cpu_state_t cpu_registers;
-  /* Interrupt number and error code (if applicable). Pushed by the processor
-   * automatically.
-   */
-  stack_state_t stack_contents;
-} registers_t;
+/* Function to register interrupt handler with custom call back function */
+void register_interrupt_handler(u8int n, isr_t handler) {
+  interrupt_handlers[n] = handler;
+}
 
 /* This gets called from our ASM interrupt handler stub. */
 void interrupt_handler(registers_t regs) {
-  char buffer[27] = "recieved interrupt!!!!!!!\n";
-  print_serial(buffer, 27);
-  print_screen(buffer, 27);
+  /* Send an EOI (end of interrupt) signal to the PICs. */
 
-  char buffer2[10] = " ";
-  integer_to_string(buffer2, regs.stack_contents.int_no);
-  print_serial(buffer2, 10);
-  print_screen(buffer2, 10);
-}
-
-// This gets called from our ASM interrupt handler stub.
-void irq_interrupt_handler(registers_t regs) {
-  // Send an EOI (end of interrupt) signal to the PICs.
-  // If this interrupt involved the slave.
+  /* If this interrupt involved PIC2/slave. */
   if (regs.stack_contents.int_no >= 40) {
-    // Send reset signal to slave.
     outb(0xA0, 0x20);
   }
-  // Send reset signal to master. (As well as slave, if necessary).
-  outb(0x20, 0x20);
+  /* Send reset signal to PIC1/master. */
+  if (regs.stack_contents.int_no >= 32) {
+    outb(0x20, 0x20);
+  }
 
   char buffer[27] = "recieved interrupt!!!!!!!\n";
   print_serial(buffer, 27);
   print_screen(buffer, 27);
 
-  char buffer2[10] = " ";
+  /* Currently there are only 47 handlers so digit cannot be more than 2, hence
+   * defining buffer of length 4 (more space to print '\n')
+   */
+  char buffer2[4] = " ";
   integer_to_string(buffer2, regs.stack_contents.int_no);
-  print_serial(buffer2, 10);
-  print_screen(buffer2, 10);
+  buffer2[3] = '\n';
+  print_serial(buffer2, 4);
+  print_screen(buffer2, 4);
 
-  /*if (interrupt_handlers[regs.stack_contents.int_no] != 0) {
-    isr_t handler = interrupt_handlers[regs.int_no];
+  /* If there is a callback function registered call that function */
+  if (interrupt_handlers[regs.stack_contents.int_no] != 0) {
+    isr_t handler = interrupt_handlers[regs.stack_contents.int_no];
     handler(regs);
-  }*/
+  }
 }

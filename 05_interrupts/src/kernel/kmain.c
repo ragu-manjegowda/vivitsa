@@ -2,6 +2,7 @@
 #include <idt.h>
 #include <logger.h>
 #include <serial_port.h>
+#include <timer.h>
 
 /* Function to initialize */
 void init() {
@@ -10,6 +11,9 @@ void init() {
 
   /* Initialize segment descriptor tables */
   init_idt();
+
+  /* Initialize timer interrupt */
+  init_timer(TIMER_FREQUENCY);
 
   /* Initialize serial port */
   serial_configure(SERIAL_COM1_BASE, Baud_115200);

@@ -1,6 +1,5 @@
 ; isr handler is implemented in isr.c
 extern interrupt_handler
-extern irq_interrupt_handler
 
 ;macro for no error code handler starts from here
 %macro no_error_code_interrupt_handler 1  ; define a macro, taking one parameter
@@ -38,7 +37,7 @@ global irq%1                              ; %1 accesses the first parameter.
     cli                                   ; Disable interrupts
     push    dword 0                       ; push 0 as error code
     push    dword %2                      ; push the interrupt number
-    jmp     irq_common_interrupt_handler      ; jump to the common handler for irq
+    jmp     common_interrupt_handler      ; jump to the common handler for irq
 
 %endmacro
 ; interrupt handler for PIC macro end
@@ -115,51 +114,6 @@ common_interrupt_handler:                 ; the common parts of the generic
 
     ; call the C function
     call    interrupt_handler
-
-    ; restore the registers
-    pop     eax                           ; reload the original data segment
-    mov     ds, ax                        ; descriptor
-    mov     es, ax
-    mov     fs, ax
-    mov     gs, ax
-
-    popa                                  ; Pops edi,esi,ebp...
-
-    ; restore the esp
-    add     esp, 8                        ; Cleans up the pushed error code and
-                                          ; pushed ISR number
-
-    sti                                   ; set interrupts
-
-    ; return to the code that got interrupted
-    ; When an interrupt fires, the processor automatically pushes information
-    ; about the processor state onto the stack. The code segment, instruction
-    ; pointer, flags register, stack segment and stack pointer are pushed. The
-    ; IRET instruction is specifically designed to return from an interrupt. It
-    ; pops these values off the stack and returns the processor to the state it
-    ; was in originally.
-    iret
-
-; Common ISR stub. It saves the processor state, sets
-; up for kernel mode segments, calls the C-level fault handler,
-; and finally restores the stack frame.
-irq_common_interrupt_handler:                 ; the common parts of the generic
-                                          ; interrupt handler
-    ; save the registers
-    pusha                                 ; Pushes eax, ebx, ecx, edx, edi, esi,
-                                          ; ebp, esp,
-
-    mov     ax, ds                        ; Lower 16-bits of eax = ds.
-    push    eax                           ; save the data segment descriptor
-
-    mov     ax, 0x10                      ; load the kernel data segment
-    mov     ds, ax                        ; descriptor, this is because ISR is
-    mov     es, ax                        ; defined in Kernel's data segment.
-    mov     fs, ax
-    mov     gs, ax
-
-    ; call the C function
-    call    irq_interrupt_handler
 
     ; restore the registers
     pop     eax                           ; reload the original data segment
