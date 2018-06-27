@@ -1,4 +1,5 @@
 #include "isr.h"
+#include <helpers.h>
 #include <io.h>
 #include <logger.h>
 
@@ -22,14 +23,14 @@ void interrupt_handler(registers_t regs) {
     outb(0x20, 0x20);
   }
 
-  char buffer[27] = "recieved interrupt!!!!!!!\n";
+  s8int buffer[27] = "recieved interrupt!!!!!!!\n";
   print_serial(buffer, 27);
   print_screen(buffer, 27);
 
   /* Currently there are only 47 handlers so digit cannot be more than 2, hence
    * defining buffer of length 4 (more space to print '\n')
    */
-  char buffer2[4] = " ";
+  s8int buffer2[4] = " ";
   integer_to_string(buffer2, regs.stack_contents.int_no);
   buffer2[3] = '\n';
   print_serial(buffer2, 4);

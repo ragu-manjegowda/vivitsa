@@ -1,7 +1,7 @@
 COPY_FILES = bochsConfig/bochsrc.txt
 
 SUBDIRS = \
-		data_types \
+		common \
 		logger
 
 all: copyConfigFiles

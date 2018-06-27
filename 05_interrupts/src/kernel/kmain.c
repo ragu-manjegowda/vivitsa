@@ -3,6 +3,7 @@
 #include <logger.h>
 #include <serial_port.h>
 #include <timer.h>
+#include <types.h>
 
 /* Function to initialize */
 void init() {
@@ -20,9 +21,9 @@ void init() {
 }
 
 /* Kernel Main */
-int kmain() {
+s32int kmain() {
   init();
-  char buffer[20] = "This works!!!!!!!\n";
+  s8int buffer[20] = "This works!!!!!!!\n";
   print_screen(buffer, 20);
   print_serial(buffer, 20);
   asm volatile("int $0x3");

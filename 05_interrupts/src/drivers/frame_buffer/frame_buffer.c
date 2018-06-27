@@ -1,8 +1,8 @@
 #include "frame_buffer.h"
 #include "io.h"
 
-static char *fb = (char *)FB_BASE_ADDRESS;
-static unsigned short cursor_pos = 0;
+static s8int *fb = (s8int *)FB_BASE_ADDRESS;
+static u16int cursor_pos = 0;
 
 /** fb_move_cursor:
  *  Moves the cursor of the framebuffer to the given position
@@ -16,8 +16,8 @@ void fb_move_cursor() {
   outb(FB_DATA_PORT, cursor_pos & 0x00FF);
 }
 
-void fb_clear(unsigned short start, unsigned short end) {
-  for (unsigned short i = start; i < end; i++) {
+void fb_clear(u16int start, u16int end) {
+  for (u16int i = start; i < end; i++) {
     fb[2 * i] = ' ';
     fb[2 * i + 1] = ((0 & 0x0F) << 4) | (15 & 0x0F);
   }
@@ -32,9 +32,9 @@ void fb_clear(unsigned short start, unsigned short end) {
  *  @param fg The foreground color
  *  @param bg The background color
  */
-void fb_write_cell(char c, unsigned char fg, unsigned char bg) {
+void fb_write_cell(s8int c, u8int fg, u8int bg) {
   if (c == '\n') {
-    unsigned short cursor_temp_pos = cursor_pos;
+    u16int cursor_temp_pos = cursor_pos;
     cursor_pos = ((cursor_pos / 79) + 1) * 80;
     if (cursor_pos >= 2000) {
       fb_clear(0, 2000);
@@ -54,8 +54,8 @@ void fb_write_cell(char c, unsigned char fg, unsigned char bg) {
   }
 }
 
-int fb_write(char *buf, unsigned int len) {
-  unsigned int index_to_buffer = 0;
+s32int fb_write(s8int *buf, u32int len) {
+  u32int index_to_buffer = 0;
   while (index_to_buffer < len) {
     fb_write_cell(buf[index_to_buffer], FB_GREEN, FB_DARK_GREY);
     fb_move_cursor();

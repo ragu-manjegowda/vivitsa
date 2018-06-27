@@ -7,7 +7,7 @@ all: libgdt.a
 -include ${MAKE_UTILS_DIR}/Makefile.defs
 
 INCLUDE += \
-	-I$(TOP_DIR)/src/utils/data_types \
+	-I$(TOP_DIR)/src/utils/common \
 
 AS = nasm
 ASFLAGS = -f elf

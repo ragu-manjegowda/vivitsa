@@ -1,5 +1,5 @@
 LDFLAG += -T link.ld -melf_i386
-LIBS = -llogger -lgdt -lidt -lio -ltypes -ltimer
+LIBS = -llogger -lgdt -lidt -lio -lcommon -ltimer
 
 all: kernel.elf
 
@@ -14,7 +14,7 @@ INCLUDE += \
 	-I$(TOP_DIR)/src/drivers/serial_port \
 	-I$(TOP_DIR)/src/drivers/timer \
 	-I$(TOP_DIR)/src/mm/segmentation \
-	-I$(TOP_DIR)/src/utils/data_types \
+	-I$(TOP_DIR)/src/utils/common \
 	-I$(TOP_DIR)/src/utils/logger
 
 kernel.elf: $(C_OBJECTS) $(S_OBJECTS)

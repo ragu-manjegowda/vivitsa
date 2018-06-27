@@ -1,6 +1,9 @@
 #ifndef INCLUDE_FRAMEBUFFER_H
 #define INCLUDE_FRAMEBUFFER_H
 
+#pragma once
+#include <types.h>
+
 /* The I/O ports */
 #define FB_COMMAND_PORT 0x3D4
 #define FB_DATA_PORT 0x3D5
@@ -22,6 +25,6 @@
  *  @param buf  Buffer that has contents to be written to screen
  *  @param len  Length of buffer
  */
-int fb_write(char *buf, unsigned int len);
+s32int fb_write(s8int *buf, u32int len);
 
 #endif /* INCLUDE_FRAMEBUFFER_H */

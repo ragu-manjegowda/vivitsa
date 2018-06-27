@@ -1,4 +1,4 @@
-all: libtypes.a
+all: libcommon.a
 
 # Include Common Makefile
 -include ${MAKE_UTILS_DIR}/Makefile.include
@@ -6,15 +6,10 @@ all: libtypes.a
 # Include Common Makefile
 -include ${MAKE_UTILS_DIR}/Makefile.defs
 
-#INCLUDE += \
-	-I$(TOP_DIR)/src/drivers/frame_buffer \
-	-I$(TOP_DIR)/src/drivers/io \
-	-I$(TOP_DIR)/src/drivers/serial_port
-
 # Generate Static library
 SC_FLAG = ar -cvq
 
-libtypes.a: $(C_OBJECTS) $(S_OBJECTS)
+libcommon.a: $(C_OBJECTS) $(S_OBJECTS)
 	$(SC_FLAG) $(LIB_DIR)/$@ $^
 
 %.o: %.c

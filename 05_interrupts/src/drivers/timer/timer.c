@@ -1,4 +1,5 @@
 #include "timer.h"
+#include <helpers.h>
 #include <io.h>
 #include <isr.h>
 #include <logger.h>
@@ -27,11 +28,11 @@ static void timer_callback(registers_t regs) {
   (void)regs;
   static u32int tick = 0;
 
-  char buffer[34] = "recieved timer interrupt, tick = ";
+  s8int buffer[34] = "recieved timer interrupt, tick = ";
   print_serial(buffer, 34);
   print_screen(buffer, 34);
 
-  char buffer2[12] = " ";
+  s8int buffer2[12] = " ";
   integer_to_string(buffer2, tick++);
   buffer2[11] = '\n';
   print_serial(buffer2, 12);

@@ -8,7 +8,7 @@ all: libidt.a
 
 INCLUDE += \
 	-I$(TOP_DIR)/src/drivers/io/ \
-	-I$(TOP_DIR)/src/utils/data_types \
+	-I$(TOP_DIR)/src/utils/common \
 	-I$(TOP_DIR)/src/utils/logger
 
 # Generate Static library

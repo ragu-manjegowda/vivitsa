@@ -1,6 +1,4 @@
-/** common.h -- Defines typedefs and some global functions.
- *              From JamesM's kernel development tutorials.
- */
+
 #ifndef INCLUDE_TYPES_H
 #define INCLUDE_TYPES_H
 
@@ -13,7 +11,5 @@ typedef unsigned short u16int;
 typedef short s16int;
 typedef unsigned char u8int;
 typedef char s8int;
-
-void integer_to_string(char *buffer, u32int number);
 
 #endif /* INCLUDE_TYPES_H */
