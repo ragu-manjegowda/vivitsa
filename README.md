@@ -2,7 +2,7 @@
 # Vivitsa
   My operating system - from scratch!!!
 
-Writing an operating operating system from scratch is fun. I am naming this OS after Sanskrit word Vivitsa meaning "desire of knowledge" which is exactly why I started this.
+Writing an operating operating system from scratch is fun. I am naming this OS after Sanskrit word Vivitsa meaning "desire of knowledge".
 
 
 I have named the folders starting with number followed by heading so that it is
