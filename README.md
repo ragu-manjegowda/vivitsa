@@ -2,11 +2,7 @@
 # Vivitsa
   My operating system - from scratch!!!
 
-Writing an operating operating system from scratch is fun. I am naming this OS after Sanskrit word Vivitsa meaning "desire of knowledge".
-
-
-I have named the folders starting with number followed by heading so that it is
-easy to maintain chronology.
+I am naming this OS after Sanskrit word Vivitsa meaning "desire of knowledge".
 
 This Operating system is targeted to run on x86 architecture, while developing I used [Bochs emulator](https://en.wikipedia.org/wiki/Bochs) initially. But, later I found [QEMU x86 Emulator](https://en.wikipedia.org/wiki/QEMU) more handy.
 
