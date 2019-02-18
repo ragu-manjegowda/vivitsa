@@ -4,6 +4,7 @@
 #include <logger.h>
 
 isr_t interrupt_handlers[256];
+const u8int TIME_INTERRUPT_NUMBER = 32;
 
 /* Function to register interrupt handler with custom call back function */
 void register_interrupt_handler(u8int n, isr_t handler) {
@@ -23,18 +24,17 @@ void interrupt_handler(registers_t regs) {
     outb(0x20, 0x20);
   }
 
-  s8int buffer[27] = "recieved interrupt!!!!!!!\n";
-  print_serial(buffer, 27);
-  print_screen(buffer, 27);
-
-  /* Currently there are only 47 handlers so digit cannot be more than 2, hence
-   * defining buffer of length 4 (more space to print '\n')
+  /* Does not print if timer interrupt,
+   * (avoiding too many messages on screen).
    */
-  s8int buffer2[4] = " ";
-  integer_to_string(buffer2, regs.stack_contents.int_no);
-  buffer2[3] = '\n';
-  print_serial(buffer2, 4);
-  print_screen(buffer2, 4);
+  if(regs.stack_contents.int_no != TIME_INTERRUPT_NUMBER)
+  {
+    print_serial("\nRecieved interrupt!!!!!!!\n");
+    print_screen("\nRecieved interrupt!!!!!!!\n");
+
+    print_serial(integer_to_string(regs.stack_contents.int_no));
+    print_screen(integer_to_string(regs.stack_contents.int_no));
+  }
 
   /* If there is a callback function registered call that function */
   if (interrupt_handlers[regs.stack_contents.int_no] != 0) {

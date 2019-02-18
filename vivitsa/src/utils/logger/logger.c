@@ -2,8 +2,18 @@
 #include "frame_buffer.h"
 #include "serial_port.h"
 
-void print_screen(s8int *buffer, u32int len) { fb_write(buffer, len); }
+u32int strlen(const char *str)
+{
+  u32int i;
+  for (i = 0; str[i]; i++);
 
-void print_serial(s8int *buffer, u32int len) {
-  serial_write(SERIAL_COM1_BASE, buffer, len);
+  return i;
+}
+
+void print_screen(s8int buffer[]) {
+  fb_write(buffer, strlen(buffer));
+}
+
+void print_serial(s8int buffer[]) {
+  serial_write(SERIAL_COM1_BASE, buffer, strlen(buffer));
 }

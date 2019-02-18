@@ -26,7 +26,7 @@
 static void timer_callback(registers_t regs) {
   /* suppress unused parameter warning */
   (void)regs;
-  static u32int tick = 0;
+  /*static u32int tick = 0;
 
   s8int buffer[34] = "recieved timer interrupt, tick = ";
   print_serial(buffer, 34);
@@ -36,7 +36,7 @@ static void timer_callback(registers_t regs) {
   integer_to_string(buffer2, tick++);
   buffer2[11] = '\n';
   print_serial(buffer2, 12);
-  print_screen(buffer2, 12);
+  print_screen(buffer2, 12);*/
 }
 
 void init_timer(u32int frequency) {

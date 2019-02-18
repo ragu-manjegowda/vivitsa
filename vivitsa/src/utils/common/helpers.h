@@ -6,6 +6,6 @@
 
 /* Helper function to convert interger to string, used in logger
  */
-void integer_to_string(s8int *buffer, u32int number);
+s8int* integer_to_string(u32int number);
 
 #endif /* INCLUDE_HELPERS_H */

@@ -10,7 +10,7 @@
  *  @param buffer  Buffer that has contents to be written to serial port
  *  @param len  Length of buffer
  */
-void print_serial(s8int *buffer, u32int len);
+void print_serial(s8int buffer[]);
 
 /** kprint:
  *  writes the char buffer buf of length len to Screen
@@ -18,6 +18,8 @@ void print_serial(s8int *buffer, u32int len);
  *  @param buffer  Buffer that has contents to be written to Screen
  *  @param len  Length of buffer
  */
-void print_screen(s8int *buffer, u32int len);
+void print_screen(s8int buffer[]);
+
+u32int strlen(const char *str);
 
 #endif /* INCLUDE_LOGGER_H */
