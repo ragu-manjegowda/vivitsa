@@ -5,6 +5,7 @@
 
 isr_t interrupt_handlers[256];
 const u8int TIME_INTERRUPT_NUMBER = 32;
+const u8int KEYBOARD_INTERRUPT_NUMBER = 33;
 
 /* Function to register interrupt handler with custom call back function */
 void register_interrupt_handler(u8int n, isr_t handler) {
@@ -27,8 +28,8 @@ void interrupt_handler(registers_t regs) {
   /* Does not print if timer interrupt,
    * (avoiding too many messages on screen).
    */
-  if(regs.stack_contents.int_no != TIME_INTERRUPT_NUMBER)
-  {
+  if ((regs.stack_contents.int_no != TIME_INTERRUPT_NUMBER) &&
+      regs.stack_contents.int_no != KEYBOARD_INTERRUPT_NUMBER) {
     print_serial("\nRecieved interrupt!!!!!!!\n");
     print_screen("\nRecieved interrupt!!!!!!!\n");
 

@@ -4,21 +4,33 @@
 #pragma once
 #include <types.h>
 
-/** log:
+/** print_serial:
  *  writes the char array buffer of length len to serial console
  *
  *  @param buffer  Buffer that has contents to be written to serial port
- *  @param len  Length of buffer
  */
 void print_serial(s8int buffer[]);
 
-/** kprint:
+/** print_serial:
+ *  writes the char to serial console
+ *
+ *  @param ch  Buffer that has contents to be written to serial port
+ */
+void print_serial_ch(s8int ch);
+
+/** print_screen:
  *  writes the char buffer buf of length len to Screen
  *
  *  @param buffer  Buffer that has contents to be written to Screen
- *  @param len  Length of buffer
  */
 void print_screen(s8int buffer[]);
+
+/** print_screen:
+ *  writes the char to Screen
+ *
+ *  @param ch  Buffer that has contents to be written to Screen
+ */
+void print_screen_ch(s8int ch);
 
 u32int strlen(const char *str);
 

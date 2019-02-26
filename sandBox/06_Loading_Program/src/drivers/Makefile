@@ -2,6 +2,7 @@ SUBDIRS = \
 	frame_buffer \
 	interrupts \
 	io \
+	keyboard \
 	serial_port \
 	timer
 
