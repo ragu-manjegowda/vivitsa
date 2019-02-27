@@ -10,6 +10,11 @@
 #define PIT_COMMAND_PORT 0x43
 #define PIT_CHANNEL0_DATA 0x40
 
+/* We get approximately 100 ticks per second, so by ticks % 100 gives us time in
+ * seconds. So using 16 bit counter to keep track of ticks
+ */
+u32int TIMER_TICKS = 0;
+
 /* PIT command register has the following fields
  *
  * name | value | size | desc
@@ -26,17 +31,8 @@
 static void timer_callback(registers_t regs) {
   /* suppress unused parameter warning */
   (void)regs;
-  /*static u32int tick = 0;
-
-  s8int buffer[34] = "recieved timer interrupt, tick = ";
-  print_serial(buffer, 34);
-  print_screen(buffer, 34);
-
-  s8int buffer2[12] = " ";
-  integer_to_string(buffer2, tick++);
-  buffer2[11] = '\n';
-  print_serial(buffer2, 12);
-  print_screen(buffer2, 12);*/
+  /* Increment our 'tick count' */
+  TIMER_TICKS++;
 }
 
 void init_timer(u32int frequency) {
@@ -65,4 +61,19 @@ void init_timer(u32int frequency) {
 
   /* Enable timer interrupt, otherwise there won't be any interrupt */
   asm("sti");
+}
+
+void sleep(u32int centiSeconds) {
+  u32int ticks = TIMER_TICKS + centiSeconds;
+  /* If 32 bit number overflows */
+  if (ticks < TIMER_TICKS) {
+    /* Wait till TIMER_TICKS to overflow */
+    while (TIMER_TICKS > 20)
+      ;
+    while (TIMER_TICKS < ticks)
+      ;
+  } else {
+    while (TIMER_TICKS < ticks)
+      ;
+  }
 }

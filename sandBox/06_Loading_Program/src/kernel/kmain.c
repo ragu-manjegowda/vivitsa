@@ -27,9 +27,13 @@ void init() {
 }
 
 /* Kernel Main */
-// GRUB stores a pointer to a struct in the register ebx that,
-// describes at which addresses the modules are loaded.
+/* GRUB stores a pointer to a struct in the register ebx that,
+ * describes at which addresses the modules are loaded.
+ */
 s32int kmain(u32int ebx) {
+  init();
+  /* Sleep for 2 seconds (200 centiSeconds) */
+  sleep(200);
   multiboot_info_t *mbinfo = (multiboot_info_t *)ebx;
   // u32int address_of_module = mbinfo->mods_addr;
   u32int mods_count = mbinfo->mods_count;
@@ -37,9 +41,6 @@ s32int kmain(u32int ebx) {
   print_serial("Number of modules loaded = ");
   print_serial(integer_to_string(mods_count));
   print_screen(integer_to_string(mods_count));
-  init();
-  print_screen("\nInit Passed!!!!!\n");
-  print_serial("\nInit Passed!!!!!\n");
 
   asm volatile("int $0x3");
   asm volatile("int $0x22");

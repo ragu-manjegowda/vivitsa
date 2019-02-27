@@ -1,6 +1,6 @@
 ## Details:
 
-Currently I have written an operating system has kernel (without paging and 
+Currently this operating system has kernel (without paging and
 user space support) that can load an external module using multiboot.
 (More information in Sandbox)
 
