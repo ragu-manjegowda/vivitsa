@@ -19,6 +19,9 @@ void init() {
   /* Initialize timer interrupt */
   init_timer(TIMER_FREQUENCY);
 
+  /* Initialize display */
+  init_display();
+
   /* Initialize serial port */
   serial_configure(SERIAL_COM1_BASE, Baud_115200);
 
@@ -33,14 +36,14 @@ void init() {
 s32int kmain(u32int ebx) {
   init();
   /* Sleep for 2 seconds (200 centiSeconds) */
-  sleep(200);
+  sleep(500);
   multiboot_info_t *mbinfo = (multiboot_info_t *)ebx;
   // u32int address_of_module = mbinfo->mods_addr;
   u32int mods_count = mbinfo->mods_count;
   print_screen("Number of modules loaded = ");
   print_serial("Number of modules loaded = ");
-  print_serial(integer_to_string(mods_count));
   print_screen(integer_to_string(mods_count));
+  print_serial(integer_to_string(mods_count));
 
   asm volatile("int $0x3");
   asm volatile("int $0x22");

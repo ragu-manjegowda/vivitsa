@@ -32,6 +32,9 @@ void print_screen(s8int buffer[]);
  */
 void print_screen_ch(s8int ch);
 
-u32int strlen(const char *str);
+/** init_display:
+ *  Initializes the frame buffer
+ */
+void init_display();
 
 #endif /* INCLUDE_LOGGER_H */

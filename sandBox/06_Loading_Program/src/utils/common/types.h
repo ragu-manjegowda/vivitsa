@@ -2,6 +2,10 @@
 #ifndef INCLUDE_TYPES_H
 #define INCLUDE_TYPES_H
 
+/* Frame buffer supported color value */
+#define FB_GREEN 2
+#define FB_DARK_GREY 8
+
 /* Typedefs, to standardise sizes across platforms.
  * These typedefs are written for 32-bit X86.
  */

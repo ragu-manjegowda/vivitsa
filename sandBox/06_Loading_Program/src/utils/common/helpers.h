@@ -6,6 +6,10 @@
 
 /* Helper function to convert interger to string, used in logger
  */
-s8int* integer_to_string(u32int number);
+s8int *integer_to_string(u32int number);
+
+/* Helper function to calculate length of string, used in logger
+ */
+u32int strlen(const char *str);
 
 #endif /* INCLUDE_HELPERS_H */

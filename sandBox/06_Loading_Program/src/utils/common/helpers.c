@@ -4,7 +4,7 @@
 
 char buffer[STRING_LEN];
 
-s8int* integer_to_string(u32int number) {
+s8int *integer_to_string(u32int number) {
   u32int i = 0;
   while (i > STRING_LEN) {
     buffer[i] = '\0';
@@ -33,4 +33,12 @@ s8int* integer_to_string(u32int number) {
   buffer[--i] = buffer_rev[j];
 
   return buffer;
+}
+
+u32int strlen(const char *str) {
+  u32int i;
+  for (i = 0; str[i]; i++)
+    ;
+
+  return i;
 }
