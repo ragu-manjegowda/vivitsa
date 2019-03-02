@@ -13,8 +13,8 @@ INCLUDE += \
 	-I$(TOP_DIR)/src/drivers/frame_buffer \
 	-I$(TOP_DIR)/src/drivers/io \
 	-I$(TOP_DIR)/src/drivers/serial_port \
+	-I$(TOP_DIR)/src/drivers/timer \
 	-I$(TOP_DIR)/src/utils/common
-
 
 # Generate Static library
 SC_FLAG = ar -cvq
