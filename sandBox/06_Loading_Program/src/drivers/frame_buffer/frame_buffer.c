@@ -1,5 +1,5 @@
 #include "frame_buffer.h"
-#include "io.h"
+#include <io.h>
 
 static s8int *fb = (s8int *)FB_BASE_ADDRESS;
 static u16int CURSOR_POS = 0;
@@ -57,14 +57,13 @@ void fb_write_cell(s8int c, u8int fg, u8int bg) {
       fb_clear(cursor_temp_pos, CURSOR_POS);
     }
   } else if (c != '\0') {
-    fb[2 * CURSOR_POS] = c;
-    fb[2 * CURSOR_POS + 1] = ((fg & 0x0F) << 4) | (bg & 0x0F);
-
-    CURSOR_POS++;
     if (CURSOR_POS >= CURSOR_POS_MAX) {
       fb_clear(0, CURSOR_POS_MAX);
       CURSOR_POS = 0;
     }
+    fb[2 * CURSOR_POS] = c;
+    fb[2 * CURSOR_POS + 1] = ((fg & 0x0F) << 4) | (bg & 0x0F);
+    CURSOR_POS++;
   }
 }
 
@@ -76,4 +75,10 @@ s32int fb_write(s8int *buf, u32int len) {
     index_to_buffer++;
   }
   return 0;
+}
+
+
+void fb_set_color(u16int background, u16int foreground) {
+  BACKGROUND_COLOR = background;
+  FOREGROUND_COLOR = foreground;
 }

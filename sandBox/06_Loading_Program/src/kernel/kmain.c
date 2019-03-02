@@ -35,8 +35,6 @@ void init() {
  */
 s32int kmain(u32int ebx) {
   init();
-  /* Sleep for 2 seconds (200 centiSeconds) */
-  sleep(500);
   multiboot_info_t *mbinfo = (multiboot_info_t *)ebx;
   // u32int address_of_module = mbinfo->mods_addr;
   u32int mods_count = mbinfo->mods_count;
