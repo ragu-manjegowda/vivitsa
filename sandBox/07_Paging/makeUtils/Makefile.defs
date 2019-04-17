@@ -1,0 +1,19 @@
+.PHONY: all clean install
+
+all: $(SUBDIRS)
+	for subdir in $(SUBDIRS) ; do \
+		make -C $$subdir all || exit 1; \
+	done
+
+clean: $(SUBDIRS) rmOBJS
+	for subdir in $(SUBDIRS) ; do \
+		make -C $$subdir clean ; \
+	done
+
+install: $(SUBDIRS)
+	for subdir in $(SUBDIRS) ; do \
+		make -C $$subdir install || exit 1; \
+	done
+
+rmOBJS:
+	rm -rf .DS_Store *.o *.so *.a
