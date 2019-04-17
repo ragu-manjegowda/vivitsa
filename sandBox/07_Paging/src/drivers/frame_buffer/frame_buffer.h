@@ -15,7 +15,7 @@
 /* Frame buffer base address */
 #define FB_BASE_ADDRESS 0xB8000
 
-/** fb_write:
+/* fb_write:
  *  writes the contents of the buffer buf of length len to the screen
  *
  *  @param buf  Buffer that has contents to be written to screen
@@ -23,12 +23,12 @@
  */
 s32int fb_write(s8int *buf, u32int len);
 
-/** fb_clear_all:
+/* fb_clear_all:
  *  Clear all the contents on screen
  */
 void fb_clear_all();
 
-/** fb_set_color:
+/* fb_set_color:
  *  Sets the color of text to be displayed on screen
  *
  *  @param background Background color

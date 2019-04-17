@@ -1,4 +1,5 @@
 SUBDIRS = \
+	heap \
 	segmentation
 
 # Include Common Makefile
