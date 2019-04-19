@@ -1,24 +1,24 @@
 #include "kheap.h"
 
-static u32int g_CurrentVirtualAddressTop = 0;
+u32int g_CurrentPhysicalAddressTop = 0;
 
-void set_virtual_address_top(u32int virtualAddress) {
-  g_CurrentVirtualAddressTop = (u32int)&virtualAddress;
+void set_physical_address_top(u32int phyAddress) {
+  g_CurrentPhysicalAddressTop = (u32int)&phyAddress;
 }
 
-u32int kmalloc_int(u32int size, int align, u32int *pAddrPtr) {
+u32int kmalloc_int(u32int size, u32int align, u32int *pAddrPtr) {
   if (align == 1) {
-    if (g_CurrentVirtualAddressTop & 0x00000FFF) {
+    if (g_CurrentPhysicalAddressTop & 0x00000FFF) {
       // Align the placement address;
-      g_CurrentVirtualAddressTop &= 0xFFFFF000;
-      g_CurrentVirtualAddressTop += 0x1000;
+      g_CurrentPhysicalAddressTop &= 0xFFFFF000;
+      g_CurrentPhysicalAddressTop += 0x1000;
     }
   }
   if (pAddrPtr) {
-    *pAddrPtr = g_CurrentVirtualAddressTop;
+    *pAddrPtr = g_CurrentPhysicalAddressTop;
   }
-  u32int tmp = g_CurrentVirtualAddressTop;
-  g_CurrentVirtualAddressTop += size;
+  u32int tmp = g_CurrentPhysicalAddressTop;
+  g_CurrentPhysicalAddressTop += size;
   return tmp;
 }
 

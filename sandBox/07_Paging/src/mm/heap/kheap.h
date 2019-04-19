@@ -4,14 +4,14 @@
 #pragma once
 #include <types.h>
 
-/* set_virtual_address_top:
- *  Set the top of virtual address global variable. This is required to keep
+/* set_physical_address_top:
+ *  Set the top of physical address global variable. This is required to keep
  *  track of the memory thats allocated till now. Initially, this is set to top
  *  of address where kernel ends. We keep moving this as memory is allocated.
  *
- *  @param virtualAddress Current Address End, we get this from linker script.
+ *  @param phyAddress Current Address End, we get this from linker script.
  */
-void set_virtual_address_top(u32int virtualAddress);
+void set_physical_address_top(u32int phyAddress);
 
 /* kmalloc_int:
  *  Allocate a chunk of memory, size in size. If align == 1,
@@ -22,7 +22,7 @@ void set_virtual_address_top(u32int virtualAddress);
  *  @param align     Align allocated memory at 4kb address
  *  @param pAddrPtr  Store the physical address of the page
  */
-u32int kmalloc_int(u32int size, int align, u32int *pAddrPtr);
+u32int kmalloc_int(u32int size, u32int align, u32int *pAddrPtr);
 
 /* kmalloc_a:
  *  Allocate a chunk of memory, size in size. The chunk must be
