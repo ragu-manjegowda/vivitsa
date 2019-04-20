@@ -1,30 +1,59 @@
-global loader                                             ; the entry symbol for ELF
+; Entry symbol for ELF
+global loader
 
-KERNEL_STACK_SIZE equ 4096                                ; size of stack in bytes
+; size of stack in bytes
+KERNEL_STACK_SIZE equ 4096
+
 ;setting up the Multiboot header - see GRUB docs for details
-MODULEALIGN equ  1<<0					                            ; align loaded modules on page boundaries
-MEMINFO		equ  1<<1					                              ; provide memory map
-FLAGS		equ  MODULEALIGN | MEMINFO	                      ; this is the Multiboot 'flag' field
-MAGIC_NUMBER		equ  0x1BADB002				                    ; 'magic number' lets bootloader find the header
+
+; align loaded modules on page boundaries
+MODULEALIGN equ 1 << 0
+
+; provide memory map
+MEMINFO equ 1 << 1
+
+; this is the Multiboot 'flag' field
+FLAGS equ MODULEALIGN | MEMINFO
+
+; 'magic number' lets bootloader find the header
+MAGIC_NUMBER equ 0x1BADB002
+
 ; calculate the checksum (all options + checksum should equal 0)
-CHECKSUM	equ  -(MAGIC_NUMBER + FLAGS)		                ; checksum required
+CHECKSUM equ - (MAGIC_NUMBER + FLAGS)
 
+; Kernel End Physical Address is exported from linker script
+extern KERNEL_PHYSICAL_END
+
+; start of the bss section
 section .bss
-align 4                                                   ; align at 4 bytes
-kernel_stack:                                             ; label points to beginning of memory
-    resb KERNEL_STACK_SIZE                                ; reserve stack for the kernel
+; align at 4 bytes
+align 4
+; label points to beginning of memory
+KERNEL_STACK:
+    ; reserve stack for the kernel
+    resb KERNEL_STACK_SIZE
 
-section .text                                             ; start of the text (code) section
-align 4                                                   ; the code must be 4 byte aligned
-    dd MAGIC_NUMBER                                       ; write the magic number to the machine code,
-    dd FLAGS                                              ; the flags,
-    dd CHECKSUM                                           ; and the checksum
+; start of the text (code) section
+section .text
+; Align at 4 bytes
+align 4
+    ; write the magic number to the machine code,
+    dd MAGIC_NUMBER
+    ; the flags,
+    dd FLAGS
+    ; the checksum
+    dd CHECKSUM
 
-loader:                                                   ; the loader label (defined as entry point in linker script)
-    mov esp, kernel_stack + KERNEL_STACK_SIZE             ; point esp to the start of the
-                                                          ; stack (end of memory area)
-    extern kmain                                          ; kmain function is defined elsewhere
-    push ebx
-    call kmain                                            ; call the function, the result will be in eax
-.loop:
-    jmp .loop                                             ; loop forever
+; the loader label (defined as entry point in linker script)
+loader:
+    ; point esp to the start of the stack (end of memory area)
+    mov esp, KERNEL_STACK + KERNEL_STACK_SIZE
+    ; kmain function is defined elsewhere
+    extern kmain
+    ; and the kernel end address
+    push $KERNEL_PHYSICAL_END
+    ; call kernel main function.
+    call kmain
+    .loop:
+    ; loop forever
+      jmp .loop
