@@ -6,7 +6,7 @@ char buffer[STRING_LEN];
 
 s8int *integer_to_string(u32int number) {
   u32int i = 0;
-  while (i > STRING_LEN) {
+  while (i < STRING_LEN) {
     buffer[i] = '\0';
     i++;
   }

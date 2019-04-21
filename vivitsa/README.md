@@ -1,6 +1,6 @@
 ## Details:
 
-Currently this operating system has kernel (without paging and
+Currently this operating system has kernel (without file system and
 user space support) that can load an external module using multiboot.
 (More information in Sandbox)
 
@@ -9,7 +9,8 @@ user space support) that can load an external module using multiboot.
 ### To build project
 
 ```shell
-	$ make
+	# -s for make quite
+	$ ./build.sh -s
 ```
 
 ### To run project
@@ -21,7 +22,8 @@ user space support) that can load an external module using multiboot.
 ### To build with debug symbols
 
 ```shell
-	$ make D=-g
+	# -s for make quite, -g for debug
+	$ ./build.sh -s -g
 ```
 
 ### To run project in debug mode

@@ -1,4 +1,6 @@
 SUBDIRS = \
+	heap \
+	paging \
 	segmentation
 
 # Include Common Makefile

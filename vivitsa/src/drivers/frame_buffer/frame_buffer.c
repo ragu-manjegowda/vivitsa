@@ -7,7 +7,7 @@ static u16int CURSOR_POS_MAX = 2000;
 static u16int BACKGROUND_COLOR = FB_GREEN;
 static u16int FOREGROUND_COLOR = FB_DARK_GREY;
 
-/** fb_move_cursor:
+/* fb_move_cursor:
  *  Moves the cursor of the framebuffer to the CURSOR_POS global variable
  */
 void fb_move_cursor() {
@@ -17,7 +17,7 @@ void fb_move_cursor() {
   outb(FB_DATA_PORT, CURSOR_POS & 0x00FF);
 }
 
-/** fb_clear:
+/* fb_clear:
  *  Clear the contents on screen between start position and end position
  *
  *  @param start Starting position
@@ -37,7 +37,7 @@ void fb_clear_all() {
   fb_move_cursor();
 }
 
-/** fb_write_cell:
+/* fb_write_cell:
  *  Writes a character with the given foreground and background to position i
  *  in the framebuffer.
  *
@@ -76,7 +76,6 @@ s32int fb_write(s8int *buf, u32int len) {
   }
   return 0;
 }
-
 
 void fb_set_color(u16int background, u16int foreground) {
   BACKGROUND_COLOR = background;
