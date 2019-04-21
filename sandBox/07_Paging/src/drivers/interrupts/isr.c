@@ -30,11 +30,12 @@ void interrupt_handler(registers_t regs) {
    */
   if ((regs.stack_contents.int_no != TIME_INTERRUPT_NUMBER) &&
       regs.stack_contents.int_no != KEYBOARD_INTERRUPT_NUMBER) {
-    print_serial("\nRecieved interrupt!!!!!!!\n");
-    print_screen("\nRecieved interrupt!!!!!!!\n");
-
+    print_serial("\nRecieved interrupt ");
+    print_screen("\nRecieved interrupt ");
     print_serial(integer_to_string(regs.stack_contents.int_no));
     print_screen(integer_to_string(regs.stack_contents.int_no));
+    print_serial("!!\n");
+    print_screen("!!\n");
   }
 
   /* If there is a callback function registered call that function */
