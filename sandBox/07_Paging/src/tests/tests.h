@@ -22,9 +22,6 @@ void run_all_tests() {
   u32int *ptr = (u32int *)g_CurrentPhysicalAddressTop;
   *ptr = 10;
 
-  /* TODO: Bug in integer_to_string function */
-  print_screen(integer_to_string(10023));
-
   // test keyboard
   print_screen("\nKeyboard Enabled, type something!!!!\n");
   print_serial("\nKeyboard Enabled, type something!!!!\n");
