@@ -21,50 +21,10 @@ extern u32int g_CurrentPhysicalAddressTop;
 #define INDEX_FROM_BIT(a) (a / 32)
 #define OFFSET_FROM_BIT(a) (a % 32)
 
-// Page Fault interrupt handler function
-void page_fault(registers_t regs) {
-  /* A page fault has occurred.
-   * The faulting address is stored in the CR2 register.
-   */
-  u32int faultingAddress;
-  asm volatile("mov %%cr2, %0" : "=r"(faultingAddress));
-
-  /* The error code gives us details of what happened. */
-  // Page not present
-  u32int present = !(regs.stack_contents.err_code & 0x1);
-  // Write operation?
-  u32int rWrite = regs.stack_contents.err_code & 0x2;
-  // Processor was in user-mode?
-  u32int uMode = regs.stack_contents.err_code & 0x4;
-  // Overwritten CPU-reserved bits of page entry?
-  u32int reserved = regs.stack_contents.err_code & 0x8;
-  // Caused by an instruction fetch?
-  u32int iFetch = regs.stack_contents.err_code & 0x10;
-
-  // Output an error message.
-  print_screen("Page fault! ( ");
-  if (present) {
-    print_screen("not present ");
-  }
-  if (rWrite) {
-    print_screen("read-only ");
-  }
-  if (uMode) {
-    print_screen("user-mode ");
-  }
-  if (reserved) {
-    print_screen("reserved ");
-  }
-  if (iFetch) {
-    print_screen("instruction fetch ");
-  }
-  print_screen(") at address = ");
-  print_screen(integer_to_string(faultingAddress));
-  print_screen("\n");
-  print_screen("Page fault");
-  while (1) {
-  }
-}
+/* Page Fault interrupt handler function forward declaration, definition towards
+ * the end
+ */
+void page_fault(registers_t regs);
 
 // Static function to set a bit in the frames bitset
 static void set_frame(u32int frameAddr) {
@@ -82,21 +42,13 @@ static void clear_frame(u32int frameAddr) {
   frames[idx] &= ~(0x1 << off);
 }
 
-// // Static function to test if a bit is set.
-// static u32int test_frame(u32int frameAddr) {
-//   u32int frame = frameAddr / 0x1000;
-//   u32int idx = INDEX_FROM_BIT(frame);
-//   u32int off = OFFSET_FROM_BIT(frame);
-//   return (frames[idx] & (0x1 << off));
-// }
-
 // Static function to find the first free frame.
 static s32int first_frame() {
   u32int i, j;
-  for (i = 0; i < INDEX_FROM_BIT(nframes); i++) {
+  for (i = 0; i < INDEX_FROM_BIT(nframes); ++i) {
     if (frames[i] != 0xFFFFFFFF) {
       // at least one bit is free here.
-      for (j = 0; j < 32; j++) {
+      for (j = 0; j < 32; ++j) {
         u32int toTest = 0x1 << j;
         if (!(frames[i] & toTest)) {
           return ((i * 32) + j);
@@ -139,22 +91,25 @@ void free_frame(page_t *page) {
   }
 }
 
-void custom_memset(u32int *address, u32int val, u32int size) {
-  for (u32int i = 0; i < size; i++) {
+void custom_memset(u8int *address, u32int val, u32int size) {
+  for (u32int i = 0; i < size; ++i) {
     *address = val;
     ++address;
   }
 }
 
-void initialise_paging() {
+void init_paging(u32int kernelPhysicalEnd) {
+
+  set_physical_address_top(kernelPhysicalEnd);
+
   /* The size of physical memory.
    * Assuming it is 16MB big
    */
   u32int mem_end_page = 0x1000000;
 
   nframes = mem_end_page / 0x1000;
-  frames = (u32int *)kmalloc(INDEX_FROM_BIT(nframes));
-  custom_memset(frames, 0, INDEX_FROM_BIT(nframes));
+  frames = (u32int *)kmalloc(INDEX_FROM_BIT(nframes) + 1);
+  custom_memset((u8int *)frames, 0, INDEX_FROM_BIT(nframes));
 
   // Let's make a page directory.
   g_kernelDirectory = (page_directory_t *)kmalloc_a(sizeof(page_directory_t));
@@ -202,10 +157,75 @@ page_t *get_page(u32int address, u8int make, page_directory_t *dir) {
     u32int tmp;
     dir->tables[tableIdx] =
         (page_table_t *)kmalloc_ap(sizeof(page_table_t), &tmp);
+    custom_memset((u8int *)dir->tables[tableIdx], 0, 0x1000);
     // PRESENT, RW, US.
     dir->tablesPhysical[tableIdx] = tmp | 0x7;
     return &dir->tables[tableIdx]->pages[address % 1024];
   } else {
     return 0;
   }
+}
+
+// Page Fault interrupt handler function
+void page_fault(registers_t regs) {
+  /* A page fault has occurred.
+   * The faulting address is stored in the CR2 register.
+   */
+  u32int faultingAddress;
+  asm volatile("mov %%cr2, %0" : "=r"(faultingAddress));
+
+  /* The error code gives us details of what happened. */
+  // Page not present
+  u32int present = !(regs.stack_contents.err_code & 0x1);
+  // Write operation?
+  u32int rWrite = regs.stack_contents.err_code & 0x2;
+  // Processor was in user-mode?
+  u32int uMode = regs.stack_contents.err_code & 0x4;
+  // Overwritten CPU-reserved bits of page entry?
+  u32int reserved = regs.stack_contents.err_code & 0x8;
+  // Caused by an instruction fetch?
+  u32int iFetch = regs.stack_contents.err_code & 0x10;
+
+  // Output an error message.
+  print_screen("Page fault! ( ");
+  print_serial("Page fault! ( ");
+  if (present) {
+    print_screen("not present ");
+  }
+  if (rWrite) {
+    print_screen("read-only ");
+  }
+  if (uMode) {
+    print_screen("user-mode ");
+  }
+  if (reserved) {
+    print_screen("reserved ");
+  }
+  if (iFetch) {
+    print_screen("instruction fetch ");
+  }
+  print_screen(") at address = ");
+  print_screen(integer_to_string(faultingAddress));
+  print_screen("\n");
+  print_serial(") at address = ");
+  print_serial(integer_to_string(faultingAddress));
+  print_serial("\n");
+
+  print_screen("\nCreating page at address ");
+  print_screen(integer_to_string(faultingAddress));
+  print_screen("\n");
+  print_serial("\nCreating page at address ");
+  print_serial(integer_to_string(faultingAddress));
+  print_serial("\n");
+
+// For testing we will allocate frame when there is page not found fault
+#if 1
+  alloc_frame(get_page(g_CurrentPhysicalAddressTop, 1, g_kernelDirectory), 0,
+              0);
+#endif
+
+  /* Optionally we can stop execution here, disabling this so that paging can
+   * be tested by doing the page fault
+   */
+  // while (1) {}
 }
