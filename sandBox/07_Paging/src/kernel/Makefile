@@ -1,5 +1,5 @@
 LDFLAG += -T link.ld -melf_i386
-LIBS = -llogger -lgdt -lidt -lio -lcommon -ltimer -lkb
+LIBS = -llogger -lgdt -lidt -lio -lcommon -ltimer -lkb -lpaging -lkheap
 
 all: kernel.elf
 
@@ -14,7 +14,9 @@ INCLUDE += \
 	-I$(TOP_DIR)/src/drivers/keyboard \
 	-I$(TOP_DIR)/src/drivers/serial_port \
 	-I$(TOP_DIR)/src/drivers/timer \
+	-I$(TOP_DIR)/src/mm/paging \
 	-I$(TOP_DIR)/src/mm/segmentation \
+	-I$(TOP_DIR)/src/tests \
 	-I$(TOP_DIR)/src/utils/common \
 	-I$(TOP_DIR)/src/utils/logger
 
