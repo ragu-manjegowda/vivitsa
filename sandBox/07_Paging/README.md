@@ -12,7 +12,8 @@ programs that run at lesser privilege level.
 ### To build project
 
 ```shell
-	$ make
+	# -s for make quite
+	$ ./build.sh -s
 ```
 
 ### To run project
@@ -24,7 +25,8 @@ programs that run at lesser privilege level.
 ### To build with debug symbols
 
 ```shell
-	$ make D=-g
+	# -s for make quite, -g for debug
+	$ ./build.sh -s -g
 ```
 
 ### To run project in debug mode

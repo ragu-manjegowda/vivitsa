@@ -19,8 +19,12 @@ void run_all_tests() {
   print_screen(integer_to_string(g_CurrentPhysicalAddressTop));
   print_serial("\nTesting paging, trying to access address ");
   print_serial(integer_to_string(g_CurrentPhysicalAddressTop));
+  print_screen("\n");
+  print_serial("\n");
   u32int *ptr = (u32int *)g_CurrentPhysicalAddressTop;
   *ptr = 10;
+  print_screen("Out of page fault, page allocation works!!!\n");
+  print_serial("Out of page fault, page allocation works!!!\n");
 
   // test keyboard
   print_screen("\nKeyboard Enabled, type something!!!!\n");

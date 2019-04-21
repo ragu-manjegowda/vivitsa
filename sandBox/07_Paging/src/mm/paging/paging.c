@@ -211,10 +211,10 @@ void page_fault(registers_t regs) {
   print_serial(integer_to_string(faultingAddress));
   print_serial("\n");
 
-  print_screen("\nCreating page at address ");
+  print_screen("Creating page at address ");
   print_screen(integer_to_string(faultingAddress));
   print_screen("\n");
-  print_serial("\nCreating page at address ");
+  print_serial("Creating page at address ");
   print_serial(integer_to_string(faultingAddress));
   print_serial("\n");
 
