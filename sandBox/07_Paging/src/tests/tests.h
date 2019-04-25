@@ -12,7 +12,7 @@ void run_all_tests() {
   // test interrupts
   print_screen("\nTesting Interrupt by raising interrupt 34\n");
   print_serial("\nTesting Interrupt by raising interrupt 34\n");
-  // asm volatile("int $0x22");
+  asm volatile("int $0x22");
 
   // test paging
   print_screen("\nTesting paging, trying to access address ");
