@@ -9,7 +9,7 @@
 #define KHEAP_MAX_ADDRESS 0xCFFFF000
 
 #define HEAP_INDEX_SIZE 0x20000
-#define HEAP_MAGIC 0x123890AB
+#define HEAP_MAGIC 0xC0DED00D
 #define HEAP_MIN_SIZE 0x70000
 
 /* set_physical_address_top:
@@ -30,8 +30,8 @@ void set_physical_address_top(u32int phyAddress);
  * @param  supervisor If set, accesible only in supervisor mode
  * @param  readonly   Page permission (if set, read only)
  */
-void create_heap(u32int start, u32int end, u32int max, u8int supervisor,
-                 u8int readonly);
+void create_heap(u32int startAddr, u32int endAddr, u32int maxAddr,
+                 u8int supervisor, u8int readonly);
 
 /* kmalloc_int:
  *  Allocate a chunk of memory, size in size. If align == 1,
