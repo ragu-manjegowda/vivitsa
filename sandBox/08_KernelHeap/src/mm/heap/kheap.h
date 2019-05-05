@@ -4,6 +4,14 @@
 #pragma once
 #include <types.h>
 
+#define KHEAP_START 0xC0000000
+#define KHEAP_INITIAL_SIZE 0x100000
+#define KHEAP_MAX_ADDRESS 0xCFFFF000
+
+#define HEAP_INDEX_SIZE 0x20000
+#define HEAP_MAGIC 0x123890AB
+#define HEAP_MIN_SIZE 0x70000
+
 /* set_physical_address_top:
  *  Set the top of physical address global variable. This is required to keep
  *  track of the memory thats allocated till now. Initially, this is set to top
@@ -12,6 +20,18 @@
  *  @param phyAddress Current Address End, we get this from linker script.
  */
 void set_physical_address_top(u32int phyAddress);
+
+/* create_heap:
+ * Create a new heap.
+ *
+ * @param  start      Physical Address where we want to create heap
+ * @param  end        Physical end address of heap
+ * @param  max        Physical address beyond which heap would not expand.
+ * @param  supervisor If set, accesible only in supervisor mode
+ * @param  readonly   Page permission (if set, read only)
+ */
+void create_heap(u32int start, u32int end, u32int max, u8int supervisor,
+                 u8int readonly);
 
 /* kmalloc_int:
  *  Allocate a chunk of memory, size in size. If align == 1,
@@ -54,8 +74,15 @@ u32int kmalloc_ap(u32int size, u32int *pAddrPtr);
 /* kmalloc:
  *  Generic function to allocate chunk of memory, size in size.
  *
- *  @param size  Size of memory to be allocated
+ *  @param size Size of memory to be allocated
  */
 u32int kmalloc(u32int size);
+
+/* kfree:
+ * General deallocation function.
+ *
+ *  @param ptr Pointer to be de-allocated
+ */
+void kfree(void *ptr);
 
 #endif /* INCLUDE_KHEAP_H */

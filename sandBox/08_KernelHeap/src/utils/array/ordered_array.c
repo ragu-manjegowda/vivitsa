@@ -61,9 +61,9 @@ void insert_ordered_array(type_t item, ordered_array_t *array) {
   }
 }
 
-type_t lookup_ordered_array(u32int index, ordered_array_t *array) {
+type_t peek_ordered_array(u32int index, ordered_array_t *array) {
   if (index >= array->size) {
-    print_screen("\nError: lookup_ordered_array : Index out of bound\n");
+    print_screen("\nError: peek_ordered_array : Index out of bound\n");
     return 0;
   }
   return array->array[index];

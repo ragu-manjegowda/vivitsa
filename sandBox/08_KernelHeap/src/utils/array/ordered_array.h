@@ -1,6 +1,7 @@
 #ifndef ORDERED_ARRAY_H
 #define ORDERED_ARRAY_H
 
+#pragma once
 #include <types.h>
 
 /* Define template to support multiple datatypes */
@@ -52,13 +53,13 @@ void destroy_ordered_array(ordered_array_t *array);
  */
 void insert_ordered_array(type_t item, ordered_array_t *array);
 
-/* lookup_ordered_array:
- *  Lookup the item at index specified.
+/* peek_ordered_array:
+ *  Get the item at index specified.
  *
- *  @param index  Index at which we want to lookup
+ *  @param index  Index at which we want to peek
  *  @param array  Pointer to ordered array
  */
-type_t lookup_ordered_array(u32int index, ordered_array_t *array);
+type_t peek_ordered_array(u32int index, ordered_array_t *array);
 
 /* remove_ordered_array:
  *  Deletes the item at location from the array.

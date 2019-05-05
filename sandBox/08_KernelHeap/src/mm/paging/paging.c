@@ -60,7 +60,6 @@ static s32int first_frame() {
   return -1;
 }
 
-// Function to allocate a frame.
 void alloc_frame(page_t *page, u32int isKernel, u32int isWriteable) {
   if (page->frame != 0) {
     return;

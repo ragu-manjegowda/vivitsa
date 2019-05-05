@@ -58,15 +58,31 @@ typedef struct page_directory {
  */
 void init_paging(u32int kernelPhysicalEnd);
 
-/*
- * Causes the specified page directory to be loaded into the CR3 register.
+/* switch_page_directory:
+ *  Causes the specified page directory to be loaded into the CR3 register.
+ *
+ *  @param new Address of the new page directory to be switched to.
  */
 void switch_page_directory(page_directory_t *new);
 
-/*
- * Retrieves a pointer to the page required. If make == 1, if the page-table in
- * which this page should reside isn't created, create it!
+/* get_page:
+ *  Retrieves a pointer to the page required. If make == 1, if the page-table in
+ *  which this page should reside isn't created, create it!
+ *
+ *  @param address  Physical address is for which the virtual page is required
+ *  @param make     Create page table if not created already.
+ *  @param dir      Pointer to the page directory
  */
 page_t *get_page(u32int address, u8int make, page_directory_t *dir);
+
+/* alloc_frame:
+ *  Marks that the frame is allocated based on the index calculated by page
+ * address. Also sets the page attributes in page table
+ *
+ *  @param page         Pointer to page address
+ *  @param isKernel     If set, marks page accesible only in kernel mode
+ *  @param isWriteable  If not set, markes page as read only
+ */
+void alloc_frame(page_t *page, u32int isKernel, u32int isWriteable);
 
 #endif /* INCLUDE_PAGING_H */

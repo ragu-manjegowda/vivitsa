@@ -26,6 +26,22 @@ void run_all_tests() {
   print_screen("Out of page fault, page allocation works!!!\n");
   print_serial("Out of page fault, page allocation works!!!\n");
 
+  // test heap
+  print_screen("\nTesting kernel heap.... \n");
+  print_screen("\nCalling kmalloc() for allocating 8 bytes");
+  u32int x = kmalloc(8);
+  print_screen("\nkmalloc() allocated 8 bytes at address: ");
+  print_screen(integer_to_string(x));
+  print_screen("\nCalling kmalloc() for allocating 10 bytes");
+  u32int y = kmalloc(10);
+  print_screen("\nkmalloc() allocated 10 bytes at address: ");
+  print_screen(integer_to_string(y));
+  print_screen("\nCalling kmalloc() for allocating 8 bytes");
+  u32int z = kmalloc(8);
+  print_screen("\nkmalloc() allocated 8 bytes at address: ");
+  print_screen(integer_to_string(z));
+  print_screen("\n");
+
   // test keyboard
   print_screen("\nKeyboard Enabled, type something!!!!\n");
   print_serial("\nKeyboard Enabled, type something!!!!\n");

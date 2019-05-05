@@ -3,6 +3,7 @@
 #include <helpers.h>
 #include <idt.h>
 #include <kb.h>
+#include <kheap.h>
 #include <logger.h>
 #include <paging.h>
 #include <serial_port.h>
