@@ -32,6 +32,11 @@ void print_screen(s8int buffer[]);
  */
 void print_screen_ch(s8int ch);
 
+/** clear_screen:
+ *  Clears the contents on screen
+ */
+void clear_screen();
+
 /** init_display:
  *  Initializes the frame buffer
  */
