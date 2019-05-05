@@ -21,17 +21,14 @@
  */
 void set_physical_address_top(u32int phyAddress);
 
-/* create_heap:
- * Create a new heap.
+/* create_kernel_heap:
+ *  Create a new kernel heap.
  *
- * @param  start      Physical Address where we want to create heap
- * @param  end        Physical end address of heap
- * @param  max        Physical address beyond which heap would not expand.
- * @param  supervisor If set, accesible only in supervisor mode
- * @param  readonly   Page permission (if set, read only)
+ *  @param  startAddr      Physical Address where we want to create heap
+ *  @param  endAddr        Physical end address of heap
+ *  @param  maxAddr        Physical address beyond which heap would not expand.
  */
-void create_heap(u32int startAddr, u32int endAddr, u32int maxAddr,
-                 u8int supervisor, u8int readonly);
+void create_kernel_heap(u32int startAddr, u32int endAddr, u32int maxAddr);
 
 /* kmalloc_int:
  *  Allocate a chunk of memory, size in size. If align == 1,

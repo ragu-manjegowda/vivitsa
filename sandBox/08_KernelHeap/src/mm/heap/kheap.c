@@ -311,18 +311,18 @@ static s8int header_t_less_than(type_t a, type_t b) {
   return (((header_t *)a)->size < ((header_t *)b)->size) ? 1 : 0;
 }
 
-void create_heap(u32int startAddr, u32int endAddr, u32int maxAddr,
-                 u8int supervisor, u8int readonly) {
+heap_t *create_heap(u32int startAddr, u32int endAddr, u32int maxAddr,
+                    u8int supervisor, u8int readonly) {
   heap_t *heap = (heap_t *)kmalloc(sizeof(heap_t));
 
   if (startAddr % 0x1000 != 0) {
     print_screen("\nError: create_heap: Start Address is not page aligned\n");
-    return;
+    return 0;
   }
 
   if (endAddr % 0x1000 != 0) {
     print_screen("\nError: create_heap: End Address is not page aligned\n");
-    return;
+    return 0;
   }
 
   /* Initialise the index. */
@@ -355,5 +355,9 @@ void create_heap(u32int startAddr, u32int endAddr, u32int maxAddr,
   hole->isHole = 1;
   insert_ordered_array((type_t)hole, &heap->index);
 
-  g_KernelHeap = heap;
+  return heap;
+}
+
+void create_kernel_heap(u32int startAddr, u32int endAddr, u32int maxAddr) {
+  g_KernelHeap = create_heap(startAddr, endAddr, maxAddr, 0, 0);
 }
