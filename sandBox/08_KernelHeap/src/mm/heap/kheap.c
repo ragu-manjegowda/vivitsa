@@ -135,21 +135,11 @@ type_t alloc(u32int size, u8int pageAlign, heap_t *heap) {
     s32int idx = -1;
     u32int value = 0x0;
 
-    /* TODO: Refactor to code below */
-    /*u32int tmp =
+    u32int tmp =
         (u32int)peek_ordered_array((heap->index.size - 1), &heap->index);
     if (tmp > value) {
       value = tmp;
       idx = iterator;
-    }*/
-
-    while ((u32int)iterator < heap->index.size) {
-      u32int tmp = (u32int)peek_ordered_array(iterator, &heap->index);
-      if (tmp > value) {
-        value = tmp;
-        idx = iterator;
-      }
-      iterator++;
     }
 
     /* If we didn't find ANY headers, we need to add one. */
@@ -176,8 +166,11 @@ type_t alloc(u32int size, u8int pageAlign, heap_t *heap) {
       footer->header = header;
       footer->magic = HEAP_MAGIC;
     }
-    // TODO: Check if can simply declare header outside if block and return it
-    // We now have enough space. Recurse, and call the function again.
+    /*
+     * We now have enough space. Recurse, and call the function again, so that
+     * in the next iteration we go and do the book keeping things like boundary
+     * check and removing the block from holes etc...
+     */
     return alloc(size, pageAlign, heap);
   }
 
@@ -193,7 +186,7 @@ type_t alloc(u32int size, u8int pageAlign, heap_t *heap) {
    * requested hole size less than the overhead for adding a new hole as we will
    * not have any space left to allocate in the new block.
    */
-  if ((origHoleSize - newSize) < (sizeof(header_t) + sizeof(footer_t))) {
+  if ((origHoleSize - newSize) <= (sizeof(header_t) + sizeof(footer_t))) {
     size += origHoleSize - newSize;
     newSize = origHoleSize;
   }
@@ -205,18 +198,25 @@ type_t alloc(u32int size, u8int pageAlign, heap_t *heap) {
   if (pageAlign && (origHolePos & 0x00000FFF)) {
     u32int newLocation =
         origHolePos + 0x1000 - (origHolePos & 0xFFF) - sizeof(header_t);
-    header_t *holeHeader = (header_t *)origHolePos;
-    holeHeader->size = 0x1000 - (origHolePos & 0xFFF) - sizeof(header_t);
-    holeHeader->magic = HEAP_MAGIC;
-    holeHeader->isHole = 1;
-    footer_t *holeFooter = (footer_t *)((u32int)newLocation - sizeof(footer_t));
-    holeFooter->magic = HEAP_MAGIC;
-    holeFooter->header = holeHeader;
-    /* TODO: Check new hole size and don't add if it crossess boundary of next
-     * header, and check if we are adding this hole to our list of holes
-     */
+
+    /* If left over space has at least 1 byte add new hole */
+    u32int residualSize = 0x1000 - (origHolePos & 0xFFF) - sizeof(header_t);
+    if ((origHoleSize - residualSize) > (sizeof(header_t) + sizeof(footer_t))) {
+      header_t *holeHeader = (header_t *)origHolePos;
+      holeHeader->size = residualSize;
+      holeHeader->magic = HEAP_MAGIC;
+      holeHeader->isHole = 1;
+      footer_t *holeFooter =
+          (footer_t *)((u32int)newLocation - sizeof(footer_t));
+      holeFooter->magic = HEAP_MAGIC;
+      holeFooter->header = holeHeader;
+      insert_ordered_array((type_t)holeHeader, &heap->index);
+    } else {
+      /* TODO: Implement logic to expand block on left to avoid fragmentation */
+    }
+
     origHolePos = newLocation;
-    origHoleSize = origHoleSize - holeHeader->size;
+    origHoleSize = origHoleSize - residualSize;
   } else {
     /*
      * Else we don't need this hole any more as we will be allocating it, delete
@@ -237,8 +237,10 @@ type_t alloc(u32int size, u8int pageAlign, heap_t *heap) {
   blockFooter->magic = HEAP_MAGIC;
   blockFooter->header = blockHeader;
 
-  // We may need to write a new hole after the allocated block.
-  // We do this only if the new hole would have positive size...
+  /*
+   * We may need to write a new hole after the allocated block.
+   * We do this only if the new hole would have positive size...
+   */
   if (origHoleSize - newSize > 0) {
     header_t *holeHeader =
         (header_t *)(origHolePos + sizeof(header_t) + size + sizeof(footer_t));
