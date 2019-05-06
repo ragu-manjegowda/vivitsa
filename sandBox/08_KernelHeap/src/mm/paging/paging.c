@@ -82,7 +82,6 @@ void alloc_frame(page_t *page, u32int isKernel, u32int isWriteable) {
   }
 }
 
-// Function to deallocate a frame.
 void free_frame(page_t *page) {
   u32int frame;
   if (!(frame = page->frame)) {
@@ -101,9 +100,9 @@ void init_paging(u32int kernelPhysicalEnd) {
    * The size of physical memory.
    * Assuming it is KHEAP_MAX_ADDRESS big
    */
-  u32int mem_end_page = KHEAP_MAX_ADDRESS;
+  u32int memPageEnd = KHEAP_MAX_ADDRESS;
 
-  nframes = (mem_end_page / 0x1000) + 1;
+  nframes = (memPageEnd / 0x1000) + 1;
   frames = (u32int *)kmalloc(INDEX_FROM_BIT(nframes));
   custom_memset((u8int *)frames, 0, INDEX_FROM_BIT(nframes));
 

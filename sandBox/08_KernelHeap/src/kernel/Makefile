@@ -1,6 +1,6 @@
 LDFLAG += -T link.ld -melf_i386
-LIBS =  -llogger -lgdt -lidt -lio -lcommon -ltimer -lkb -lpaging -lkheap \
-				-lorderedarray
+LIBS = -llogger -lgdt -lidt -lio -lcommon -ltimer -lkb -lpaging -lkheap \
+	-lorderedarray
 
 all: kernel.elf
 

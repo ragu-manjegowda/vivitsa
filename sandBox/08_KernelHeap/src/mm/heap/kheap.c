@@ -363,3 +363,139 @@ heap_t *create_heap(u32int startAddr, u32int endAddr, u32int maxAddr,
 void create_kernel_heap(u32int startAddr, u32int endAddr, u32int maxAddr) {
   g_KernelHeap = create_heap(startAddr, endAddr, maxAddr, 0, 0);
 }
+
+static u32int contract(u32int newSize, heap_t *heap) {
+  if (newSize >= (heap->endAddress - heap->startAddress)) {
+    print_screen("\nError: contract: New size greater than current heap size");
+    return (heap->endAddress - heap->startAddress);
+  }
+
+  /* Page align */
+  if (newSize & 0x0FFF) {
+    newSize &= 0x1000;
+    newSize += 0x1000;
+  }
+
+  /* Don't contract too far! */
+  if (newSize < HEAP_MIN_SIZE)
+    newSize = HEAP_MIN_SIZE;
+
+  u32int oldSize = heap->endAddress - heap->startAddress;
+  u32int index = oldSize - 0x1000;
+  while (newSize < index) {
+    free_frame(get_page(heap->startAddress + index, 0, g_kernelDirectory));
+    index -= 0x1000;
+  }
+
+  heap->endAddress = heap->startAddress + newSize;
+  return newSize;
+}
+
+static void free(void *ptr, heap_t *heap) {
+  if (ptr == 0) {
+    return;
+  }
+
+  header_t *header = (header_t *)((u32int)ptr - sizeof(header_t));
+  footer_t *footer =
+      (footer_t *)((u32int)header + header->size - sizeof(footer_t));
+
+  if (header->magic != HEAP_MAGIC) {
+    print_screen("\nError: free: Cannot verify header magic numer");
+  }
+
+  if (footer->magic != HEAP_MAGIC) {
+    print_screen("\nError: free: Cannot verify footer magic number");
+  }
+
+  /* Make us a hole */
+  header->isHole = 1;
+
+  /* We want to add this header into the 'free holes' index */
+  char doAdd = 1;
+
+  /*
+   * Unify left if the thing immediately to the left of us is a footer of free
+   * block
+   */
+  footer_t *testFooter = (footer_t *)((u32int)header - sizeof(footer_t));
+  if (testFooter->magic == HEAP_MAGIC && testFooter->header->isHole == 1) {
+    u32int cacheSize = header->size;
+    header = testFooter->header;
+    footer->header = header;
+    header->size += cacheSize;
+    /* Since this header is already in the index, we don't want to add */
+    doAdd = 0;
+  }
+
+  /*
+   * Unify right if the thing immediately to the right of us is a header of a
+   * free block
+   */
+  header_t *testHeader = (header_t *)((u32int)footer + sizeof(footer_t));
+  if (testHeader->magic == HEAP_MAGIC && testHeader->isHole) {
+    header->size += testHeader->size;
+    testFooter =
+        (footer_t *)((u32int)testHeader + testHeader->size - sizeof(footer_t));
+    footer = testFooter;
+    /*  Find and remove this header from the index. */
+    u32int iterator = 0;
+    while ((iterator < heap->index.size) &&
+           (peek_ordered_array(iterator, &heap->index) != (type_t)testHeader)) {
+      iterator++;
+    }
+
+    if (iterator >= heap->index.size) {
+      print_screen("\nError: free: unify right found a free block that is not "
+                   "present in index");
+      return;
+    }
+
+    remove_ordered_array(iterator, &heap->index);
+  }
+
+  /*
+   * If the footer location is the end address, we can contract if we have
+   * expanded our heap beyond minimum heap size.
+   */
+  if ((u32int)footer + sizeof(footer_t) == heap->endAddress) {
+    u32int oldLength = heap->endAddress - heap->startAddress;
+    u32int newLength = contract((u32int)header - heap->startAddress, heap);
+
+    /*
+     * Check how big we will be after resizing.
+     * It might be possible we still have the header but footer stays outside
+     * heap end address since we contracted
+     */
+    if (header->size - (oldLength - newLength) > 0) {
+      header->size -= oldLength - newLength;
+      footer = (footer_t *)((u32int)header + header->size - sizeof(footer_t));
+      footer->magic = HEAP_MAGIC;
+      footer->header = header;
+    } else {
+      /* Remove temporary header before contract from the index. */
+      u32int iterator = 0;
+      while (
+          (iterator < heap->index.size) &&
+          (peek_ordered_array(iterator, &heap->index) != (type_t)testHeader)) {
+        iterator++;
+      }
+
+      if (iterator >= heap->index.size) {
+        print_screen("\nError: free: contract found a free block that is not "
+                     "present in index");
+        return;
+      }
+
+      if (iterator < heap->index.size) {
+        remove_ordered_array(iterator, &heap->index);
+      }
+    }
+  }
+
+  /* If required, add us to the index. */
+  if (doAdd == 1)
+    insert_ordered_array((void *)header, &heap->index);
+}
+
+void kfree(void *ptr) { free(ptr, g_KernelHeap); }

@@ -37,7 +37,7 @@ void run_all_tests() {
   print_serial("Out of page fault, page allocation works!!!\n");
 
   print_screen("\nTesting continues please wait...");
-  /* Sleep for 5 seconds (500 centiSeconds) */
+  /* Sleep for 10 seconds (1000 centiSeconds) */
   sleep(1000);
   clear_screen();
 
@@ -47,14 +47,19 @@ void run_all_tests() {
   print_screen("\nTesting kernel heap.... ");
   print_serial("\nTesting kernel heap.... ");
 
+  print_screen("\n==============================");
+  print_serial("\n==============================");
+  print_screen("\nTesting kernel malloc.... ");
+  print_serial("\nTesting kernel malloc.... ");
+
   print_screen("\nCalling kmalloc() for allocating 8 bytes");
   print_serial("\nCalling kmalloc() for allocating 8 bytes");
-  u32int x = kmalloc(8);
+  u32int *x = (u32int *)kmalloc(8);
   print_screen("\nkmalloc() allocated 8 bytes at address: ");
-  print_screen(integer_to_string(x));
+  print_screen(integer_to_string((u32int)x));
   print_screen("\n");
   print_serial("\nkmalloc() allocated 8 bytes at address: ");
-  print_serial(integer_to_string(x));
+  print_serial(integer_to_string((u32int)x));
   print_serial("\n");
 
   print_screen("\nCalling kmalloc() for allocating 10 bytes");
@@ -77,8 +82,41 @@ void run_all_tests() {
   print_serial(integer_to_string(z));
   print_serial("\n");
 
+  print_screen("\n==============================");
+  print_serial("\n==============================");
+  print_screen("\nTesting kernel free.... ");
+  print_serial("\nTesting kernel free.... ");
+
+  print_screen("\nCalling kfree() to deallocate address: ");
+  print_serial("\nCalling kfree() to deallocate address: ");
+  print_screen(integer_to_string((u32int)x));
+  print_serial(integer_to_string((u32int)x));
+  print_screen("\n");
+  print_serial("\n");
+  kfree((void *)x);
+
+  print_screen("\nCalling kmalloc() for allocating 20 bytes");
+  print_serial("\nCalling kmalloc() for allocating 20 bytes");
+  x = (u32int *)kmalloc(20);
+  print_screen("\nkmalloc() allocated 20 bytes at address: ");
+  print_screen(integer_to_string((u32int)x));
+  print_screen("\n");
+  print_serial("\nkmalloc() allocated 20 bytes at address: ");
+  print_serial(integer_to_string((u32int)x));
+  print_serial("\n");
+
+  print_screen("\nCalling kmalloc() for allocating 8 bytes");
+  print_serial("\nCalling kmalloc() for allocating 8 bytes");
+  u32int *p = (u32int *)kmalloc(8);
+  print_screen("\nkmalloc() allocated 8 bytes at address: ");
+  print_screen(integer_to_string((u32int)p));
+  print_screen("\n");
+  print_serial("\nkmalloc() allocated 8 bytes at address: ");
+  print_serial(integer_to_string((u32int)p));
+  print_serial("\n");
+
   print_screen("\nTesting continues please wait...");
-  /* Sleep for 5 seconds (500 centiSeconds) */
+  /* Sleep for 10 seconds (1000 centiSeconds) */
   sleep(1000);
   clear_screen();
 
