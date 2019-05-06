@@ -23,4 +23,4 @@ genisoimage -R                  \
 -o vivitsa.iso                  \
 iso
 
-qemu-system-i386 -cdrom vivitsa.iso -s -serial stdio $debug
+qemu-system-i386 -cdrom vivitsa.iso -m 4G -s -serial stdio $debug

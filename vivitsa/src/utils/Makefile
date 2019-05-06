@@ -1,6 +1,7 @@
 COPY_FILES = bochsConfig/bochsrc.txt
 
 SUBDIRS = \
+		array \
 		common \
 		logger
 

@@ -13,7 +13,6 @@ char message[] = "\
                   \\/   |_____|   \\/   |_____|  |_| |_____/_/    \\_\\            \
                                                                                 ";
 
-
 char message2[] = "\
      _____           _ _           _           _   _                            \
     |  __ \\         | (_)         | |         | | | |                           \
@@ -27,7 +26,6 @@ char message2[] = "\
              | '_ \\ / _ \\ |/ _ \\ \\ / / _ \\/ _` | \\ \\ /\\ / / |  _/ _ \\           \
              | |_) |  __/ | (_) \\ V /  __/ (_| |  \\ V  V /| | ||  __/           \
              |_.__/ \\___|_|\\___/ \\_/ \\___|\\__,_|   \\_/\\_/ |_|_| \\___|           ";
-
 
 char message3[] = "\
                           _____ _           _                                   \
@@ -48,7 +46,9 @@ void print_screen_ch(s8int ch) { fb_write(&ch, 1); }
 
 void print_serial_ch(s8int ch) { serial_write(SERIAL_COM1_BASE, &ch, 1); }
 
-/** fb_splash:
+void clear_screen() { fb_clear_all(); }
+
+/** init_display:
  *  Reset screen and display splash screen
  */
 void init_display() {

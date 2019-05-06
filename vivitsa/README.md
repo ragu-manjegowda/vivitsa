@@ -1,7 +1,7 @@
 ## Details:
 
-Currently this operating system has kernel (without file system and
-user space support) that can load an external module using multiboot.
+Currently this operating system has kernel with interrupt, paging and heap
+support. Yet to enable support for file system and user space applications.
 (More information in Sandbox)
 
 ## Usage:
