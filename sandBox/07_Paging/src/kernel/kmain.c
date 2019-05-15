@@ -11,7 +11,7 @@
 #include <types.h>
 
 /* Function to initialize */
-void init(u32int kernelPhysicalEnd) {
+void init(u32int kernelPhysicalStart, u32int kernelPhysicalEnd) {
   /* Initialize segment descriptor tables */
   init_gdt();
 
@@ -28,7 +28,7 @@ void init(u32int kernelPhysicalEnd) {
   serial_configure(SERIAL_COM1_BASE, Baud_115200);
 
   /* Initialize paging */
-  init_paging(kernelPhysicalEnd);
+  init_paging(kernelPhysicalStart, kernelPhysicalEnd);
 
   /* Initialize keyboard */
   init_keyboard();
@@ -38,9 +38,9 @@ void init(u32int kernelPhysicalEnd) {
 /* GRUB stores a pointer to a struct in the register ebx that,
  * describes at which addresses the modules are loaded.
  */
-s32int kmain(u32int kernelPhysicalEnd) {
+s32int kmain(u32int kernelPhysicalStart, u32int kernelPhysicalEnd) {
   // Initialize all modules
-  init(kernelPhysicalEnd);
+  init(kernelPhysicalStart, kernelPhysicalEnd);
 
   // Run init tests defined in tests.h
   run_all_tests();

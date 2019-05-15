@@ -7,6 +7,9 @@ Enable Paging.
 Understand and implement paging. Map kernel to higher memory make room for
 programs that run at lesser privilege level.
 
+Note: Top most commit doesn't run as it has experimental code to relocate kernel
+to 3GB virtual address.
+
 ## Usage:
 
 ### To build project

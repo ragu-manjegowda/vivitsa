@@ -1,4 +1,5 @@
 #include "isr.h"
+#include "idt.h"
 #include <helpers.h>
 #include <io.h>
 #include <logger.h>
@@ -14,15 +15,15 @@ void register_interrupt_handler(u8int n, isr_t handler) {
 
 /* This gets called from our ASM interrupt handler stub. */
 void interrupt_handler(registers_t regs) {
-  /* Send an EOI (end of interrupt) signal to the PICs. */
+  /* Send an EOI (end of interrupt 0x20) signal to the PICs. */
 
   /* If this interrupt involved PIC2/slave. */
   if (regs.stack_contents.int_no >= 40) {
-    outb(0xA0, 0x20);
+    outb(PIC2_COMMAND, 0x20);
   }
   /* Send reset signal to PIC1/master. */
   if (regs.stack_contents.int_no >= 32) {
-    outb(0x20, 0x20);
+    outb(PIC1_COMMAND, 0x20);
   }
 
   /* Does not print if timer interrupt,

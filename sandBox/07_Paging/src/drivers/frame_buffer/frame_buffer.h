@@ -13,7 +13,7 @@
 #define FB_LOW_BYTE_COMMAND 15
 
 /* Frame buffer base address */
-#define FB_BASE_ADDRESS 0xB8000
+#define FB_BASE_ADDRESS 0xC00B8000
 
 /* fb_write:
  *  writes the contents of the buffer buf of length len to the screen
