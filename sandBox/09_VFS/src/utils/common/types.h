@@ -31,6 +31,6 @@ typedef char s8int;
 #define FB_WHITE 15
 
 /* Length constants */
-enum Size { LEN_7 = 7, LEN_64 = 64, LEN_256 = 256, LEN_512 = 512 };
+enum Size { LEN_7 = 7, LEN_32 = 32, LEN_64 = 64, LEN_256 = 256, LEN_512 = 512 };
 
 #endif /* INCLUDE_TYPES_H */
