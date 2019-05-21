@@ -3,4 +3,4 @@
 
     title os
     kernel /boot/kernel.elf
-    module /modules/program
+    module /modules/initrd
