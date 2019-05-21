@@ -24,4 +24,4 @@ typedef struct {
  */
 fs_node_t *initialise_initrd(u32int location);
 
-#endif
+#endif /* INCLUDE_INITRD_H */
