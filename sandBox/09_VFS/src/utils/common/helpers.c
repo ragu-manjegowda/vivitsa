@@ -69,7 +69,7 @@ void custom_memcpy(u8int *destination, u8int *source, u32int size) {
 
 void custom_strcpy(s8int *destination, s8int *source) {
   u32int i = 0;
-  for (u32int i = 0; source[i] != '\0'; ++i) {
+  for (i = 0; source[i] != '\0'; ++i) {
     destination[i] = source[i];
   }
   destination[i] = '\0';
