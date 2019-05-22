@@ -2,23 +2,31 @@
 #include <helpers.h>
 #include <kheap.h>
 
-/* The list of file headers */
-initrd_file_header_t *g_fileHeaders;
+/*
+ * Global list of file headers, based on inode we will index this list and get
+ * the contents
+ */
+initrd_file_header_t *g_FILE_HEADERS;
 /* Root directory node */
-fs_node_t *initrd_root;
+fs_node_t *g_INITRD_ROOT_DIR;
 /* Directory node for /dev, to mount devfs later on */
-fs_node_t *initrd_dev;
-// List of file nodes.
-fs_node_t *root_nodes;
-/* Number of file nodes */
-u32int nroot_nodes;
+fs_node_t *g_INITRD_DEV_DIR;
+/* List of all nodes in /dev directory */
+fs_node_t *g_INITRD_DEV_NODES;
+/* Number of nodes in /dev directory */
+u32int g_NUM_OF_INITRD_DEV_NODES;
 
-/* Global variable to return directory */
-dir_entry_t g_directory;
+/*
+ * Placeholder to return directory structures when readdir/finddir functions are
+ * called
+ * TODO: Can this be removed by passing directory structure as argument to the
+ * calling functions?
+ */
+dir_entry_t g_DIRECTORY;
 
 static u32int initrd_read(fs_node_t *node, u32int offset, u32int size,
                           u8int *buffer) {
-  initrd_file_header_t header = g_fileHeaders[node->inode];
+  initrd_file_header_t header = g_FILE_HEADERS[node->inode];
   if (offset > header.length)
     return 0;
   if (offset + size > header.length)
@@ -27,88 +35,102 @@ static u32int initrd_read(fs_node_t *node, u32int offset, u32int size,
   return size;
 }
 
+/*
+ * TODO: Modify func, get rid of dir_entry_t struct, not required fs_node_t is
+ * suffice
+ */
 static dir_entry_t *initrd_readdir(fs_node_t *node, u32int index) {
-  if (node == initrd_root && index == 0) {
-    custom_strcpy(g_directory.name, "dev");
-    g_directory.name[3] = 0;
-    g_directory.inode = 0;
-    return &g_directory;
+  if (node == g_INITRD_ROOT_DIR && index == 0) {
+    custom_strcpy(g_DIRECTORY.name, "dev");
+    g_DIRECTORY.name[3] = 0;
+    g_DIRECTORY.inode = 0;
+
+    return &g_DIRECTORY;
   }
 
-  if (index - 1 >= nroot_nodes)
+  if (index - 1 >= g_NUM_OF_INITRD_DEV_NODES)
     return 0;
-  custom_strcpy(g_directory.name, root_nodes[index - 1].name);
-  g_directory.name[custom_strlen(root_nodes[index - 1].name)] = 0;
-  g_directory.inode = root_nodes[index - 1].inode;
-  return &g_directory;
+  custom_strcpy(g_DIRECTORY.name, g_INITRD_DEV_NODES[index - 1].name);
+  g_DIRECTORY.name[custom_strlen(g_INITRD_DEV_NODES[index - 1].name)] = 0;
+  g_DIRECTORY.inode = g_INITRD_DEV_NODES[index - 1].inode;
+  return &g_DIRECTORY;
 }
 
 static fs_node_t *initrd_finddir(fs_node_t *node, char *name) {
-  if (node == initrd_root && !custom_strcmp(name, "dev", 1))
-    return initrd_dev;
+  if (node == g_INITRD_ROOT_DIR && !custom_strcmp(name, "dev", 1))
+    return g_INITRD_DEV_DIR;
 
   u32int i;
-  for (i = 0; i < nroot_nodes; i++)
-    if (!custom_strcmp(name, root_nodes[i].name, 1))
-      return &root_nodes[i];
+  for (i = 0; i < g_NUM_OF_INITRD_DEV_NODES; i++)
+    if (!custom_strcmp(name, g_INITRD_DEV_NODES[i].name, 1))
+      return &g_INITRD_DEV_NODES[i];
   return 0;
 }
 
 /* Initialise the root directory, /dev directory and populate the them */
 fs_node_t *initialise_initrd(u32int location) {
-
   u32int *numOfFilesPtr = (u32int *)location;
-  g_fileHeaders = (initrd_file_header_t *)(location + sizeof(u32int));
+  g_FILE_HEADERS = (initrd_file_header_t *)(location + sizeof(u32int));
+  g_NUM_OF_INITRD_DEV_NODES = *numOfFilesPtr;
 
   /* Initialise the root directory */
-  initrd_root = (fs_node_t *)kmalloc(sizeof(fs_node_t));
-  custom_strcpy(initrd_root->name, "initrd");
-  initrd_root->mask = initrd_root->uid = initrd_root->gid = initrd_root->inode =
-      initrd_root->length = 0;
-  initrd_root->type = FS_DIRECTORY;
-  initrd_root->read = initrd_root->write = 0;
-  initrd_root->open = 0;
-  initrd_root->close = 0;
-  initrd_root->readdir = &initrd_readdir;
-  initrd_root->finddir = &initrd_finddir;
-  initrd_root->ptr = 0;
-
+  g_INITRD_ROOT_DIR = (fs_node_t *)kmalloc(sizeof(fs_node_t));
   /* Initialise the /dev directory, we mount our fs here  */
-  initrd_dev = (fs_node_t *)kmalloc(sizeof(fs_node_t));
-  custom_strcpy(initrd_dev->name, "dev");
-  initrd_dev->mask = initrd_dev->uid = initrd_dev->gid = initrd_dev->inode =
-      initrd_dev->length = 0;
-  initrd_dev->type = FS_DIRECTORY;
-  initrd_dev->read = initrd_dev->write = 0;
-  initrd_dev->open = 0;
-  initrd_dev->close = 0;
-  initrd_dev->readdir = &initrd_readdir;
-  initrd_dev->finddir = &initrd_finddir;
-  initrd_dev->ptr = 0;
+  g_INITRD_DEV_DIR = (fs_node_t *)kmalloc(sizeof(fs_node_t));
+  /* Initialise /dev nodes */
+  g_INITRD_DEV_NODES =
+      (fs_node_t *)kmalloc(sizeof(fs_node_t) * g_NUM_OF_INITRD_DEV_NODES);
 
-  nroot_nodes = *numOfFilesPtr;
-  root_nodes = (fs_node_t *)kmalloc(sizeof(fs_node_t) * nroot_nodes);
+  /* Populate /root directory */
+  custom_strcpy(g_INITRD_ROOT_DIR->name, "initrd");
+  g_INITRD_ROOT_DIR->mask = g_INITRD_ROOT_DIR->uid = g_INITRD_ROOT_DIR->gid =
+      g_INITRD_ROOT_DIR->inode = g_INITRD_ROOT_DIR->length = 0;
+  g_INITRD_ROOT_DIR->type = FS_DIRECTORY;
+  g_INITRD_ROOT_DIR->read = g_INITRD_ROOT_DIR->write = 0;
+  g_INITRD_ROOT_DIR->open = 0;
+  g_INITRD_ROOT_DIR->close = 0;
+  g_INITRD_ROOT_DIR->readdir = &initrd_readdir;
+  g_INITRD_ROOT_DIR->finddir = &initrd_finddir;
+  /* For now we will only have /dev in our /root directory */
+  g_INITRD_ROOT_DIR->contents = g_INITRD_DEV_DIR;
+  g_INITRD_ROOT_DIR->size = 1;
 
-  // For every file...
-  u32int i;
-  for (i = 0; i < nroot_nodes; i++) {
-    // Edit the file's header - currently it holds the file offset
-    // relative to the start of the ramdisk. We want it relative to the start
-    // of memory.
-    g_fileHeaders[i].offset += location;
-    // Create a new file node.
-    custom_strcpy(root_nodes[i].name, &(g_fileHeaders[i].name[0]));
-    root_nodes[i].mask = root_nodes[i].uid = root_nodes[i].gid = 0;
-    root_nodes[i].length = g_fileHeaders[i].length;
-    root_nodes[i].inode = i;
-    root_nodes[i].type = FS_FILE;
-    root_nodes[i].read = &initrd_read;
-    root_nodes[i].write = 0;
-    root_nodes[i].readdir = 0;
-    root_nodes[i].finddir = 0;
-    root_nodes[i].open = 0;
-    root_nodes[i].close = 0;
-    root_nodes[i].ptr = 0;
+  /* Populate /dev directory */
+  custom_strcpy(g_INITRD_DEV_DIR->name, "dev");
+  g_INITRD_DEV_DIR->mask = g_INITRD_DEV_DIR->uid = g_INITRD_DEV_DIR->gid =
+      g_INITRD_DEV_DIR->inode = g_INITRD_DEV_DIR->length = 0;
+  g_INITRD_DEV_DIR->type = FS_DIRECTORY;
+  g_INITRD_DEV_DIR->read = g_INITRD_DEV_DIR->write = 0;
+  g_INITRD_DEV_DIR->open = 0;
+  g_INITRD_DEV_DIR->close = 0;
+  g_INITRD_DEV_DIR->readdir = &initrd_readdir;
+  g_INITRD_DEV_DIR->finddir = &initrd_finddir;
+  /* /dev will have files loaded from initrd */
+  g_INITRD_DEV_DIR->contents = g_INITRD_DEV_NODES;
+  g_INITRD_DEV_DIR->size = g_NUM_OF_INITRD_DEV_NODES;
+
+  for (u32int i = 0; i < g_NUM_OF_INITRD_DEV_NODES; i++) {
+    /*
+     * Edit the file's header - currently it holds the file offset
+     * relative to the start of the ramdisk. We want it relative to the start
+     * of memory
+     */
+    g_FILE_HEADERS[i].offset += location;
+
+    /* Populate nodes */
+    custom_strcpy(g_INITRD_DEV_NODES[i].name, &(g_FILE_HEADERS[i].name[0]));
+    g_INITRD_DEV_NODES[i].mask = g_INITRD_DEV_NODES[i].uid =
+        g_INITRD_DEV_NODES[i].gid = 0;
+    g_INITRD_DEV_NODES[i].length = g_FILE_HEADERS[i].length;
+    g_INITRD_DEV_NODES[i].inode = i;
+    g_INITRD_DEV_NODES[i].type = FS_FILE;
+    g_INITRD_DEV_NODES[i].read = &initrd_read;
+    g_INITRD_DEV_NODES[i].write = 0;
+    g_INITRD_DEV_NODES[i].readdir = 0;
+    g_INITRD_DEV_NODES[i].finddir = 0;
+    g_INITRD_DEV_NODES[i].open = 0;
+    g_INITRD_DEV_NODES[i].close = 0;
+    g_INITRD_DEV_NODES[i].contents = 0;
   }
-  return initrd_root;
+  return g_INITRD_ROOT_DIR;
 }

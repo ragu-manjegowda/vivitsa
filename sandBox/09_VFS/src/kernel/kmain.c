@@ -52,40 +52,36 @@ s32int kmain(u32int kernelPhysicalEnd, u32int mboot_ptr) {
   u32int mods_count = mbinfo->mods_count;
   print_serial("\nMods count = ");
   print_serial(integer_to_string(mods_count));
-  /*u32int initrd_location = *((u32int *)mbinfo->mods_addr);
-  u32int initrd_end = *(u32int *)(mbinfo->mods_addr + 4);
-  print_serial("\nInitrd start location = ");
-  print_serial(integer_to_string(initrd_location));
-  print_serial("\nInitrd end location = ");
-  print_serial(integer_to_string(initrd_end));*/
 
-  /* Are mods_* valid? */
   print_serial("\nMB info flags = ");
   print_serial(integer_to_string(mbinfo->flags));
-  multiboot_module_t *mod;
+  multiboot_module_t *mod = (multiboot_module_t *)mbinfo->mods_addr;
+  u32int *multibootPhysicalEnd;
+  u32int *initrdPhysicalStart;
   u32int i;
-  for (i = 0, mod = (multiboot_module_t *)mbinfo->mods_addr;
-       i < mbinfo->mods_count; i++, mod += sizeof(multiboot_module_t)) {
+  for (i = 0; i < mbinfo->mods_count; i++, mod += sizeof(multiboot_module_t)) {
     print_serial("\nInitrd start location = ");
     print_serial(integer_to_string(mod->mod_start));
+    initrdPhysicalStart = (u32int *)mod->mod_start;
     print_serial("\nInitrd numfiles = ");
     print_serial(integer_to_string(*(u32int *)mod->mod_start));
     print_serial("\nInitrd end location = ");
     print_serial(integer_to_string(mod->mod_end));
+    multibootPhysicalEnd = (u32int *)mod->mod_end;
     print_serial("\nInitrd string = ");
     print_serial(integer_to_string(mod->cmdline));
   }
 
   // Initialize all modules
-  /*init(initrd_end);
+  init((u32int)multibootPhysicalEnd);
 
   // Initialise the initial ramdisk, and set it as the filesystem root.
-  fs_node_t *fs_root = initialise_initrd(initrd_location);
+  fs_node_t *fs_root = initialise_initrd((u32int)initrdPhysicalStart);
 
   print_screen("Found file ");
 
   // list the contents of /
-  int i = 0;
+  i = 0;
   dir_entry_t *node = 0;
   while ((node = readdir_fs(fs_root, i)) != 0) {
     print_screen("Found file ");

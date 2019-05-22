@@ -63,8 +63,9 @@ typedef struct fs_node {
   close_type_t close;
   readdir_type_t readdir;
   finddir_type_t finddir;
-  /* Used by mountpoints and symlinks */
-  struct fs_node *ptr;
+  /* For MounPoint, directories and Symlinks, contents and size */
+  struct fs_node *contents;
+  u32int size;
 } fs_node_t;
 
 typedef struct dir_entry {
