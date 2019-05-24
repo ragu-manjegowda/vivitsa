@@ -36,7 +36,7 @@ void close_fs(fs_node_t *node) {
     node->close(node);
 }
 
-dir_entry_t *readdir_fs(fs_node_t *node, u32int index) {
+fs_node_t *readdir_fs(fs_node_t *node, u32int index) {
   /* If the node is a directory and it has a readdir callback, call it */
   if ((node->type & LEN_7) == FS_DIRECTORY && node->readdir != 0) {
     return node->readdir(node, index);

@@ -16,7 +16,6 @@
 
 /* Forward declarations (for below callbacks)*/
 struct fs_node;
-struct dir_entry;
 
 /*
  * POSIX specific file specific callbacks APIs, every node will have this
@@ -36,7 +35,7 @@ typedef s32int (*open_type_t)(struct fs_node *, u8int write);
 typedef void (*close_type_t)(struct fs_node *);
 
 /* read nth entry in the directory, return 0 if index is out of bound */
-typedef struct dir_entry *(*readdir_type_t)(struct fs_node *, u32int);
+typedef struct fs_node *(*readdir_type_t)(struct fs_node *, u32int);
 
 /* find the entry in directory, return 0 if not present */
 typedef struct fs_node *(*finddir_type_t)(struct fs_node *, char *name);
@@ -68,13 +67,6 @@ typedef struct fs_node {
   u32int size;
 } fs_node_t;
 
-typedef struct dir_entry {
-  /* directory name (limited to 64 characters) */
-  s8int name[LEN_64];
-  /* Device-specific - for filesystem to identify files (POSIX specific) */
-  u32int inode;
-} dir_entry_t;
-
 /*
  * POSIX specific file specific functions for file system to support
  */
@@ -85,7 +77,8 @@ typedef struct dir_entry {
  *  @param node     Pointer to file node
  *  @param offset   Offset from where to start reading
  *  @param size     Size to read
- *  @param buffer   Pointer to a buffer to which the contents are to be copied
+ *  @param buffer   Pointer to a buffer to which the contents are to be
+ * copied
  *  @return         Size of data read in number of bytes
  */
 u32int read_fs(fs_node_t *node, u32int offset, u32int size, u8int *buffer);
@@ -125,7 +118,7 @@ void close_fs(fs_node_t *node);
  *  @param  index   Index of entry in direcoty
  *  @return         Pointer directory entry at index if exist 0 otherwise
  */
-dir_entry_t *readdir_fs(fs_node_t *node, u32int index);
+fs_node_t *readdir_fs(fs_node_t *node, u32int index);
 
 /** findir_fs:
  *  if file/directory in the directory specified by node.

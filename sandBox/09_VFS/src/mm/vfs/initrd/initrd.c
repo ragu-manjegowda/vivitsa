@@ -22,7 +22,7 @@ u32int g_NUM_OF_INITRD_DEV_NODES;
  * TODO: Can this be removed by passing directory structure as argument to the
  * calling functions?
  */
-dir_entry_t g_DIRECTORY;
+fs_node_t g_DIRECTORY;
 
 static u32int initrd_read(fs_node_t *node, u32int offset, u32int size,
                           u8int *buffer) {
@@ -39,7 +39,7 @@ static u32int initrd_read(fs_node_t *node, u32int offset, u32int size,
  * TODO: Modify func, get rid of dir_entry_t struct, not required fs_node_t is
  * suffice
  */
-static dir_entry_t *initrd_readdir(fs_node_t *node, u32int index) {
+static fs_node_t *initrd_readdir(fs_node_t *node, u32int index) {
   if (node == g_INITRD_ROOT_DIR && index == 0) {
     custom_strcpy(g_DIRECTORY.name, "dev");
     g_DIRECTORY.name[3] = 0;

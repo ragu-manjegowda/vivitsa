@@ -82,7 +82,7 @@ s32int kmain(u32int kernelPhysicalEnd, u32int mboot_ptr) {
 
   // list the contents of /
   i = 0;
-  dir_entry_t *node = 0;
+  fs_node_t *node = 0;
   while ((node = readdir_fs(fs_root, i)) != 0) {
     print_screen("Found file ");
     print_screen(node->name);
