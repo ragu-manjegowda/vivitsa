@@ -22,7 +22,7 @@ void custom_memset(u8int *address, u32int val, u32int size);
  * @param source      Source address
  * @param size        Number of bytes to be copied
  */
-void custom_memcpy(u8int *destination, u8int *source, u32int size);
+void custom_memcpy(u8int *destination, const u8int *source, u32int size);
 
 /** custom_strcpy:
  * Helper function for strcpy, used in initrd. This is a very basic
@@ -33,7 +33,7 @@ void custom_memcpy(u8int *destination, u8int *source, u32int size);
  * @param source      Source address
  * @param size        Number of bytes to be copied
  */
-void custom_strcpy(s8int *destination, s8int *source);
+void custom_strcpy(s8int *destination, const s8int *source);
 
 /** custom_strcmp:
  * Helper function for strcmp, used in initrd. This is a very basic
@@ -46,6 +46,7 @@ void custom_strcpy(s8int *destination, s8int *source);
  * @param  ignoreCase    compare case-insensitively is set
  * @return size          0 if match, 1 otherwise
  */
-u8int custom_strcmp(s8int *stringFirst, s8int *stringSecond, u8int ignoreCase);
+u8int custom_strcmp(const s8int *stringFirst, const s8int *stringSecond,
+                    u8int ignoreCase);
 
 #endif /* INCLUDE_HELPERS_H */

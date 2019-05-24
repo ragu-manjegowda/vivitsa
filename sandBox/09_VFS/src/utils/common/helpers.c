@@ -50,7 +50,7 @@ void custom_memset(u8int *address, u32int val, u32int size) {
   }
 }
 
-void custom_memcpy(u8int *destination, u8int *source, u32int size) {
+void custom_memcpy(u8int *destination, const u8int *source, u32int size) {
   u8int *pdest = (u8int *)destination;
   u8int *psrc = (u8int *)source;
   u32int loops = (size / sizeof(u32int));
@@ -67,7 +67,7 @@ void custom_memcpy(u8int *destination, u8int *source, u32int size) {
   }
 }
 
-void custom_strcpy(s8int *destination, s8int *source) {
+void custom_strcpy(s8int *destination, const s8int *source) {
   u32int i = 0;
   for (i = 0; source[i] != '\0'; ++i) {
     destination[i] = source[i];
@@ -75,7 +75,8 @@ void custom_strcpy(s8int *destination, s8int *source) {
   destination[i] = '\0';
 }
 
-u8int custom_strcmp(s8int *stringFirst, s8int *stringSecond, u8int ignoreCase) {
+u8int custom_strcmp(const s8int *stringFirst, const s8int *stringSecond,
+                    u8int ignoreCase) {
   u32int i = 0;
   for (i = 0; stringFirst[i] && stringSecond[i]; ++i) {
     if (ignoreCase) {
