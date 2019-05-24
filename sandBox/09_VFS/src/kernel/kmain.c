@@ -81,26 +81,25 @@ s32int kmain(u32int kernelPhysicalEnd, u32int mboot_ptr) {
   print_screen("Found file ");
 
   // list the contents of /
-  i = 0;
   fs_node_t *node = (fs_node_t *)kmalloc(sizeof(fs_node_t));
-  while ((readdir_fs(fs_root, i, node)) == 0) {
-    print_screen("Found file ");
-    print_screen(node->name);
-    fs_node_t *fsnode = finddir_fs(fs_root, node->name);
-
-    if ((fsnode->type & 0x7) == FS_DIRECTORY) {
-      print_screen("\n\t(directory)\n");
-    } else {
+  fs_root = fs_root->contents;
+  for (i = 0; i < fs_root->size; ++i) {
+    readdir_fs(fs_root, i, node);
+    if (node->type == FS_FILE) {
+      print_screen("Found file ");
+      print_screen(node->name);
       print_screen("\n\t contents: \"");
       char buf[256];
-      u32int sz = read_fs(fsnode, 0, 256, (u8int *)&(buf[0]));
+      u32int sz = read_fs(node, 0, 256, (u8int *)&(buf[0]));
       u32int j;
       for (j = 0; j < sz; j++)
         print_screen_ch(buf[j]);
 
       print_screen("\"\n");
+    } else {
+      print_screen("Found dir ");
+      print_screen(node->name);
     }
-    i++;
   }
 
   // Run init tests defined in tests.h
