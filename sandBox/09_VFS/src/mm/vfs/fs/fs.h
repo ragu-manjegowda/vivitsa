@@ -35,7 +35,7 @@ typedef s32int (*open_type_t)(struct fs_node *, u8int write);
 typedef void (*close_type_t)(struct fs_node *);
 
 /* read nth entry in the directory, return 0 if index is out of bound */
-typedef struct fs_node *(*readdir_type_t)(struct fs_node *, u32int);
+typedef u8int (*readdir_type_t)(struct fs_node *, u32int, struct fs_node *);
 
 /* find the entry in directory, return 0 if not present */
 typedef struct fs_node *(*finddir_type_t)(struct fs_node *, char *name);
@@ -114,11 +114,12 @@ void close_fs(fs_node_t *node);
 /** readdir_fs:
  *  read directory specified by node.
  *
- *  @param  node    Pointer to directory node
- *  @param  index   Index of entry in direcoty
- *  @return         Pointer directory entry at index if exist 0 otherwise
+ *  @param  node        Pointer to directory node
+ *  @param  index       Index of entry in direcoty
+ *  @param  directory   Pointer to directory entry at index if exist, return 0
+ *                      if success 0 otherwise
  */
-fs_node_t *readdir_fs(fs_node_t *node, u32int index);
+u8int readdir_fs(fs_node_t *node, u32int index, fs_node_t *directory);
 
 /** findir_fs:
  *  if file/directory in the directory specified by node.

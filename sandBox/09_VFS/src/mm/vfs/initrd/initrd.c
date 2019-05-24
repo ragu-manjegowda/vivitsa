@@ -16,14 +16,6 @@ fs_node_t *g_INITRD_DEV_NODES;
 /* Number of nodes in /dev directory */
 u32int g_NUM_OF_INITRD_DEV_NODES;
 
-/*
- * Placeholder to return directory structures when readdir/finddir functions are
- * called
- * TODO: Can this be removed by passing directory structure as argument to the
- * calling functions?
- */
-fs_node_t g_DIRECTORY;
-
 static u32int initrd_read(fs_node_t *node, u32int offset, u32int size,
                           u8int *buffer) {
   initrd_file_header_t header = g_FILE_HEADERS[node->inode];
@@ -35,25 +27,27 @@ static u32int initrd_read(fs_node_t *node, u32int offset, u32int size,
   return size;
 }
 
-/*
- * TODO: Modify func, get rid of dir_entry_t struct, not required fs_node_t is
- * suffice
- */
-static fs_node_t *initrd_readdir(fs_node_t *node, u32int index) {
-  if (node == g_INITRD_ROOT_DIR && index == 0) {
-    custom_strcpy(g_DIRECTORY.name, "dev");
-    g_DIRECTORY.name[3] = 0;
-    g_DIRECTORY.inode = 0;
-
-    return &g_DIRECTORY;
+static u8int initrd_readdir(fs_node_t *node, u32int index,
+                            fs_node_t *directory) {
+  if (directory == 0) {
+    return 1;
   }
 
-  if (index - 1 >= g_NUM_OF_INITRD_DEV_NODES)
+  if (node == g_INITRD_ROOT_DIR && index == 0) {
+    custom_strcpy(directory->name, "dev");
+    directory->name[3] = 0;
+    directory->inode = 0;
     return 0;
-  custom_strcpy(g_DIRECTORY.name, g_INITRD_DEV_NODES[index - 1].name);
-  g_DIRECTORY.name[custom_strlen(g_INITRD_DEV_NODES[index - 1].name)] = 0;
-  g_DIRECTORY.inode = g_INITRD_DEV_NODES[index - 1].inode;
-  return &g_DIRECTORY;
+  }
+
+  if (index - 1 >= g_NUM_OF_INITRD_DEV_NODES) {
+    return 1;
+  }
+
+  custom_strcpy(directory->name, g_INITRD_DEV_NODES[index - 1].name);
+  directory->name[custom_strlen(g_INITRD_DEV_NODES[index - 1].name)] = 0;
+  directory->inode = g_INITRD_DEV_NODES[index - 1].inode;
+  return 0;
 }
 
 static fs_node_t *initrd_finddir(fs_node_t *node, char *name) {
