@@ -2,6 +2,11 @@
 
 ## Usage:
 
+  Files that needs to loaded as initrd should be passed as argument at odd
+index and the desired/new filename within OS should be specified at even index.
+
+TODO: Support for directories and multi level files (files within directories)
+
 ### To compile
 
 ```shell
