@@ -10,6 +10,8 @@ typedef struct {
   u8int magic;
   /* Filename */
   s8int name[LEN_64];
+  /* Node type, file = 1, directory = 2 */
+  s8int type;
   /* Offset in the initrd where file starts */
   u32int offset;
   /* Length of the file */

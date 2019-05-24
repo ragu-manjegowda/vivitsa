@@ -5,6 +5,7 @@
 struct initrd_header {
   unsigned char magic;
   char name[64];
+  unsigned char type;
   unsigned int offset;
   unsigned int length;
 };
@@ -21,6 +22,7 @@ int main(char argc, char **argv) {
            off);
     strcpy(headers[i].name, argv[i * 2 + 2]);
     headers[i].offset = off;
+    headers[i].type = 1;
     FILE *stream = fopen(argv[i * 2 + 1], "r");
     if (stream == 0) {
       printf("Error: file not found: %s\n", argv[i * 2 + 1]);
