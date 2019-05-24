@@ -1,4 +1,5 @@
 #include "helpers.h"
+#include "multiboot.h"
 
 #define STRING_LEN 10
 
@@ -33,6 +34,16 @@ s8int *integer_to_string(u32int number) {
   buffer[--i] = buffer_rev[j];
 
   return buffer;
+}
+
+void get_multiboot_info(u32int mboot_ptr, u32int *initrdPhysicalStart,
+                        u32int *multibootPhysicalEnd) {
+  multiboot_info_t *mbinfo = (multiboot_info_t *)mboot_ptr;
+  multiboot_module_t *mod = (multiboot_module_t *)mbinfo->mods_addr;
+
+  *initrdPhysicalStart = (u32int)((u32int *)mod->mod_start);
+  *multibootPhysicalEnd =
+      (u32int)((u32int *)mod[mbinfo->mods_count - 1].mod_end);
 }
 
 u32int custom_strlen(const s8int *str) {

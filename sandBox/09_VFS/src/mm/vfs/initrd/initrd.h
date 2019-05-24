@@ -22,8 +22,7 @@ typedef struct {
  *  Initialises the initial ramdisk.
  *
  *  @param  location Address of the multiboot module
- *  @return A completed(constructed) filesystem node
  */
-fs_node_t *initialise_initrd(u32int location);
+void initialise_initrd(u32int location);
 
 #endif /* INCLUDE_INITRD_H */

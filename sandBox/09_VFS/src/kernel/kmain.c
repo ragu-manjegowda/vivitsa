@@ -1,4 +1,3 @@
-#include "multiboot.h"
 #include <fs.h>
 #include <gdt.h>
 #include <helpers.h>
@@ -14,7 +13,7 @@
 #include <types.h>
 
 /* Function to initialize */
-void init(u32int kernelPhysicalEnd) {
+void init(u32int mboot_ptr) {
   /* Initialize segment descriptor tables */
   init_gdt();
 
@@ -25,13 +24,24 @@ void init(u32int kernelPhysicalEnd) {
   init_timer(TIMER_FREQUENCY);
 
   /* Initialize display */
-  // init_display();
+  init_display();
 
   /* Configure serial port */
   serial_configure(SERIAL_COM1_BASE, Baud_115200);
 
+  /*
+   * Get Multiboot Information like module start address and multiboot physical
+   * end address
+   */
+  u32int initrdPhysicalStart;
+  u32int multibootPhysicalEnd;
+  get_multiboot_info(mboot_ptr, &initrdPhysicalStart, &multibootPhysicalEnd);
+
+  /* Initialise the initial ramdisk, and set it as the filesystem root */
+  initialise_initrd(initrdPhysicalStart);
+
   /* Initialize paging */
-  init_paging(kernelPhysicalEnd);
+  init_paging(multibootPhysicalEnd);
 
   /* Initialize keyboard */
   init_keyboard();
@@ -41,69 +51,12 @@ void init(u32int kernelPhysicalEnd) {
 /* GRUB stores a pointer to a struct in the register ebx that,
  * describes at which addresses the modules are loaded.
  */
-s32int kmain(u32int kernelPhysicalEnd, u32int mboot_ptr) {
-  print_serial("\nKernel end address = ");
-  print_serial(integer_to_string(kernelPhysicalEnd));
-
-  print_serial("\nMboot address = ");
-  print_serial(integer_to_string(mboot_ptr));
-
-  multiboot_info_t *mbinfo = (multiboot_info_t *)mboot_ptr;
-  u32int mods_count = mbinfo->mods_count;
-  print_serial("\nMods count = ");
-  print_serial(integer_to_string(mods_count));
-
-  print_serial("\nMB info flags = ");
-  print_serial(integer_to_string(mbinfo->flags));
-  multiboot_module_t *mod = (multiboot_module_t *)mbinfo->mods_addr;
-  u32int *multibootPhysicalEnd;
-  u32int *initrdPhysicalStart;
-  u32int i;
-  for (i = 0; i < mbinfo->mods_count; i++, mod += sizeof(multiboot_module_t)) {
-    print_serial("\nInitrd start location = ");
-    print_serial(integer_to_string(mod->mod_start));
-    initrdPhysicalStart = (u32int *)mod->mod_start;
-    print_serial("\nInitrd numfiles = ");
-    print_serial(integer_to_string(*(u32int *)mod->mod_start));
-    print_serial("\nInitrd end location = ");
-    print_serial(integer_to_string(mod->mod_end));
-    multibootPhysicalEnd = (u32int *)mod->mod_end;
-    print_serial("\nInitrd string = ");
-    print_serial(integer_to_string(mod->cmdline));
-  }
-
+s32int kmain(u32int mboot_ptr) {
   // Initialize all modules
-  init((u32int)multibootPhysicalEnd);
-
-  // Initialise the initial ramdisk, and set it as the filesystem root.
-  fs_node_t *fs_root = initialise_initrd((u32int)initrdPhysicalStart);
-
-  print_screen("Found file ");
-
-  // list the contents of /
-  fs_node_t *node = (fs_node_t *)kmalloc(sizeof(fs_node_t));
-  fs_root = fs_root->contents;
-  for (i = 0; i < fs_root->size; ++i) {
-    readdir_fs(fs_root, i, node);
-    if (node->type == FS_FILE) {
-      print_screen("Found file ");
-      print_screen(node->name);
-      print_screen("\n\t contents: \"");
-      char buf[256];
-      u32int sz = read_fs(node, 0, 256, (u8int *)&(buf[0]));
-      u32int j;
-      for (j = 0; j < sz; j++)
-        print_screen_ch(buf[j]);
-
-      print_screen("\"\n");
-    } else {
-      print_screen("Found dir ");
-      print_screen(node->name);
-    }
-  }
+  init(mboot_ptr);
 
   // Run init tests defined in tests.h
-  // run_all_tests();*/
+  run_all_tests();
 
   return 0;
 }

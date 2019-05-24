@@ -1,10 +1,10 @@
 #ifndef INCLUDE_TESTS_H
 #define INCLUDE_TESTS_H
 
-#pragma once
-#include <timer.h>
+/* Forward declare sleep function from timer.h */
+void sleep(u32int centiSeconds);
 
-// Defined in kheap.c
+/* Defined in kheap.c */
 extern u32int g_CurrentPhysicalAddressTop;
 
 void run_all_tests() {

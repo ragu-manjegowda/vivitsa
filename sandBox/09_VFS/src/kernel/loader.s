@@ -52,8 +52,8 @@ loader:
     extern kmain
     ; push the multiboot information
     push ebx
-    ; and the kernel end address
-    push $KERNEL_PHYSICAL_END
+    ; and the kernel end address (commenting as bringing in multiboot)
+    ; push $KERNEL_PHYSICAL_END
     ; call kernel main function.
     call kmain
     .loop:

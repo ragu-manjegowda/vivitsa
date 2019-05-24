@@ -48,7 +48,7 @@ static fs_node_t *initrd_finddir(fs_node_t *node, char *name) {
 }
 
 /* Initialise the root directory, /dev directory and populate the them */
-fs_node_t *initialise_initrd(u32int location) {
+void initialise_initrd(u32int location) {
   u32int numOfNodes = *((u32int *)location);
   initrd_file_header_t *fileHeaderPtr =
       (initrd_file_header_t *)(location + sizeof(u32int));
@@ -136,5 +136,4 @@ fs_node_t *initialise_initrd(u32int location) {
     initrdDevNodes[i].close = 0;
     initrdDevNodes[i].contents = 0;
   }
-  return g_INITRD_ROOT_DIR;
 }

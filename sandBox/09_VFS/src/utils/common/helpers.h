@@ -7,6 +7,10 @@
 /* Helper function to convert interger to string, used in logger */
 s8int *integer_to_string(u32int number);
 
+/* Helper function to get physical end address of multiboot modules */
+void get_multiboot_info(u32int mboot_ptr, u32int *initrdPhysicalStart,
+                        u32int *multibootPhysicalEnd);
+
 /* Helper function to calculate length of string, used in logger */
 u32int custom_strlen(const s8int *str);
 
