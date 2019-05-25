@@ -50,8 +50,10 @@ loader:
     mov esp, KERNEL_STACK + KERNEL_STACK_SIZE
     ; kmain function is defined elsewhere
     extern kmain
-    ; and the kernel end address
-    push $KERNEL_PHYSICAL_END
+    ; push the multiboot information
+    push ebx
+    ; and the kernel end address (commenting as bringing in multiboot)
+    ; push $KERNEL_PHYSICAL_END
     ; call kernel main function.
     call kmain
     .loop:

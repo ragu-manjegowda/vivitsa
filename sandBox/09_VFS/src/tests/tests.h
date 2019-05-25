@@ -156,10 +156,10 @@ void run_all_tests() {
   // test virtual file system
   print_screen("\n\n==============================");
   print_serial("\n\n==============================");
-  print_screen(
-      "\nTesting virtual file system, reading contents of directory /dev\n");
-  print_serial(
-      "\nTesting virtual file system, reading contents of directory /dev\n");
+  print_screen("\nTesting virtual file system");
+  print_screen("\nreading contents of directory /dev\n");
+  print_serial("\nTesting virtual file system");
+  print_serial("\nreading contents of directory /dev\n");
 
   // list the contents of /dev
   fs_node_t *node = (fs_node_t *)kmalloc(sizeof(fs_node_t));
@@ -172,23 +172,23 @@ void run_all_tests() {
       print_serial("\nFound file -> ");
       print_screen(node->name);
       print_serial(node->name);
-      print_screen("\n\t contents: \"");
-      print_serial("\n\t contents: \"");
+      print_screen("\n\t contents: ");
+      print_serial("\n\t contents: ");
       s8int buf[LEN_256];
       u32int sz = read_fs(node, 0, LEN_256, (u8int *)&(buf[0]));
       u32int j;
       for (j = 0; j < sz; j++) {
         print_screen_ch(buf[j]);
       }
-      print_screen("\"\n");
-      print_serial("\"\n");
+      print_screen("\n");
+      print_serial("\n");
     } else {
       print_screen("\nFound dir ");
       print_serial("\nFound dir ");
       print_screen(node->name);
       print_serial(node->name);
-      print_screen("\"\n");
-      print_serial("\"\n");
+      print_screen("\n");
+      print_serial("\n");
     }
   }
 

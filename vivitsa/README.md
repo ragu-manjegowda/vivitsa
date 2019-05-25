@@ -1,7 +1,8 @@
 ## Details:
 
-Currently this operating system has kernel with interrupt, paging and heap
-support. Yet to enable support for file system and user space applications.
+Currently this operating system has kernel with interrupt, paging, heap and
+virtual file system support. Yet to enable support for file system and user
+space applications.
 (More information in Sandbox)
 
 ## Usage:

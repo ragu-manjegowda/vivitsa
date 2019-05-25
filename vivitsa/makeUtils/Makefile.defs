@@ -16,4 +16,4 @@ install: $(SUBDIRS)
 	done
 
 rmOBJS:
-	rm -rf .DS_Store *.o *.so *.a
+	rm -rf .DS_Store *.o *.so *.a *.out
