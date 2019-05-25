@@ -1,6 +1,9 @@
 #include "helpers.h"
 #include "multiboot.h"
 
+/* global variable to store pointer to multiboot info */
+u32int g_MULTIBOOT_PTR;
+
 s8int g_BUFFER[LEN_10];
 
 s8int *integer_to_string(u32int number) {
@@ -35,14 +38,18 @@ s8int *integer_to_string(u32int number) {
 }
 
 void get_multiboot_info(u32int mboot_ptr, u32int *initrdPhysicalStart,
-                        u32int *multibootPhysicalEnd) {
+                        u32int *multibootPhysicalEnd, u32int *modsCount) {
+  g_MULTIBOOT_PTR = mboot_ptr;
   multiboot_info_t *mbinfo = (multiboot_info_t *)mboot_ptr;
   multiboot_module_t *mod = (multiboot_module_t *)mbinfo->mods_addr;
 
   *initrdPhysicalStart = (u32int)((u32int *)mod->mod_start);
   *multibootPhysicalEnd =
       (u32int)((u32int *)mod[mbinfo->mods_count - 1].mod_end);
+  *modsCount = mbinfo->mods_count;
 }
+
+u32int get_multiboot_address() { return g_MULTIBOOT_PTR; }
 
 u32int custom_strlen(const s8int *str) {
   u32int i;

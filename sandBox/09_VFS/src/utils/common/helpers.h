@@ -9,7 +9,10 @@ s8int *integer_to_string(u32int number);
 
 /* Helper function to get physical end address of multiboot modules */
 void get_multiboot_info(u32int mboot_ptr, u32int *initrdPhysicalStart,
-                        u32int *multibootPhysicalEnd);
+                        u32int *multibootPhysicalEnd, u32int *modsCount);
+
+/* Helper function to get address of multiboot strcut */
+u32int get_multiboot_address();
 
 /* Helper function to calculate length of string, used in logger */
 u32int custom_strlen(const s8int *str);

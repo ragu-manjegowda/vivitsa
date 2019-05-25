@@ -35,7 +35,9 @@ void init(u32int mboot_ptr) {
    */
   u32int initrdPhysicalStart;
   u32int multibootPhysicalEnd;
-  get_multiboot_info(mboot_ptr, &initrdPhysicalStart, &multibootPhysicalEnd);
+  u32int modsCount;
+  get_multiboot_info(mboot_ptr, &initrdPhysicalStart, &multibootPhysicalEnd,
+                     &modsCount);
 
   /* Initialise the initial ramdisk, and set it as the filesystem root */
   initialise_initrd(initrdPhysicalStart);

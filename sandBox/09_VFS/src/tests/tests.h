@@ -6,8 +6,11 @@ void sleep(u32int centiSeconds);
 
 /* Defined in kheap.c */
 extern u32int g_CurrentPhysicalAddressTop;
+/* Defined in initrd.c */
+extern fs_node_t *g_INITRD_ROOT_DIR;
 
 void run_all_tests() {
+
   // test logger
   print_screen("\n==============================");
   print_serial("\n==============================");
@@ -114,6 +117,80 @@ void run_all_tests() {
   print_serial("\nkmalloc() allocated 8 bytes at address: ");
   print_serial(integer_to_string((u32int)p));
   print_serial("\n");
+
+  print_screen("\nTesting continues please wait...");
+  /* Sleep for 10 seconds (1000 centiSeconds) */
+  sleep(1000);
+  clear_screen();
+
+  // test multiboot
+  print_screen("\n==============================");
+  print_serial("\n==============================");
+  print_screen("\nTesting Multiboot...");
+  print_serial("\nTesting Multiboot...");
+
+  u32int mboot_ptr = get_multiboot_address();
+  print_screen("\nMboot address loaded at ");
+  print_serial("\nMboot address loaded at ");
+  print_screen(integer_to_string(mboot_ptr));
+  print_serial(integer_to_string(mboot_ptr));
+
+  u32int initrdPhysicalStart;
+  u32int multibootPhysicalEnd;
+  u32int modsCount;
+  get_multiboot_info(mboot_ptr, &initrdPhysicalStart, &multibootPhysicalEnd,
+                     &modsCount);
+  print_screen("\nInitrd loaded at address ");
+  print_serial("\nInitrd loaded at address ");
+  print_screen(integer_to_string(initrdPhysicalStart));
+  print_serial(integer_to_string(initrdPhysicalStart));
+  print_screen("\nMultiboot modules end at address ");
+  print_serial("\nMultiboot modules end at address ");
+  print_screen(integer_to_string(multibootPhysicalEnd));
+  print_serial(integer_to_string(multibootPhysicalEnd));
+  print_screen("\nNumber of modules loaded = ");
+  print_serial("\nNumber of modules loaded = ");
+  print_screen(integer_to_string(modsCount));
+  print_serial(integer_to_string(modsCount));
+
+  // test virtual file system
+  print_screen("\n\n==============================");
+  print_serial("\n\n==============================");
+  print_screen(
+      "\nTesting virtual file system, reading contents of directory /dev\n");
+  print_serial(
+      "\nTesting virtual file system, reading contents of directory /dev\n");
+
+  // list the contents of /dev
+  fs_node_t *node = (fs_node_t *)kmalloc(sizeof(fs_node_t));
+  /* root (/) at this point has just /dev so directly access contents */
+  fs_node_t *fs_root = g_INITRD_ROOT_DIR->contents;
+  for (u32int i = 0; i < fs_root->size; ++i) {
+    readdir_fs(fs_root, i, node);
+    if (node->type == FS_FILE) {
+      print_screen("\nFound file -> ");
+      print_serial("\nFound file -> ");
+      print_screen(node->name);
+      print_serial(node->name);
+      print_screen("\n\t contents: \"");
+      print_serial("\n\t contents: \"");
+      s8int buf[LEN_256];
+      u32int sz = read_fs(node, 0, LEN_256, (u8int *)&(buf[0]));
+      u32int j;
+      for (j = 0; j < sz; j++) {
+        print_screen_ch(buf[j]);
+      }
+      print_screen("\"\n");
+      print_serial("\"\n");
+    } else {
+      print_screen("\nFound dir ");
+      print_serial("\nFound dir ");
+      print_screen(node->name);
+      print_serial(node->name);
+      print_screen("\"\n");
+      print_serial("\"\n");
+    }
+  }
 
   print_screen("\nTesting continues please wait...");
   /* Sleep for 10 seconds (1000 centiSeconds) */
