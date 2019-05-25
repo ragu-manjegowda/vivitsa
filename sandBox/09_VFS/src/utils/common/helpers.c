@@ -1,20 +1,18 @@
 #include "helpers.h"
 #include "multiboot.h"
 
-#define STRING_LEN 10
-
-char buffer[STRING_LEN];
+s8int g_BUFFER[LEN_10];
 
 s8int *integer_to_string(u32int number) {
   u32int i = 0;
-  while (i < STRING_LEN) {
-    buffer[i] = '\0';
+  while (i < LEN_10) {
+    g_BUFFER[i] = '\0';
     i++;
   }
 
   if (number == 0) {
-    buffer[1] = '0';
-    return buffer;
+    g_BUFFER[1] = '0';
+    return g_BUFFER;
   }
 
   u32int temp_number = number;
@@ -28,12 +26,12 @@ s8int *integer_to_string(u32int number) {
 
   u32int j = 0;
   while (i > 1) {
-    buffer[--i] = buffer_rev[j++];
+    g_BUFFER[--i] = buffer_rev[j++];
   }
 
-  buffer[--i] = buffer_rev[j];
+  g_BUFFER[--i] = buffer_rev[j];
 
-  return buffer;
+  return g_BUFFER;
 }
 
 void get_multiboot_info(u32int mboot_ptr, u32int *initrdPhysicalStart,
