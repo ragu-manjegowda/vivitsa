@@ -90,4 +90,13 @@ void alloc_frame(page_t *page, u32int isKernel, u32int isWriteable);
  */
 void free_frame(page_t *page);
 
+/** clone_directory:
+ *  Makes copy of current page directory, only non kernel pages are copied!
+ * Kernel pages are linked as it is.
+ *
+ *  @param  src         Pointer to source page directory
+ *  @return             Pointer to cloned oage directory
+ */
+page_directory_t *clone_directory(page_directory_t *src);
+
 #endif /* INCLUDE_PAGING_H */

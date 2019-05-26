@@ -105,9 +105,17 @@ void init_paging(u32int kernelPhysicalEnd) {
   custom_memset((u8int *)g_FrameIndexArray, 0, INDEX_FROM_BIT(g_NumOfFrames));
 
   /* Create a page directory for kernel and set it as curent page directory */
-  g_kernelDirectory = (page_directory_t *)kmalloc_a(sizeof(page_directory_t));
+  u32int phys;
+  g_kernelDirectory =
+      (page_directory_t *)kmalloc_ap(sizeof(page_directory_t), &phys);
   custom_memset((u8int *)g_kernelDirectory, 0, sizeof(page_directory_t));
-  g_currentDirectory = g_kernelDirectory;
+  /*
+   * Get the offset of tablesPhysical from the start of the page_directory_t
+   * structure.
+   */
+  u32int offset =
+      (u32int)g_kernelDirectory->tablesPhysical - (u32int)g_kernelDirectory;
+  g_kernelDirectory->physicalAddr = phys + offset;
 
   /*
    * Call to get pages only forces page tables to be created. We will map them
@@ -141,12 +149,15 @@ void init_paging(u32int kernelPhysicalEnd) {
   /*  Initialise the kernel heap */
   create_kernel_heap(KHEAP_START, KHEAP_START + KHEAP_INITIAL_SIZE,
                      KHEAP_MAX_ADDRESS);
+
+  /* Switch directory */
+  switch_page_directory(clone_directory(g_kernelDirectory));
 }
 
 void switch_page_directory(page_directory_t *dir) {
   g_currentDirectory = dir;
   /* Write page table physical address to cr3 */
-  asm volatile("mov %0, %%cr3" ::"r"(&dir->tablesPhysical));
+  asm volatile("mov %0, %%cr3" ::"r"(dir->physicalAddr));
   u32int cr0;
   /* Read cr0 register to variable cr0 */
   asm volatile("mov %%cr0, %0" : "=r"(cr0));
@@ -239,4 +250,44 @@ void page_fault(registers_t regs) {
    * be tested by doing the page fault
    */
   // while (1) {}
+}
+
+page_directory_t *clone_directory(page_directory_t *src) {
+  u32int phys;
+  page_directory_t *dir =
+      (page_directory_t *)kmalloc_ap(sizeof(page_directory_t), &phys);
+  custom_memset((u8int *)dir, 0, sizeof(page_directory_t));
+
+  print_serial("\nDir address = ");
+  print_serial(integer_to_string((u32int)dir));
+  print_serial("\nPhys = ");
+  print_serial(integer_to_string((u32int)phys));
+
+  /*
+   * Get the offset of tablesPhysical from the start of the page_directory_t
+   * structure.
+   */
+  u32int offset = (u32int)dir->tablesPhysical - (u32int)dir;
+
+  /* Then the physical address of dir->tablesPhysical is: */
+  dir->physicalAddr = phys + offset;
+
+  /* Clone page table */
+  for (u32int i = 0; i < 1024; ++i) {
+    /* If table entry doesn't exist skip it */
+    if (!src->tables[i])
+      continue;
+
+    /* If source table is kernel table the don't copy just use the same table */
+    if (g_kernelDirectory->tables[i] == src->tables[i]) {
+      dir->tables[i] = src->tables[i];
+      dir->tablesPhysical[i] = src->tablesPhysical[i];
+    } else {
+      u32int phys = 0;
+      // dir->tables[i] = clone_table(src->tables[i], &phys);
+      /* PRESENT, RW, US. */
+      dir->tablesPhysical[i] = phys | 0x07;
+    }
+  }
+  return dir;
 }
