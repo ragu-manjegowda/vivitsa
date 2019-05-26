@@ -20,6 +20,12 @@ u32int g_NumOfFrames;
  */
 extern u32int g_CurrentPhysicalAddressTop;
 
+/*
+ * Function call to load IDT implemented in assembly.
+ * Extern allows to access ASM from this C code.
+ */
+extern void copy_page_physical(u32int, u32int);
+
 /* Macros used in the bitset algorithms */
 #define INDEX_FROM_BIT(a) (a / 32)
 #define OFFSET_FROM_BIT(a) (a % 32)
@@ -252,16 +258,47 @@ void page_fault(registers_t regs) {
   // while (1) {}
 }
 
+/* Utility function to clone page table  */
+static page_table_t *clone_table(page_table_t *src, u32int *physAddr) {
+  page_table_t *table =
+      (page_table_t *)kmalloc_ap(sizeof(page_table_t), physAddr);
+  custom_memset((u8int *)table, 0, sizeof(page_directory_t));
+
+  for (u32int i = 0; i < 1024; ++i) {
+    /* If frame exist, clone it */
+    if (src->pages[i].frame) {
+      /*
+       * kernel mode and user mode flags here doesn't matter as we set them
+       * based on flags in source page
+       */
+      alloc_frame(&table->pages[i], 0, 0);
+      /* Copy permissions */
+      if (src->pages[i].present)
+        table->pages[i].present = 1;
+      if (src->pages[i].rw)
+        table->pages[i].rw = 1;
+      if (src->pages[i].user)
+        table->pages[i].user = 1;
+      if (src->pages[i].accessed)
+        table->pages[i].accessed = 1;
+      if (src->pages[i].dirty)
+        table->pages[i].dirty = 1;
+      /*
+       * Physically copy the data across. This function is in paging.s as it
+       * requires paging to be disabled
+       */
+      copy_page_physical(src->pages[i].frame * 0x1000,
+                         table->pages[i].frame * 0x1000);
+    }
+  }
+  return table;
+}
+
 page_directory_t *clone_directory(page_directory_t *src) {
   u32int phys;
   page_directory_t *dir =
       (page_directory_t *)kmalloc_ap(sizeof(page_directory_t), &phys);
   custom_memset((u8int *)dir, 0, sizeof(page_directory_t));
-
-  print_serial("\nDir address = ");
-  print_serial(integer_to_string((u32int)dir));
-  print_serial("\nPhys = ");
-  print_serial(integer_to_string((u32int)phys));
 
   /*
    * Get the offset of tablesPhysical from the start of the page_directory_t
@@ -284,7 +321,7 @@ page_directory_t *clone_directory(page_directory_t *src) {
       dir->tablesPhysical[i] = src->tablesPhysical[i];
     } else {
       u32int phys = 0;
-      // dir->tables[i] = clone_table(src->tables[i], &phys);
+      dir->tables[i] = clone_table(src->tables[i], &phys);
       /* PRESENT, RW, US. */
       dir->tablesPhysical[i] = phys | 0x07;
     }
