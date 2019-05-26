@@ -43,11 +43,7 @@ typedef struct page_directory {
    */
   u32int tablesPhysical[1024];
 
-  /*
-   * The physical address of tablesPhysical. This comes into play when we get
-   * our kernel heap allocated and the directory may be in a different location
-   * in virtual memory.
-   */
+  /* Required for cloning page direcotry */
   u32int physicalAddr;
 } page_directory_t;
 
