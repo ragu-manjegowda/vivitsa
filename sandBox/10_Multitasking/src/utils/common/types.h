@@ -1,4 +1,3 @@
-
 #ifndef INCLUDE_TYPES_H
 #define INCLUDE_TYPES_H
 
@@ -39,5 +38,7 @@ enum Size {
   LEN_256 = 256,
   LEN_512 = 512
 };
+
+enum memSize { MEM_4KB = 0x1000, MEM_3_5GB = 0xE0000000 };
 
 #endif /* INCLUDE_TYPES_H */

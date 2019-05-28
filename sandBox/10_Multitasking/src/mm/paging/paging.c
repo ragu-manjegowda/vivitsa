@@ -21,7 +21,7 @@ u32int g_NumOfFrames;
 extern u32int g_CurrentPhysicalAddressTop;
 
 /*
- * Function call to load IDT implemented in assembly.
+ * Function call to copy physical pages implemented in assembly.
  * Extern allows to access ASM from this C code.
  */
 extern void copy_page_physical(u32int, u32int);

@@ -29,11 +29,3 @@ copy_page_physical:
     popf                  ; Pop EFLAGS back.
     pop ebx               ; Get the original value of EBX back.
     ret
-
-
-[GLOBAL read_eip]
-read_eip:
-  ; Get the return address
-  pop eax
-  ; Can't use RET because return address popped off the stack.
-  jmp eax

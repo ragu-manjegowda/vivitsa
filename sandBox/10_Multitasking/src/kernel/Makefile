@@ -1,6 +1,6 @@
 LDFLAG += -T link.ld -melf_i386
 LIBS = -llogger -lgdt -lidt -lio -lcommon -ltimer -lkb -lpaging -lkheap \
-	-lorderedarray -lfs -linitrd
+	-lorderedarray -lfs -linitrd -lsched
 
 all: kernel.elf
 
@@ -17,6 +17,7 @@ INCLUDE += \
 	-I$(TOP_DIR)/src/drivers/timer \
 	-I$(TOP_DIR)/src/mm/heap \
 	-I$(TOP_DIR)/src/mm/paging \
+	-I$(TOP_DIR)/src/mm/sched \
 	-I$(TOP_DIR)/src/mm/segmentation \
 	-I$(TOP_DIR)/src/mm/vfs/fs \
 	-I$(TOP_DIR)/src/mm/vfs/initrd \
