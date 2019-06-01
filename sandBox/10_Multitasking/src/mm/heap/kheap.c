@@ -273,7 +273,7 @@ u32int kmalloc_int(u32int size, u32int align, u32int *pAddrPtr) {
   /* if Kernel Heap is created and allocated */
   if (g_KernelHeap != 0) {
     type_t addr = alloc(size, (u8int)align, g_KernelHeap);
-    if ((u32int)addr & 0x00000FFF) {
+    if (align && ((u32int)addr & 0x00000FFF)) {
       print_screen("\nError: kmalloc_int: returned address from alloc is not "
                    "page aligned!!!!\n");
     }
@@ -294,6 +294,9 @@ u32int kmalloc_int(u32int size, u32int align, u32int *pAddrPtr) {
     if (pAddrPtr) {
       *pAddrPtr = g_CurrentPhysicalAddressTop;
     }
+    /* Increase physical address top so that it is always aligned at 4 bytes */
+    g_CurrentPhysicalAddressTop +=
+        (g_CurrentPhysicalAddressTop % sizeof(u32int));
     u32int tmp = g_CurrentPhysicalAddressTop;
     g_CurrentPhysicalAddressTop += size;
     return tmp;
