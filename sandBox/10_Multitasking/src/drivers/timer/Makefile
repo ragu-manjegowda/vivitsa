@@ -9,6 +9,8 @@ all: libtimer.a
 INCLUDE += \
 	-I$(TOP_DIR)/src/drivers/interrupts \
 	-I$(TOP_DIR)/src/drivers/io \
+	-I$(TOP_DIR)/src/mm/paging \
+	-I$(TOP_DIR)/src/mm/sched \
 	-I$(TOP_DIR)/src/utils/common \
 	-I$(TOP_DIR)/src/utils/logger
 

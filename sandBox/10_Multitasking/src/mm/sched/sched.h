@@ -6,6 +6,7 @@
 #include <types.h>
 
 typedef struct task {
+  /* TODO: Add parent pid information and implement join */
   /* Process ID */
   u32int pid;
   /* Base pointer */
@@ -48,6 +49,6 @@ void move_stack(void *newStackAddress, u32int size);
  *  returns PID of the process
  *  @return  Process ID
  */
-int getpid();
+u32int getpid();
 
 #endif /* INCLUDE_SCHED_H */

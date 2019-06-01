@@ -197,6 +197,32 @@ void run_all_tests() {
   sleep(1000);
   clear_screen();
 
+  // test multitasking
+  print_screen("\n\n==============================");
+  print_serial("\n\n==============================");
+  print_screen("\nTesting multitasking");
+  print_screen("\nCalling process fork\n");
+  print_serial("\nTesting multitasking");
+  print_serial("\nCalling process fork\n");
+
+  u32int ret = fork();
+
+  print_screen("\n\n==============================\n");
+  print_serial("\n\n==============================\n");
+  print_screen("fork() returned ");
+  print_serial("fork() returned ");
+  print_screen(integer_to_string(ret));
+  print_serial(integer_to_string(ret));
+  print_screen(", and getpid() returned ");
+  print_serial(", and getpid() returned ");
+  print_screen(integer_to_string(getpid()));
+  print_serial(integer_to_string(getpid()));
+
+  print_screen("\n============================================================"
+               "================\n");
+  print_serial("\n============================================================"
+               "================\n");
+
   // test keyboard
   print_screen("\n==============================");
   print_serial("\n==============================");

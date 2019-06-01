@@ -258,7 +258,11 @@ void page_fault(registers_t regs) {
   // while (1) {}
 }
 
-/* Utility function to clone page table  */
+/*
+ * Utility function to clone page table
+ *
+ * TODO: Implement COW (Copy on Write) instead of copying the full table
+ */
 static page_table_t *clone_table(page_table_t *src, u32int *physAddr) {
   page_table_t *table =
       (page_table_t *)kmalloc_ap(sizeof(page_table_t), physAddr);
