@@ -1,6 +1,7 @@
 SUBDIRS = \
 	heap \
 	paging \
+	sched \
 	segmentation \
 	vfs
 

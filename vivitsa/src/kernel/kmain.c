@@ -7,13 +7,14 @@
 #include <kheap.h>
 #include <logger.h>
 #include <paging.h>
+#include <sched.h>
 #include <serial_port.h>
 #include <tests.h>
 #include <timer.h>
 #include <types.h>
 
 /* Function to initialize */
-void init(u32int mboot_ptr) {
+void init(u32int mbootPointer, u32int stackPointer) {
   /* Initialize segment descriptor tables */
   init_gdt();
 
@@ -36,7 +37,7 @@ void init(u32int mboot_ptr) {
   u32int initrdPhysicalStart;
   u32int multibootPhysicalEnd;
   u32int modsCount;
-  get_multiboot_info(mboot_ptr, &initrdPhysicalStart, &multibootPhysicalEnd,
+  get_multiboot_info(mbootPointer, &initrdPhysicalStart, &multibootPhysicalEnd,
                      &modsCount);
 
   /* Initialise the initial ramdisk, and set it as the filesystem root */
@@ -44,6 +45,9 @@ void init(u32int mboot_ptr) {
 
   /* Initialize paging */
   init_paging(multibootPhysicalEnd);
+
+  /* Initialize multitasking */
+  initialise_multitasking(stackPointer);
 
   /* Initialize keyboard */
   init_keyboard();
@@ -53,9 +57,9 @@ void init(u32int mboot_ptr) {
 /* GRUB stores a pointer to a struct in the register ebx that,
  * describes at which addresses the modules are loaded.
  */
-s32int kmain(u32int mboot_ptr) {
+s32int kmain(u32int mbootPointer, u32int stackPointer) {
   // Initialize all modules
-  init(mboot_ptr);
+  init(mbootPointer, stackPointer);
 
   // Run init tests defined in tests.h
   run_all_tests();

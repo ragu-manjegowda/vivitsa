@@ -3,6 +3,7 @@
 #include <io.h>
 #include <isr.h>
 #include <logger.h>
+#include <sched.h>
 
 /* Define a macro for timer interrupt */
 #define IRQ0 32
@@ -33,6 +34,10 @@ static void timer_callback(registers_t regs) {
   (void)regs;
   /* Increment our 'tick count' */
   TIMER_TICKS++;
+  /* Schedule next task */
+  if (TIMER_TICKS % TIMER_FREQUENCY == 0) {
+    schedule();
+  }
 }
 
 void init_timer(u32int frequency) {

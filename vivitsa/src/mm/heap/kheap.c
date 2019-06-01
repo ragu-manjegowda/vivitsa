@@ -195,28 +195,33 @@ type_t alloc(u32int size, u8int pageAlign, heap_t *heap) {
    * If we need to page-align the data, do it now and make a new hole before
    * our new block.
    */
-  if (pageAlign && (origHolePos & 0x00000FFF)) {
-    u32int newLocation =
-        origHolePos + 0x1000 - (origHolePos & 0xFFF) - sizeof(header_t);
+  if (pageAlign) {
+    u32int returnPos = origHolePos + sizeof(header_t);
+    if (returnPos & 0x00000FFF) {
+      u32int newLocation =
+          returnPos + 0x1000 - (returnPos & 0xFFF) - sizeof(header_t);
 
-    /* If left over space has at least 1 byte add new hole */
-    u32int residualSize = 0x1000 - (origHolePos & 0xFFF) - sizeof(header_t);
-    if ((origHoleSize - residualSize) > (sizeof(header_t) + sizeof(footer_t))) {
-      header_t *holeHeader = (header_t *)origHolePos;
-      holeHeader->size = residualSize;
-      holeHeader->magic = HEAP_MAGIC;
-      holeHeader->isHole = 1;
-      footer_t *holeFooter =
-          (footer_t *)((u32int)newLocation - sizeof(footer_t));
-      holeFooter->magic = HEAP_MAGIC;
-      holeFooter->header = holeHeader;
-      insert_ordered_array((type_t)holeHeader, &heap->index);
-    } else {
-      /* TODO: Implement logic to expand block on left to avoid fragmentation */
+      /* If left over space has at least 1 byte add new hole */
+      u32int residualSize = newLocation - origHolePos;
+      if ((origHoleSize - residualSize) >
+          (sizeof(header_t) + sizeof(footer_t))) {
+        header_t *holeHeader = (header_t *)origHolePos;
+        holeHeader->size = residualSize;
+        holeHeader->magic = HEAP_MAGIC;
+        holeHeader->isHole = 1;
+        footer_t *holeFooter =
+            (footer_t *)((u32int)newLocation - sizeof(footer_t));
+        holeFooter->magic = HEAP_MAGIC;
+        holeFooter->header = holeHeader;
+        insert_ordered_array((type_t)holeHeader, &heap->index);
+      } else {
+        /* TODO: Implement logic to expand block on left to avoid
+         * fragmentation */
+      }
+
+      origHolePos = newLocation;
+      origHoleSize = origHoleSize - residualSize;
     }
-
-    origHolePos = newLocation;
-    origHoleSize = origHoleSize - residualSize;
   } else {
     /*
      * Else we don't need this hole any more as we will be allocating it, delete
@@ -268,12 +273,13 @@ u32int kmalloc_int(u32int size, u32int align, u32int *pAddrPtr) {
   /* if Kernel Heap is created and allocated */
   if (g_KernelHeap != 0) {
     type_t addr = alloc(size, (u8int)align, g_KernelHeap);
+    if (align && ((u32int)addr & 0x00000FFF)) {
+      print_screen("\nError: kmalloc_int: returned address from alloc is not "
+                   "page aligned!!!!\n");
+    }
     if (pAddrPtr != 0) {
       page_t *page = get_page((u32int)addr, 0, g_kernelDirectory);
-      if ((u32int)addr & 0x00000FFF) {
-        print_screen("\nError: kmalloc_int: returned address from alloc is not "
-                     "page aligned!!!!\n");
-      }
+
       *pAddrPtr = page->frame * 0x1000;
     }
     return (u32int)addr;
@@ -288,6 +294,9 @@ u32int kmalloc_int(u32int size, u32int align, u32int *pAddrPtr) {
     if (pAddrPtr) {
       *pAddrPtr = g_CurrentPhysicalAddressTop;
     }
+    /* Increase physical address top so that it is always aligned at 4 bytes */
+    g_CurrentPhysicalAddressTop +=
+        (g_CurrentPhysicalAddressTop % sizeof(u32int));
     u32int tmp = g_CurrentPhysicalAddressTop;
     g_CurrentPhysicalAddressTop += size;
     return tmp;
