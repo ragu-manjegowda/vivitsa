@@ -43,8 +43,7 @@ s8int uskbd[128] = {
 };
 
 /* Handles the keyboard interrupt */
-void keyboard_callback(registers_t regs) {
-  (void)regs;
+void keyboard_callback(registers_t regs __attribute__((unused))) {
   u8int scancode;
 
   /* Read from the keyboard's data buffer */

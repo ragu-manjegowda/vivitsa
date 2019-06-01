@@ -25,9 +25,8 @@ ordered_array_t place_ordered_array(void *address, u32int maxSize,
   return toRet;
 }
 
-void destroy_ordered_array(ordered_array_t *array) {
-  (void)array;
-  //    kfree(array->array);
+void destroy_ordered_array(ordered_array_t *array __attribute__((unused))) {
+  kfree(array->array);
 }
 
 void insert_ordered_array(type_t item, ordered_array_t *array) {

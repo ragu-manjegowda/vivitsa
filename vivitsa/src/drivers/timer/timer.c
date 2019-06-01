@@ -29,9 +29,7 @@ u32int TIMER_TICKS = 0;
 #define PIT_COMMAND 0x36
 
 /* Callback function that prints tick to screen when there is timer interrupt */
-static void timer_callback(registers_t regs) {
-  /* suppress unused parameter warning */
-  (void)regs;
+static void timer_callback(registers_t regs __attribute__((unused))) {
   /* Increment our 'tick count' */
   TIMER_TICKS++;
   /* Schedule next task */
