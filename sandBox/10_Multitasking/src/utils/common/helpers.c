@@ -14,7 +14,7 @@ s8int *integer_to_string(u32int number) {
   }
 
   if (number == 0) {
-    g_BUFFER[1] = '0';
+    g_BUFFER[0] = '0';
     return g_BUFFER;
   }
 
