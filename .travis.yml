@@ -1,0 +1,14 @@
+#travis configuration for testing
+language: c
+
+services:
+- docker
+
+before_install:
+- docker pull ragumanjegowda/docker:latest
+
+script:
+- echo ${PWD}
+- docker run --name "ragu" -dit -u $(id -u) -v ${PWD}:/mnt ragumanjegowda/docker:latest /bin/bash 
+- docker exec ragu /mnt/travis.sh 
+- docker stop ragu
