@@ -1,5 +1,5 @@
 #travis configuration for testing
-language: c
+language: minimal
 
 services:
 - docker
@@ -12,3 +12,4 @@ script:
 - docker run --name "ragu" -dit -u $(id -u) -v ${PWD}:/mnt ragumanjegowda/docker:latest /bin/bash 
 - docker exec ragu /mnt/travis.sh 
 - docker stop ragu
+- docker rm ragu
