@@ -4,12 +4,17 @@ language: minimal
 services:
 - docker
 
-before_install:
+before_script:
 - docker pull ragumanjegowda/docker:latest
-
-script:
-- echo ${PWD}
 - docker run --name "ragu" -dit -u $(id -u) -v ${PWD}:/mnt ragumanjegowda/docker:latest /bin/bash 
-- docker exec ragu /mnt/travis.sh 
-- docker stop ragu
-- docker rm ragu
+
+jobs:
+  include:
+    - stage: build 
+      script:
+      - echo ${PWD}
+      - docker exec ragu /mnt/travis.sh 
+
+after_script:
+      - docker stop ragu
+      - docker rm ragu
