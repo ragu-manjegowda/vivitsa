@@ -179,6 +179,7 @@ void run_all_tests() {
       uint32_t j;
       for (j = 0; j < sz; j++) {
         print_screen_ch(buf[j]);
+        print_serial_ch(buf[j]);
       }
       print_screen("\n");
       print_serial("\n");

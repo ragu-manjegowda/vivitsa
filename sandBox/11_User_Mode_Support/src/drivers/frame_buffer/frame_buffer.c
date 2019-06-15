@@ -27,7 +27,7 @@ void fb_move_cursor() {
 void fb_clear(uint16_t start, uint16_t end) {
   for (uint16_t i = start; i < end; i++) {
     fb[2 * i] = ' ';
-    fb[2 * i + 1] = ((0 & 0x0F) << 4) | (15 & 0x0F);
+    fb[2 * i + 1] = ((FB_BLACK & 0x0F) << 4) | (FB_WHITE & 0x0F);
   }
 }
 

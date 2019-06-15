@@ -29,6 +29,14 @@ typedef char int8_t;
 #define FB_LIGHT_BROWN 14
 #define FB_WHITE 15
 
+/* Keyboard driver constants */
+#define KEYBOARD_DATA_PORT 0x60
+#define PRESSED_CAPS_LOCK 58
+#define PRESSED_SHIFT_LEFT 42
+#define PRESSED_SHIFT_RIGHT 54
+#define RELEASED_SHIFT_LEFT 170
+#define RELEASED_SHIFT_RIGHT 182
+
 /* Length constants */
 enum Size {
   LEN_7 = 7,
@@ -40,5 +48,7 @@ enum Size {
 };
 
 enum memSize { MEM_4KB = 0x1000, MEM_3_5GB = 0xE0000000 };
+
+enum mask { MASK_BIT8 = 0x80 };
 
 #endif /* INCLUDE_TYPES_H */

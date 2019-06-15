@@ -25,7 +25,7 @@ typedef struct {
 } header_t;
 
 typedef struct {
-  uint32_t magic;     // Magic number, same as in header_t.
+  uint32_t magic;   // Magic number, same as in header_t.
   header_t *header; // Pointer to the block header.
 } footer_t;
 
@@ -42,7 +42,8 @@ void set_physical_address_top(uint32_t kernelPhysicalEnd) {
   g_CurrentPhysicalAddressTop = kernelPhysicalEnd;
 }
 
-static int32_t find_smallest_hole(uint32_t size, uint8_t pageAlign, heap_t *heap) {
+static int32_t find_smallest_hole(uint32_t size, uint8_t pageAlign,
+                                  heap_t *heap) {
   /* Find the smallest hole that will fit. */
   uint32_t iterator = 0;
 
@@ -131,19 +132,11 @@ type_t alloc(uint32_t size, uint8_t pageAlign, heap_t *heap) {
      * need either add the new hole to list of available holes or create a new
      * entry on sorted array of holes if this is first insertion
      */
-    iterator = 0;
-    int32_t idx = -1;
-    uint32_t value = 0x0;
-
     uint32_t tmp =
         (uint32_t)peek_ordered_array((heap->index.size - 1), &heap->index);
-    if (tmp > value) {
-      value = tmp;
-      idx = iterator;
-    }
 
     /* If we didn't find ANY headers, we need to add one. */
-    if (idx == -1) {
+    if (tmp == 0) {
       header_t *header = (header_t *)oldEndAddress;
       header->magic = HEAP_MAGIC;
       header->size = newLength - oldLength;
@@ -158,7 +151,7 @@ type_t alloc(uint32_t size, uint8_t pageAlign, heap_t *heap) {
        * This will probably be the last header that has size less han required
        * and hence needs adjusting.
        */
-      header_t *header = peek_ordered_array(idx, &heap->index);
+      header_t *header = (header_t *)tmp;
       header->size += newLength - oldLength;
       // Rewrite the footer.
       footer_t *footer =
@@ -369,7 +362,8 @@ heap_t *create_heap(uint32_t startAddr, uint32_t endAddr, uint32_t maxAddr,
   return heap;
 }
 
-void create_kernel_heap(uint32_t startAddr, uint32_t endAddr, uint32_t maxAddr) {
+void create_kernel_heap(uint32_t startAddr, uint32_t endAddr,
+                        uint32_t maxAddr) {
   g_KernelHeap = create_heap(startAddr, endAddr, maxAddr, 0, 0);
 }
 
@@ -444,8 +438,8 @@ static void free(void *ptr, heap_t *heap) {
   header_t *testHeader = (header_t *)((uint32_t)footer + sizeof(footer_t));
   if (testHeader->magic == HEAP_MAGIC && testHeader->isHole) {
     header->size += testHeader->size;
-    testFooter =
-        (footer_t *)((uint32_t)testHeader + testHeader->size - sizeof(footer_t));
+    testFooter = (footer_t *)((uint32_t)testHeader + testHeader->size -
+                              sizeof(footer_t));
     footer = testFooter;
     /*  Find and remove this header from the index. */
     uint32_t iterator = 0;
