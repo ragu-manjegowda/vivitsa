@@ -1,6 +1,6 @@
 ## To generate initrd image that can be loaded into kernel as module
 
-## Usage:
+## Usage
 
   Files that needs to loaded as initrd should be passed as argument at odd
 index and the desired/new filename within OS should be specified at even index.

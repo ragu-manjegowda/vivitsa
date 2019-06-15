@@ -132,19 +132,11 @@ type_t alloc(uint32_t size, uint8_t pageAlign, heap_t *heap) {
      * need either add the new hole to list of available holes or create a new
      * entry on sorted array of holes if this is first insertion
      */
-    iterator = 0;
-    int32_t idx = -1;
-    uint32_t value = 0x0;
-
     uint32_t tmp =
         (uint32_t)peek_ordered_array((heap->index.size - 1), &heap->index);
-    if (tmp > value) {
-      value = tmp;
-      idx = iterator;
-    }
 
     /* If we didn't find ANY headers, we need to add one. */
-    if (idx == -1) {
+    if (tmp == 0) {
       header_t *header = (header_t *)oldEndAddress;
       header->magic = HEAP_MAGIC;
       header->size = newLength - oldLength;
@@ -159,7 +151,7 @@ type_t alloc(uint32_t size, uint8_t pageAlign, heap_t *heap) {
        * This will probably be the last header that has size less han required
        * and hence needs adjusting.
        */
-      header_t *header = peek_ordered_array(idx, &heap->index);
+      header_t *header = (header_t *)tmp;
       header->size += newLength - oldLength;
       // Rewrite the footer.
       footer_t *footer =

@@ -1,11 +1,11 @@
-## Details:
+## Details
 
 Currently this operating system has kernel with interrupt, paging, hea0p,
 virtual file system support and multitasking. Yet to enable support for user
 space applications.
 (More information in Sandbox)
 
-## Usage:
+## Usage
 
 ### To build project
 

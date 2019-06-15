@@ -1,5 +1,5 @@
-
 [![Build Status](https://travis-ci.org/ragu-manjegowda/vivitsa.svg?branch=master)](https://travis-ci.org/ragu-manjegowda/vivitsa)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/fa00c5d9afb74bea96c3b67edcd9ebcf)](https://www.codacy.com/app/ragu-manjegowda/vivitsa?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=ragu-manjegowda/vivitsa&amp;utm_campaign=Badge_Grade)
 
 # Vivitsa
   My operating system - from scratch!!!
@@ -30,31 +30,30 @@ And then follow README file inside subfolders on instructions to build and debug
 
 Note: When you are inside docker, host PCs HOME directory is mounted under /mnt
 
-### To run, debug and to know more please refer README.md in sub-folders.
+## To run, debug and to know more please refer README.md in sub-folders
 
-
-# References & Tutorials
+## References & Tutorials
 
 There are a lot of great resources out there but not many good tutorials. Most of the tutorials gloss over the code or gloss over the contents, or both; it forces you to spend time reading about theory and finding other implementations of concepts but it can be a pain when you just want X to work so you can learn about Y.
 
 This is just a list of some of the great stuff I've found online, including others' toy kernels. For better or worse, many of them are based on the same few tutorials found elsewhere so, often, the code is easy enough to follow.
 
- - [Little OS Book](https://littleosbook.github.io/) - May not be maintained anymore, as of late 2015. There are some bugs referenced on the [GitHub repo](https://github.com/littleosbook/littleosbook). It starts off with a lot of example code but then tapers off by only providing theory and leaving you to your own devices. It was great to get me started but I needed a bit more help on interrupts and memory management.
+-   [Little OS Book](https://littleosbook.github.io/) not maintained anymore, as of late 2015. There are some bugs referenced on the [GitHub repo](https://github.com/littleosbook/littleosbook). It starts off with a lot of example code but then tapers off by only providing theory and leaving you to your own devices. It was great to get me started but I needed a bit more help on interrupts and memory management
 
- - [aenix](https://github.com/helino/aenix) from the authors of the Little OS Book tutorial.
+-   [aenix](https://github.com/helino/aenix) from the authors of the Little OS Book tutorial
 
- - [OSDev.org](http://wiki.osdev.org/Main_Page) - The best resource on the net, with dozens of tutorials and even several pages (linked below) providing information on bugs in other tutorials.
+-   [OSDev.org](http://wiki.osdev.org/Main_Page) best resource on the net, with dozens of tutorials and even several pages (linked below) providing information on bugs in other tutorials
 
- - [James Molloy's Tutorial](http://web.archive.org/web/20120223002615/http://www.jamesmolloy.co.uk/tutorial_html/1.-Environment%20setup.html) - [No longer maintained](http://forum.osdev.org/viewtopic.php?f=1&t=23072&start=0) but a great intro nonetheless. Newer, working code is in the [Google Code repo](https://code.google.com/archive/p/jamesm-tutorials/), but it doesn't match the tutorial. Since Google Code was decommissioned, you can only download a ZIP or export to GitHub; there's no online browsing of the SVN repo.
+-   [James Molloy's Tutorial](http://web.archive.org/web/20120223002615/http://www.jamesmolloy.co.uk/tutorial_html/1.-Environment%20setup.html) [No longer maintained](http://forum.osdev.org/viewtopic.php?f=1&t=23072&start=0) but a great intro nonetheless. Newer, working code is in the [Google Code repo](https://code.google.com/archive/p/jamesm-tutorials/), but it doesn't match the tutorial. Since Google Code was decommissioned, you can only download a ZIP or export to GitHub; there's no online browsing of the SVN repo
 
- - [Boom](https://github.com/BiggerOnTheInside/Boom) - A toy kernel based on JM's tutorial.
+-   [Boom](https://github.com/BiggerOnTheInside/Boom) toy kernel based on JM's tutorial
 
- - [Bare Metal Examples](https://github.com/cirosantilli/x86-bare-metal-examples) - Multiple toy OSes for reference.
+-   [Bare Metal Examples](https://github.com/cirosantilli/x86-bare-metal-examples) multiple toy OSes for reference
 
- - [Bran's Kernel Dev Tutorial](http://www.osdever.net/bkerndev/Docs/title.htm) - Great tutorial, also with [known bugs](http://wiki.osdev.org/Bran's_Known_Bugs).
+-   [Bran's Kernel Dev Tutorial](http://www.osdever.net/bkerndev/Docs/title.htm) great tutorial, also with [known bugs](http://wiki.osdev.org/Bran's_Known_Bugs)
 
- - [MIT's Xv6](https://pdos.csail.mit.edu/6.828/2011/xv6.html) - Unix-like OS used to teach OS development at MIT.
+-   [MIT's Xv6](https://pdos.csail.mit.edu/6.828/2011/xv6.html) unix-like OS used to teach OS development at MIT
 
- - [XOmB-barebones](https://github.com/xomboverlord/xomb-bare-bones) - Barebones x64 kernel written in D.
+-   [XOmB-barebones](https://github.com/xomboverlord/xomb-bare-bones) barebones x64 kernel written in D
 
- - [ToaruOS](https://github.com/klange/toaruos) - Much more complex than all the others above but it's a genuinely functional Unix-like OS with a fantastic desktop environment and even some application ports, including GCC and Bochs, which means it can be self-hosting!
+-   [ToaruOS](https://github.com/klange/toaruos) much more complex than all the others above but it's a genuinely functional Unix-like OS with a fantastic desktop environment and even some application ports, including GCC and Bochs, which means it can be self-hosting
