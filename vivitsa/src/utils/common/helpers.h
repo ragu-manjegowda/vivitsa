@@ -5,20 +5,20 @@
 #include "types.h"
 
 /* Helper function to convert interger to string, used in logger */
-s8int *integer_to_string(u32int number);
+int8_t *integer_to_string(uint32_t number);
 
 /* Helper function to get physical end address of multiboot modules */
-void get_multiboot_info(u32int mboot_ptr, u32int *initrdPhysicalStart,
-                        u32int *multibootPhysicalEnd, u32int *modsCount);
+void get_multiboot_info(uint32_t mboot_ptr, uint32_t *initrdPhysicalStart,
+                        uint32_t *multibootPhysicalEnd, uint32_t *modsCount);
 
 /* Helper function to get address of multiboot strcut */
-u32int get_multiboot_address();
+uint32_t get_multiboot_address();
 
 /* Helper function to calculate length of string, used in logger */
-u32int custom_strlen(const s8int *str);
+uint32_t custom_strlen(const int8_t *str);
 
 /* Helper function for memset, used in paging and heap */
-void custom_memset(u8int *address, u32int val, u32int size);
+void custom_memset(uint8_t *address, uint32_t val, uint32_t size);
 
 /** custom_memcpy:
  * Helper function for memcpy, used in initrd. This is a very basic
@@ -29,7 +29,7 @@ void custom_memset(u8int *address, u32int val, u32int size);
  * @param source      Source address
  * @param size        Number of bytes to be copied
  */
-void custom_memcpy(u8int *destination, const u8int *source, u32int size);
+void custom_memcpy(uint8_t *destination, const uint8_t *source, uint32_t size);
 
 /** custom_strcpy:
  * Helper function for strcpy, used in initrd. This is a very basic
@@ -40,7 +40,7 @@ void custom_memcpy(u8int *destination, const u8int *source, u32int size);
  * @param source      Source address
  * @param size        Number of bytes to be copied
  */
-void custom_strcpy(s8int *destination, const s8int *source);
+void custom_strcpy(int8_t *destination, const int8_t *source);
 
 /** custom_strcmp:
  * Helper function for strcmp, used in initrd. This is a very basic
@@ -53,7 +53,7 @@ void custom_strcpy(s8int *destination, const s8int *source);
  * @param  ignoreCase    compare case-insensitively is set
  * @return size          0 if match, 1 otherwise
  */
-u8int custom_strcmp(const s8int *stringFirst, const s8int *stringSecond,
-                    u8int ignoreCase);
+uint8_t custom_strcmp(const int8_t *stringFirst, const int8_t *stringSecond,
+                    uint8_t ignoreCase);
 
 #endif /* INCLUDE_HELPERS_H */

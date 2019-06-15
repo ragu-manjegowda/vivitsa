@@ -14,7 +14,7 @@
 /* We get approximately 100 ticks per second, so by ticks % 100 gives us time in
  * seconds. So using 16 bit counter to keep track of ticks
  */
-u32int TIMER_TICKS = 0;
+uint32_t TIMER_TICKS = 0;
 
 /* PIT command register has the following fields
  *
@@ -38,7 +38,7 @@ static void timer_callback(registers_t regs __attribute__((unused))) {
   }
 }
 
-void init_timer(u32int frequency) {
+void init_timer(uint32_t frequency) {
   /* Register callback for timer interrupt (Interrupt 0) */
   register_interrupt_handler(IRQ0, timer_callback);
 
@@ -46,7 +46,7 @@ void init_timer(u32int frequency) {
    * (1193180 Hz) by, to get our required frequency. Important to note is
    * that the divisor must be small enough to fit into 16-bits.
    */
-  u32int divisor = PIT_DEFAULT_CLOCK / frequency;
+  uint32_t divisor = PIT_DEFAULT_CLOCK / frequency;
 
   /* Byte (0x36) sets the PIT to repeating mode (so that when the divisor
    * counter reaches zero it's automatically refreshed) and tells it we want to
@@ -55,8 +55,8 @@ void init_timer(u32int frequency) {
   outb(PIT_COMMAND_PORT, PIT_COMMAND);
 
   /* Divisor has to be sent byte-wise, so split here into upper/lower bytes. */
-  u8int ls_bits = (u8int)(divisor & 0xFF);
-  u8int ms_bits = (u8int)((divisor >> 8) & 0xFF);
+  uint8_t ls_bits = (uint8_t)(divisor & 0xFF);
+  uint8_t ms_bits = (uint8_t)((divisor >> 8) & 0xFF);
 
   /* Send the frequency divisor. */
   outb(PIT_CHANNEL0_DATA, ls_bits);
@@ -66,8 +66,8 @@ void init_timer(u32int frequency) {
   asm("sti");
 }
 
-void sleep(u32int centiSeconds) {
-  u32int ticks = TIMER_TICKS + centiSeconds;
+void sleep(uint32_t centiSeconds) {
+  uint32_t ticks = TIMER_TICKS + centiSeconds;
   /* If 32 bit number overflows */
   if (ticks < TIMER_TICKS) {
     /* Wait till TIMER_TICKS to overflow */

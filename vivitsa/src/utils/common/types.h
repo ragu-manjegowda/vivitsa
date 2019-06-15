@@ -4,12 +4,12 @@
 /* Typedefs, to standardise sizes across platforms.
  * These typedefs are written for 32-bit X86.
  */
-typedef unsigned int u32int;
-typedef int s32int;
-typedef unsigned short u16int;
-typedef short s16int;
-typedef unsigned char u8int;
-typedef char s8int;
+typedef unsigned int uint32_t;
+typedef int int32_t;
+typedef unsigned short uint16_t;
+typedef short int16_t;
+typedef unsigned char uint8_t;
+typedef char int8_t;
 
 /* Frame buffer supported color value */
 #define FB_BLACK 0
@@ -29,6 +29,14 @@ typedef char s8int;
 #define FB_LIGHT_BROWN 14
 #define FB_WHITE 15
 
+/* Keyboard driver constants */
+#define KEYBOARD_DATA_PORT 0x60
+#define PRESSED_CAPS_LOCK 58
+#define PRESSED_SHIFT_LEFT 42
+#define PRESSED_SHIFT_RIGHT 54
+#define RELEASED_SHIFT_LEFT 170
+#define RELEASED_SHIFT_RIGHT 182
+
 /* Length constants */
 enum Size {
   LEN_7 = 7,
@@ -40,5 +48,7 @@ enum Size {
 };
 
 enum memSize { MEM_4KB = 0x1000, MEM_3_5GB = 0xE0000000 };
+
+enum mask { MASK_BIT8 = 0x80 };
 
 #endif /* INCLUDE_TYPES_H */

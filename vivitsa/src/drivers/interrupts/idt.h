@@ -143,11 +143,11 @@ extern void irq15();
  * any of the alignment in the structure.
  */
 struct idt_entry_struct {
-  u16int offset_low;       /* The lowest 16 bits of the 32 bit ISR address. */
-  u16int segment_selector; /* Segment Selector. */
-  u8int alwaysZero;        /* This 8 bits are always 0. */
-  u8int access_gran;  /* Access flags, granularity and few reserved bits. */
-  u16int offset_high; /* The highest 16 bits of the 32 bit ISR address. */
+  uint16_t offset_low;       /* The lowest 16 bits of the 32 bit ISR address. */
+  uint16_t segment_selector; /* Segment Selector. */
+  uint8_t alwaysZero;        /* This 8 bits are always 0. */
+  uint8_t access_gran;  /* Access flags, granularity and few reserved bits. */
+  uint16_t offset_high; /* The highest 16 bits of the 32 bit ISR address. */
 } __attribute__((packed));
 
 typedef struct idt_entry_struct idt_entry_t;
@@ -157,8 +157,8 @@ typedef struct idt_entry_struct idt_entry_t;
  * lidt instruction.
  */
 struct idt_ptr_struct {
-  u16int limit; /* The upper 16 bits of the table with entries. */
-  u32int base;  /* The address of the first idt_entry_t struct. */
+  uint16_t limit; /* The upper 16 bits of the table with entries. */
+  uint32_t base;  /* The address of the first idt_entry_t struct. */
 } __attribute__((packed));
 
 typedef struct idt_ptr_struct idt_ptr_t;

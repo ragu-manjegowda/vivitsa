@@ -2,10 +2,10 @@
 #define INCLUDE_TESTS_H
 
 /* Forward declare sleep function from timer.h */
-void sleep(u32int centiSeconds);
+void sleep(uint32_t centiSeconds);
 
 /* Defined in kheap.c */
-extern u32int g_CurrentPhysicalAddressTop;
+extern uint32_t g_CurrentPhysicalAddressTop;
 /* Defined in initrd.c */
 extern fs_node_t *g_INITRD_ROOT_DIR;
 
@@ -34,7 +34,7 @@ void run_all_tests() {
   print_serial(integer_to_string(g_CurrentPhysicalAddressTop + 0x1000));
   print_screen("\n");
   print_serial("\n");
-  u32int *ptr = (u32int *)(g_CurrentPhysicalAddressTop + 0x1000);
+  uint32_t *ptr = (uint32_t *)(g_CurrentPhysicalAddressTop + 0x1000);
   *ptr = 10;
   print_screen("Out of page fault, page allocation works!!!\n");
   print_serial("Out of page fault, page allocation works!!!\n");
@@ -57,17 +57,17 @@ void run_all_tests() {
 
   print_screen("\nCalling kmalloc() for allocating 8 bytes");
   print_serial("\nCalling kmalloc() for allocating 8 bytes");
-  u32int *x = (u32int *)kmalloc(8);
+  uint32_t *x = (uint32_t *)kmalloc(8);
   print_screen("\nkmalloc() allocated 8 bytes at address: ");
-  print_screen(integer_to_string((u32int)x));
+  print_screen(integer_to_string((uint32_t)x));
   print_screen("\n");
   print_serial("\nkmalloc() allocated 8 bytes at address: ");
-  print_serial(integer_to_string((u32int)x));
+  print_serial(integer_to_string((uint32_t)x));
   print_serial("\n");
 
   print_screen("\nCalling kmalloc() for allocating 10 bytes");
   print_serial("\nCalling kmalloc() for allocating 10 bytes");
-  u32int y = kmalloc(10);
+  uint32_t y = kmalloc(10);
   print_screen("\nkmalloc() allocated 10 bytes at address: ");
   print_screen(integer_to_string(y));
   print_screen("\n");
@@ -77,7 +77,7 @@ void run_all_tests() {
 
   print_screen("\nCalling kmalloc() for allocating 8 bytes");
   print_serial("\nCalling kmalloc() for allocating 8 bytes");
-  u32int z = kmalloc(8);
+  uint32_t z = kmalloc(8);
   print_screen("\nkmalloc() allocated 8 bytes at address: ");
   print_screen(integer_to_string(z));
   print_screen("\n");
@@ -92,30 +92,30 @@ void run_all_tests() {
 
   print_screen("\nCalling kfree() to deallocate address: ");
   print_serial("\nCalling kfree() to deallocate address: ");
-  print_screen(integer_to_string((u32int)x));
-  print_serial(integer_to_string((u32int)x));
+  print_screen(integer_to_string((uint32_t)x));
+  print_serial(integer_to_string((uint32_t)x));
   print_screen("\n");
   print_serial("\n");
   kfree((void *)x);
 
   print_screen("\nCalling kmalloc() for allocating 20 bytes");
   print_serial("\nCalling kmalloc() for allocating 20 bytes");
-  x = (u32int *)kmalloc(20);
+  x = (uint32_t *)kmalloc(20);
   print_screen("\nkmalloc() allocated 20 bytes at address: ");
-  print_screen(integer_to_string((u32int)x));
+  print_screen(integer_to_string((uint32_t)x));
   print_screen("\n");
   print_serial("\nkmalloc() allocated 20 bytes at address: ");
-  print_serial(integer_to_string((u32int)x));
+  print_serial(integer_to_string((uint32_t)x));
   print_serial("\n");
 
   print_screen("\nCalling kmalloc() for allocating 8 bytes");
   print_serial("\nCalling kmalloc() for allocating 8 bytes");
-  u32int *p = (u32int *)kmalloc(8);
+  uint32_t *p = (uint32_t *)kmalloc(8);
   print_screen("\nkmalloc() allocated 8 bytes at address: ");
-  print_screen(integer_to_string((u32int)p));
+  print_screen(integer_to_string((uint32_t)p));
   print_screen("\n");
   print_serial("\nkmalloc() allocated 8 bytes at address: ");
-  print_serial(integer_to_string((u32int)p));
+  print_serial(integer_to_string((uint32_t)p));
   print_serial("\n");
 
   print_screen("\nTesting continues please wait...");
@@ -129,15 +129,15 @@ void run_all_tests() {
   print_screen("\nTesting Multiboot...");
   print_serial("\nTesting Multiboot...");
 
-  u32int mboot_ptr = get_multiboot_address();
+  uint32_t mboot_ptr = get_multiboot_address();
   print_screen("\nMboot address loaded at ");
   print_serial("\nMboot address loaded at ");
   print_screen(integer_to_string(mboot_ptr));
   print_serial(integer_to_string(mboot_ptr));
 
-  u32int initrdPhysicalStart;
-  u32int multibootPhysicalEnd;
-  u32int modsCount;
+  uint32_t initrdPhysicalStart;
+  uint32_t multibootPhysicalEnd;
+  uint32_t modsCount;
   get_multiboot_info(mboot_ptr, &initrdPhysicalStart, &multibootPhysicalEnd,
                      &modsCount);
   print_screen("\nInitrd loaded at address ");
@@ -165,7 +165,7 @@ void run_all_tests() {
   fs_node_t *node = (fs_node_t *)kmalloc(sizeof(fs_node_t));
   /* root (/) at this point has just /dev so directly access contents */
   fs_node_t *fs_root = g_INITRD_ROOT_DIR->contents;
-  for (u32int i = 0; i < fs_root->size; ++i) {
+  for (uint32_t i = 0; i < fs_root->size; ++i) {
     readdir_fs(fs_root, i, node);
     if (node->type == FS_FILE) {
       print_screen("\nFound file -> ");
@@ -174,9 +174,9 @@ void run_all_tests() {
       print_serial(node->name);
       print_screen("\n\t contents: ");
       print_serial("\n\t contents: ");
-      s8int buf[LEN_256];
-      u32int sz = read_fs(node, 0, LEN_256, (u8int *)&(buf[0]));
-      u32int j;
+      int8_t buf[LEN_256];
+      uint32_t sz = read_fs(node, 0, LEN_256, (uint8_t *)&(buf[0]));
+      uint32_t j;
       for (j = 0; j < sz; j++) {
         print_screen_ch(buf[j]);
       }
@@ -205,7 +205,7 @@ void run_all_tests() {
   print_serial("\nTesting multitasking");
   print_serial("\nCalling process fork\n");
 
-  u32int ret = fork();
+  uint32_t ret = fork();
 
   print_screen("\n\n==============================\n");
   print_serial("\n\n==============================\n");

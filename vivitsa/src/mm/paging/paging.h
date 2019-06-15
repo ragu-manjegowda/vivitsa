@@ -6,27 +6,27 @@
 
 typedef struct page {
   /* Page is present in memory if set */
-  u32int present : 1;
+  uint32_t present : 1;
 
   /* Read-only if clear, readwrite if set */
-  u32int rw : 1;
+  uint32_t rw : 1;
 
   /* Supervisor level only if clear */
-  u32int user : 1;
+  uint32_t user : 1;
 
   /* Page been accessed since last refresh if set */
-  u32int accessed : 1;
+  uint32_t accessed : 1;
 
   /* Page been written to since last refresh if set */
-  u32int dirty : 1;
+  uint32_t dirty : 1;
 
   /* Amalgamation of unused and reserved bits */
-  u32int unused : 7;
+  uint32_t unused : 7;
 
   /* Frame address (shifted right 12 bits). Since the frames are aligned at 4kb
    * least 12 bits are always zero.
    */
-  u32int frame : 20;
+  uint32_t frame : 20;
 } page_t;
 
 typedef struct page_table {
@@ -41,10 +41,10 @@ typedef struct page_directory {
    * Array of pointers to the pagetables above, but gives their *physical*
    * location, for loading into the CR3 register.
    */
-  u32int tablesPhysical[1024];
+  uint32_t tablesPhysical[1024];
 
   /* Required for cloning page direcotry */
-  u32int physicalAddr;
+  uint32_t physicalAddr;
 } page_directory_t;
 
 /** init_paging:
@@ -53,7 +53,7 @@ typedef struct page_directory {
  *  @param kernelPhysicalEnd Physical address of location where loaded kernel
  *  ends
  */
-void init_paging(u32int kernelPhysicalEnd);
+void init_paging(uint32_t kernelPhysicalEnd);
 
 /** switch_page_directory:
  *  Causes the specified page directory to be loaded into the CR3 register.
@@ -70,7 +70,7 @@ void switch_page_directory(page_directory_t *new);
  *  @param make     Create page table if not created already.
  *  @param dir      Pointer to the page directory
  */
-page_t *get_page(u32int address, u8int make, page_directory_t *dir);
+page_t *get_page(uint32_t address, uint8_t make, page_directory_t *dir);
 
 /** alloc_frame:
  *  Marks that the frame is allocated based on the index calculated by page
@@ -80,7 +80,7 @@ page_t *get_page(u32int address, u8int make, page_directory_t *dir);
  *  @param isKernel     If set, marks page accesible only in kernel mode
  *  @param isWriteable  If not set, markes page as read only
  */
-void alloc_frame(page_t *page, u32int isKernel, u32int isWriteable);
+void alloc_frame(page_t *page, uint32_t isKernel, uint32_t isWriteable);
 
 /** free_frame:
  *  Marks the current page frame as not present and removes it from the list of

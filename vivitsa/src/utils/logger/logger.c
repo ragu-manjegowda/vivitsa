@@ -36,15 +36,15 @@ char message3[] = "\
                         |_____/|_|_| |_|\\__,_|\\__,_|                          \
                                                                                 ";
 
-void print_screen(s8int buffer[]) { fb_write(buffer, custom_strlen(buffer)); }
+void print_screen(int8_t buffer[]) { fb_write(buffer, custom_strlen(buffer)); }
 
-void print_serial(s8int buffer[]) {
+void print_serial(int8_t buffer[]) {
   serial_write(SERIAL_COM1_BASE, buffer, custom_strlen(buffer));
 }
 
-void print_screen_ch(s8int ch) { fb_write(&ch, 1); }
+void print_screen_ch(int8_t ch) { fb_write(&ch, 1); }
 
-void print_serial_ch(s8int ch) { serial_write(SERIAL_COM1_BASE, &ch, 1); }
+void print_serial_ch(int8_t ch) { serial_write(SERIAL_COM1_BASE, &ch, 1); }
 
 void clear_screen() { fb_clear_all(); }
 

@@ -9,7 +9,7 @@ volatile task_t *g_currentTask;
 /* Pointer to queue of processess/tasks that are ready to be scheduled */
 volatile task_t *g_readyQueue;
 /* Placeholder to store original stack pointer */
-u32int g_initialStackPointer;
+uint32_t g_initialStackPointer;
 
 /*
  * Accessing g_kernelDirectory and g_currentDirectory defined in paging.c
@@ -22,19 +22,19 @@ extern page_directory_t *g_currentDirectory;
  * Function call to get the current instruction pointer implemented in assembly.
  * Extern allows to access ASM from this C code.
  */
-extern u32int read_eip();
+extern uint32_t read_eip();
 /*
  * Function call to switch task, implemented in assembly.
  * Extern allows to access ASM from this C code.
  */
-extern void task_switch(u32int eip, u32int pageDirPhysicalAddr, u32int ebp,
-                        u32int esp);
+extern void task_switch(uint32_t eip, uint32_t pageDirPhysicalAddr, uint32_t ebp,
+                        uint32_t esp);
 
 /* Global variable for PID, PID of first process is 1 and incremented everytime
  * we fork a new process */
-u32int g_PID = 1;
+uint32_t g_PID = 1;
 
-void initialise_multitasking(u32int stackPointer) {
+void initialise_multitasking(uint32_t stackPointer) {
   /* Disable interrupts */
   asm volatile("cli");
 
@@ -61,13 +61,13 @@ void initialise_multitasking(u32int stackPointer) {
   asm volatile("sti");
 }
 
-void move_stack(void *newStackAddress, u32int size) {
-  u32int i;
+void move_stack(void *newStackAddress, uint32_t size) {
+  uint32_t i;
   /* Allocate pages for the new stack, allocation works in ascending order of
    * address, stack grows in descending mem address
    */
-  for (i = (u32int)newStackAddress;
-       i >= ((u32int)newStackAddress - size - MEM_4KB); i -= MEM_4KB) {
+  for (i = (uint32_t)newStackAddress;
+       i >= ((uint32_t)newStackAddress - size - MEM_4KB); i -= MEM_4KB) {
     // General-purpose stack is in user-mode.
     alloc_frame(get_page(i, 1, g_currentDirectory), 0 /* User mode */,
                 1 /* Is writable */);
@@ -76,20 +76,20 @@ void move_stack(void *newStackAddress, u32int size) {
   /*
    * Since page table is modified flush the TLB, simply by writing back to cr3
    */
-  u32int pdAddr;
+  uint32_t pdAddr;
   asm volatile("mov %%cr3, %0" : "=r"(pdAddr));
   asm volatile("mov %0, %%cr3" : : "r"(pdAddr));
 
-  u32int oldStackPointer = 0;
-  u32int oldBasePointer = 0;
+  uint32_t oldStackPointer = 0;
+  uint32_t oldBasePointer = 0;
   asm volatile("mov %%esp, %0" : "=r"(oldStackPointer));
   asm volatile("mov %%ebp, %0" : "=r"(oldBasePointer));
 
   /* Offset to add to old stack addresses to get a new stack address */
-  u32int offset = (u32int)newStackAddress - g_initialStackPointer;
+  uint32_t offset = (uint32_t)newStackAddress - g_initialStackPointer;
 
-  u32int newStackPointer = oldStackPointer + offset;
-  u32int newBasePointer = oldBasePointer + offset;
+  uint32_t newStackPointer = oldStackPointer + offset;
+  uint32_t newBasePointer = oldBasePointer + offset;
 
   /* TODO: replace size argument with size parameter*/
   custom_memcpy((void *)newStackPointer, (void *)oldStackPointer,
@@ -100,12 +100,12 @@ void move_stack(void *newStackAddress, u32int size) {
    * base pointer and remap it. This will unfortunately remap ANY value in
    * this range, whether they are base pointers or not.
    */
-  for (i = (u32int)newStackAddress; i > (u32int)newStackAddress - size;
+  for (i = (uint32_t)newStackAddress; i > (uint32_t)newStackAddress - size;
        i -= 4) {
-    u32int tmp = *(u32int *)i;
+    uint32_t tmp = *(uint32_t *)i;
     if ((oldStackPointer < tmp) && (tmp < g_initialStackPointer)) {
       tmp = tmp + offset;
-      u32int *tmp2 = (u32int *)i;
+      uint32_t *tmp2 = (uint32_t *)i;
       *tmp2 = tmp;
     }
   }
@@ -120,7 +120,7 @@ void schedule() {
   if (!g_currentTask)
     return;
 
-  u32int esp, ebp, eip;
+  uint32_t esp, ebp, eip;
   asm volatile("mov %%esp, %0" : "=r"(esp));
   asm volatile("mov %%ebp, %0" : "=r"(ebp));
 
@@ -159,7 +159,7 @@ void schedule() {
   task_switch(eip, g_currentDirectory->physicalAddr, ebp, esp);
 }
 
-u32int fork() {
+uint32_t fork() {
   asm volatile("cli");
 
   task_t *parentTask = (task_t *)g_currentTask;
@@ -180,14 +180,14 @@ u32int fork() {
   tempTask->next = newTask;
 
   /* Forked process starts executing from current instruction of parent */
-  u32int eip = read_eip();
+  uint32_t eip = read_eip();
 
   /* We could be the parent or the child here - check */
   if (g_currentTask == parentTask) {
     /* We are the parent, so set up the esp/ebp/eip for our child */
-    u32int esp;
+    uint32_t esp;
     asm volatile("mov %%esp, %0" : "=r"(esp));
-    u32int ebp;
+    uint32_t ebp;
     asm volatile("mov %%ebp, %0" : "=r"(ebp));
     newTask->esp = esp;
     newTask->ebp = ebp;
@@ -200,4 +200,4 @@ u32int fork() {
   }
 }
 
-u32int getpid() { return g_currentTask->pid; }
+uint32_t getpid() { return g_currentTask->pid; }

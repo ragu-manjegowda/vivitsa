@@ -2,12 +2,12 @@
 #include "multiboot.h"
 
 /* global variable to store pointer to multiboot info */
-u32int g_MULTIBOOT_PTR;
+uint32_t g_MULTIBOOT_PTR;
 
-s8int g_BUFFER[LEN_10];
+int8_t g_BUFFER[LEN_10];
 
-s8int *integer_to_string(u32int number) {
-  u32int i = 0;
+int8_t *integer_to_string(uint32_t number) {
+  uint32_t i = 0;
   while (i < LEN_10) {
     g_BUFFER[i] = '\0';
     i++;
@@ -18,8 +18,8 @@ s8int *integer_to_string(u32int number) {
     return g_BUFFER;
   }
 
-  u32int temp_number = number;
-  s8int buffer_rev[10] = "";
+  uint32_t temp_number = number;
+  int8_t buffer_rev[10] = "";
   i = 0;
   while (temp_number > 0) {
     buffer_rev[i] = '0' + (temp_number % 10);
@@ -27,7 +27,7 @@ s8int *integer_to_string(u32int number) {
     i++;
   }
 
-  u32int j = 0;
+  uint32_t j = 0;
   while (i > 1) {
     g_BUFFER[--i] = buffer_rev[j++];
   }
@@ -37,63 +37,63 @@ s8int *integer_to_string(u32int number) {
   return g_BUFFER;
 }
 
-void get_multiboot_info(u32int mboot_ptr, u32int *initrdPhysicalStart,
-                        u32int *multibootPhysicalEnd, u32int *modsCount) {
+void get_multiboot_info(uint32_t mboot_ptr, uint32_t *initrdPhysicalStart,
+                        uint32_t *multibootPhysicalEnd, uint32_t *modsCount) {
   g_MULTIBOOT_PTR = mboot_ptr;
   multiboot_info_t *mbinfo = (multiboot_info_t *)mboot_ptr;
   multiboot_module_t *mod = (multiboot_module_t *)mbinfo->mods_addr;
 
-  *initrdPhysicalStart = (u32int)((u32int *)mod->mod_start);
+  *initrdPhysicalStart = (uint32_t)((uint32_t *)mod->mod_start);
   *multibootPhysicalEnd =
-      (u32int)((u32int *)mod[mbinfo->mods_count - 1].mod_end);
+      (uint32_t)((uint32_t *)mod[mbinfo->mods_count - 1].mod_end);
   *modsCount = mbinfo->mods_count;
 }
 
-u32int get_multiboot_address() { return g_MULTIBOOT_PTR; }
+uint32_t get_multiboot_address() { return g_MULTIBOOT_PTR; }
 
-u32int custom_strlen(const s8int *str) {
-  u32int i;
+uint32_t custom_strlen(const int8_t *str) {
+  uint32_t i;
   for (i = 0; str[i]; i++)
     ;
 
   return i;
 }
 
-void custom_memset(u8int *address, u32int val, u32int size) {
-  for (u32int i = 0; i < size; ++i) {
+void custom_memset(uint8_t *address, uint32_t val, uint32_t size) {
+  for (uint32_t i = 0; i < size; ++i) {
     *address = val;
     ++address;
   }
 }
 
-void custom_memcpy(u8int *destination, const u8int *source, u32int size) {
-  u8int *pdest = (u8int *)destination;
-  u8int *psrc = (u8int *)source;
-  u32int loops = (size / sizeof(u32int));
-  for (u32int index = 0; index < loops; ++index) {
-    *((u32int *)pdest) = *((u32int *)psrc);
-    pdest += sizeof(u32int);
-    psrc += sizeof(u32int);
+void custom_memcpy(uint8_t *destination, const uint8_t *source, uint32_t size) {
+  uint8_t *pdest = (uint8_t *)destination;
+  uint8_t *psrc = (uint8_t *)source;
+  uint32_t loops = (size / sizeof(uint32_t));
+  for (uint32_t index = 0; index < loops; ++index) {
+    *((uint32_t *)pdest) = *((uint32_t *)psrc);
+    pdest += sizeof(uint32_t);
+    psrc += sizeof(uint32_t);
   }
-  loops = (size % sizeof(u32int));
-  for (u32int index = 0; index < loops; ++index) {
+  loops = (size % sizeof(uint32_t));
+  for (uint32_t index = 0; index < loops; ++index) {
     *pdest = *psrc;
     ++pdest;
     ++psrc;
   }
 }
 
-void custom_strcpy(s8int *destination, const s8int *source) {
-  u32int i = 0;
+void custom_strcpy(int8_t *destination, const int8_t *source) {
+  uint32_t i = 0;
   for (i = 0; source[i] != '\0'; ++i) {
     destination[i] = source[i];
   }
   destination[i] = '\0';
 }
 
-u8int custom_strcmp(const s8int *stringFirst, const s8int *stringSecond,
-                    u8int ignoreCase) {
-  u32int i = 0;
+uint8_t custom_strcmp(const int8_t *stringFirst, const int8_t *stringSecond,
+                    uint8_t ignoreCase) {
+  uint32_t i = 0;
   for (i = 0; stringFirst[i] && stringSecond[i]; ++i) {
     if (ignoreCase) {
       /* If characters are same or inverting the 6th bit (inverting case) makes

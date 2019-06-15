@@ -21,7 +21,7 @@
  *  @param buf  Buffer that has contents to be written to screen
  *  @param len  Length of buffer
  */
-s32int fb_write(s8int *buf, u32int len);
+int32_t fb_write(int8_t *buf, uint32_t len);
 
 /* fb_clear_all:
  *  Clear all the contents on screen
@@ -34,6 +34,6 @@ void fb_clear_all();
  *  @param background Background color
  *  @param foreground Foreground color
  */
-void fb_set_color(u16int background, u16int foreground);
+void fb_set_color(uint16_t background, uint16_t foreground);
 
 #endif /* INCLUDE_FRAMEBUFFER_H */

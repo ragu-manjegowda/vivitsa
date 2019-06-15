@@ -10,7 +10,7 @@
  *  @param port The I/O port to send the data to
  *  @param data The data to send to the I/O port
  */
-void outb(u16int port, u8int data);
+void outb(uint16_t port, uint8_t data);
 
 /** inb:
  *  Read a byte from an I/O port.
@@ -18,6 +18,6 @@ void outb(u16int port, u8int data);
  *  @param  port The address of the I/O port
  *  @return      The read byte
  */
-u8int inb(u16int port);
+uint8_t inb(uint16_t port);
 
 #endif /* INCLUDE_IO_H */

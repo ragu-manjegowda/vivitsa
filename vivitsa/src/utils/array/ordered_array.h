@@ -8,12 +8,12 @@
 typedef void *type_t;
 
 /* Function pointer for compare function, returns non zero if true else zero */
-typedef u8int (*compare_predicate_t)(type_t, type_t);
+typedef uint8_t (*compare_predicate_t)(type_t, type_t);
 
 typedef struct {
   type_t *array;
-  u32int size;
-  u32int maxSize;
+  uint32_t size;
+  uint32_t maxSize;
   compare_predicate_t compare;
 } ordered_array_t;
 
@@ -24,7 +24,7 @@ typedef struct {
  *  @param compare  Function pointer for compare (Array is sorted based on the
  *                  compare function either in ascending or in descending order)
  */
-ordered_array_t create_ordered_array(u32int maxSize,
+ordered_array_t create_ordered_array(uint32_t maxSize,
                                      compare_predicate_t compare);
 
 /* place_ordered_array:
@@ -36,7 +36,7 @@ ordered_array_t create_ordered_array(u32int maxSize,
  *  @param compare  Function pointer for compare (Array is sorted based on the
  *                  compare function either in ascending or in descending order)
  */
-ordered_array_t place_ordered_array(void *addr, u32int max_size,
+ordered_array_t place_ordered_array(void *addr, uint32_t max_size,
                                     compare_predicate_t compare);
 
 /* destroy_ordered_array:
@@ -59,7 +59,7 @@ void insert_ordered_array(type_t item, ordered_array_t *array);
  *  @param index  Index at which we want to peek
  *  @param array  Pointer to ordered array
  */
-type_t peek_ordered_array(u32int index, ordered_array_t *array);
+type_t peek_ordered_array(uint32_t index, ordered_array_t *array);
 
 /* remove_ordered_array:
  *  Deletes the item at location from the array.
@@ -67,6 +67,6 @@ type_t peek_ordered_array(u32int index, ordered_array_t *array);
  *  @param index  Index at which we want to lookup
  *  @param array  Pointer to ordered array
  */
-void remove_ordered_array(u32int index, ordered_array_t *array);
+void remove_ordered_array(uint32_t index, ordered_array_t *array);
 
 #endif // ORDERED_ARRAY_H

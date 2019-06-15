@@ -7,15 +7,15 @@
 
 typedef struct {
   /* Magic number, for error checking */
-  u8int magic;
+  uint8_t magic;
   /* Filename */
-  s8int name[LEN_64];
+  int8_t name[LEN_64];
   /* Node type, file = 1, directory = 2 */
-  s8int type;
+  int8_t type;
   /* Offset in the initrd where file starts */
-  u32int offset;
+  uint32_t offset;
   /* Length of the file */
-  u32int length;
+  uint32_t length;
 } initrd_file_header_t;
 
 /** initialise_initrd:
@@ -23,6 +23,6 @@ typedef struct {
  *
  *  @param  location Address of the multiboot module
  */
-void initialise_initrd(u32int location);
+void initialise_initrd(uint32_t location);
 
 #endif /* INCLUDE_INITRD_H */

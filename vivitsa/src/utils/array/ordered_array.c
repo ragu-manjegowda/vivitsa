@@ -3,22 +3,22 @@
 #include <kheap.h>
 #include <logger.h>
 
-ordered_array_t create_ordered_array(u32int maxSize,
+ordered_array_t create_ordered_array(uint32_t maxSize,
                                      compare_predicate_t compare) {
   ordered_array_t toRet;
   toRet.array = (type_t *)kmalloc(maxSize * sizeof(type_t));
-  custom_memset((u8int *)toRet.array, 0, maxSize * sizeof(type_t));
+  custom_memset((uint8_t *)toRet.array, 0, maxSize * sizeof(type_t));
   toRet.size = 0;
   toRet.maxSize = maxSize;
   toRet.compare = compare;
   return toRet;
 }
 
-ordered_array_t place_ordered_array(void *address, u32int maxSize,
+ordered_array_t place_ordered_array(void *address, uint32_t maxSize,
                                     compare_predicate_t compare) {
   ordered_array_t toRet;
   toRet.array = (type_t *)address;
-  custom_memset((u8int *)toRet.array, 0, maxSize * sizeof(type_t));
+  custom_memset((uint8_t *)toRet.array, 0, maxSize * sizeof(type_t));
   toRet.size = 0;
   toRet.maxSize = maxSize;
   toRet.compare = compare;
@@ -36,7 +36,7 @@ void insert_ordered_array(type_t item, ordered_array_t *array) {
     return;
   }
 
-  u32int iterator = 0;
+  uint32_t iterator = 0;
   while ((iterator < array->size) &&
          (array->compare(array->array[iterator], item))) {
     iterator++;
@@ -60,7 +60,7 @@ void insert_ordered_array(type_t item, ordered_array_t *array) {
   }
 }
 
-type_t peek_ordered_array(u32int index, ordered_array_t *array) {
+type_t peek_ordered_array(uint32_t index, ordered_array_t *array) {
   if (index >= array->size) {
     print_screen("\nError: peek_ordered_array : Index out of bound\n");
     return 0;
@@ -68,7 +68,7 @@ type_t peek_ordered_array(u32int index, ordered_array_t *array) {
   return array->array[index];
 }
 
-void remove_ordered_array(u32int index, ordered_array_t *array) {
+void remove_ordered_array(uint32_t index, ordered_array_t *array) {
   while (index < array->size) {
     array->array[index] = array->array[index + 1];
     index++;

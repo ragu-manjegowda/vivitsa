@@ -43,7 +43,7 @@ enum BaudRate { Baud_115200 = 1, Baud_57600, Baud_19200, Baud_9600 };
  *  @param com      The COM port to configure
  *  @param divisor  The divisor
  */
-void serial_configure_baud_rate(u16int com, u16int divisor);
+void serial_configure_baud_rate(uint16_t com, uint16_t divisor);
 
 /** serial_configure_line:
  *  Configures the line of the given serial port. The port is set to have a
@@ -52,7 +52,7 @@ void serial_configure_baud_rate(u16int com, u16int divisor);
  *
  *  @param com  The serial port to configure
  */
-void serial_configure_line(u16int com);
+void serial_configure_line(uint16_t com);
 
 /** serial_configure_fifo_buffer:
  * 14 bytes as size of queue, clear both receiver and transmission FIFO
@@ -61,7 +61,7 @@ void serial_configure_line(u16int com);
  *
  *  @param com  The serial port to configure
  */
-void serial_configure_fifo_buffer(u16int com);
+void serial_configure_fifo_buffer(uint16_t com);
 
 /** serial_configure_modem:
  *  The modem control register is used for very simple hardware flow control via
@@ -71,7 +71,7 @@ void serial_configure_fifo_buffer(u16int com);
  *
  *  @param com  The serial port to configure
  */
-void serial_configure_modem(u16int com);
+void serial_configure_modem(uint16_t com);
 
 /** serial_is_transmit_fifo_empty:
  *  Checks whether the transmit FIFO queue is empty or not for the given COM
@@ -81,7 +81,7 @@ void serial_configure_modem(u16int com);
  *  @return 0 if the transmit FIFO queue is not empty
  *          1 if the transmit FIFO queue is empty
  */
-s32int serial_is_transmit_fifo_empty(u16int com);
+int32_t serial_is_transmit_fifo_empty(uint16_t com);
 
 /** serial_write:
  *  writes the contents of the buffer buf of length len to the screen
@@ -89,7 +89,7 @@ s32int serial_is_transmit_fifo_empty(u16int com);
  *  @param buf  Buffer that has contents to be written to screen
  *  @param len  Length of buffer
  */
-s32int serial_write(u16int com, s8int *buf, u32int len);
+int32_t serial_write(uint16_t com, int8_t *buf, uint32_t len);
 
 /** serial_write_byte:
  *  Write byte data to given serial port
@@ -97,7 +97,7 @@ s32int serial_write(u16int com, s8int *buf, u32int len);
  *  @param port Serial port to which data has to be written
  * @param byte_data 8 bit data
  */
-void serial_write_byte(u16int port, s8int byteData);
+void serial_write_byte(uint16_t port, int8_t byteData);
 
 /** serial_configure:
  *  Configure serial port
@@ -105,6 +105,6 @@ void serial_write_byte(u16int port, s8int byteData);
  *  @param port Serial port which needs to be configured
  * @param baudRate rate at which data needs to be transmitted
  */
-void serial_configure(u16int port, u16int baudRate);
+void serial_configure(uint16_t port, uint16_t baudRate);
 
 #endif /* INCLUDE_SERIALPORT_H */

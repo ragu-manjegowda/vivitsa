@@ -9,28 +9,28 @@
  *
  *  @param buffer  Buffer that has contents to be written to serial port
  */
-void print_serial(s8int buffer[]);
+void print_serial(int8_t buffer[]);
 
 /** print_serial:
  *  writes the char to serial console
  *
  *  @param ch  Buffer that has contents to be written to serial port
  */
-void print_serial_ch(s8int ch);
+void print_serial_ch(int8_t ch);
 
 /** print_screen:
  *  writes the char buffer buf of length len to Screen
  *
  *  @param buffer  Buffer that has contents to be written to Screen
  */
-void print_screen(s8int buffer[]);
+void print_screen(int8_t buffer[]);
 
 /** print_screen:
  *  writes the char to Screen
  *
  *  @param ch  Buffer that has contents to be written to Screen
  */
-void print_screen_ch(s8int ch);
+void print_screen_ch(int8_t ch);
 
 /** clear_screen:
  *  Clears the contents on screen

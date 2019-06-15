@@ -11,11 +11,11 @@
  */
 #define TIMER_FREQUENCY 100
 
-void init_timer(u32int frequency);
+void init_timer(uint32_t frequency);
 
 /* This will continuously loop until the given time (in centiSeconds, 100
  * centiSeconds is 1 second) has been reached
  */
-void sleep(u32int centiSeconds);
+void sleep(uint32_t centiSeconds);
 
 #endif /* INCLUDE_TIMER_H */

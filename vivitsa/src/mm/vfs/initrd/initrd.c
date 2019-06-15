@@ -10,22 +10,22 @@ initrd_file_header_t *g_FILE_HEADERS;
 /* Root directory node */
 fs_node_t *g_INITRD_ROOT_DIR;
 /* Global variable to keep track of inodes */
-static u32int g_INODE;
+static uint32_t g_INODE;
 /* Name of root directory */
 static const char g_ROOT_DIR[2] = "/";
 
-static u32int initrd_read(fs_node_t *node, u32int offset, u32int size,
-                          u8int *buffer) {
+static uint32_t initrd_read(fs_node_t *node, uint32_t offset, uint32_t size,
+                          uint8_t *buffer) {
   initrd_file_header_t header = g_FILE_HEADERS[node->inode];
   if (offset > header.length)
     return 0;
   if (offset + size > header.length)
     size = header.length - offset;
-  custom_memcpy(buffer, (u8int *)(header.offset + offset), size);
+  custom_memcpy(buffer, (uint8_t *)(header.offset + offset), size);
   return size;
 }
 
-static u8int initrd_readdir(fs_node_t *node, u32int index,
+static uint8_t initrd_readdir(fs_node_t *node, uint32_t index,
                             fs_node_t *directory) {
   if (directory == 0) {
     return 1;
@@ -35,23 +35,23 @@ static u8int initrd_readdir(fs_node_t *node, u32int index,
     return 1;
   }
 
-  custom_memcpy((u8int *)directory, (u8int *)&node->contents[index],
+  custom_memcpy((uint8_t *)directory, (uint8_t *)&node->contents[index],
                 sizeof(fs_node_t));
   return 0;
 }
 
 static fs_node_t *initrd_finddir(fs_node_t *node, char *name) {
-  for (u32int i = 0; i < node->size; i++)
+  for (uint32_t i = 0; i < node->size; i++)
     if (!custom_strcmp(name, node->contents[i].name, 1))
       return &node->contents[i];
   return 0;
 }
 
 /* Initialise the root directory, /dev directory and populate the them */
-void initialise_initrd(u32int location) {
-  u32int numOfNodes = *((u32int *)location);
+void initialise_initrd(uint32_t location) {
+  uint32_t numOfNodes = *((uint32_t *)location);
   initrd_file_header_t *fileHeaderPtr =
-      (initrd_file_header_t *)(location + sizeof(u32int));
+      (initrd_file_header_t *)(location + sizeof(uint32_t));
 
   /* Allocate size of 64 global file node headers we can expand it later */
   g_FILE_HEADERS =
@@ -111,10 +111,10 @@ void initialise_initrd(u32int location) {
    * simplifies the maintainance of file system as we keep on adding file nodes
    * during run time
    */
-  custom_memcpy((u8int *)&g_FILE_HEADERS[g_INODE], (u8int *)fileHeaderPtr,
+  custom_memcpy((uint8_t *)&g_FILE_HEADERS[g_INODE], (uint8_t *)fileHeaderPtr,
                 sizeof(initrd_file_header_t) * numOfNodes);
 
-  for (u32int i = 0; i < numOfNodes; i++) {
+  for (uint32_t i = 0; i < numOfNodes; i++) {
     /*
      * Edit the file's header - currently it holds the file offset
      * relative to the start of the ramdisk. We want it relative to the start

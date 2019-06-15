@@ -19,7 +19,7 @@
  *
  *  @param phyAddress Current Address End, we get this from linker script.
  */
-void set_physical_address_top(u32int phyAddress);
+void set_physical_address_top(uint32_t phyAddress);
 
 /* create_kernel_heap:
  *  Create a new kernel heap.
@@ -28,7 +28,7 @@ void set_physical_address_top(u32int phyAddress);
  *  @param  endAddr        Physical end address of heap
  *  @param  maxAddr        Physical address beyond which heap would not expand.
  */
-void create_kernel_heap(u32int startAddr, u32int endAddr, u32int maxAddr);
+void create_kernel_heap(uint32_t startAddr, uint32_t endAddr, uint32_t maxAddr);
 
 /* kmalloc_int:
  *  Allocate a chunk of memory, size in size. If align == 1,
@@ -39,7 +39,7 @@ void create_kernel_heap(u32int startAddr, u32int endAddr, u32int maxAddr);
  *  @param align     Align allocated memory at 4kb address
  *  @param pAddrPtr  Store the physical address of the page
  */
-u32int kmalloc_int(u32int size, u32int align, u32int *pAddrPtr);
+uint32_t kmalloc_int(uint32_t size, uint32_t align, uint32_t *pAddrPtr);
 
 /* kmalloc_a:
  *  Allocate a chunk of memory, size in size. The chunk must be
@@ -47,16 +47,16 @@ u32int kmalloc_int(u32int size, u32int align, u32int *pAddrPtr);
  *
  *  @param size Size of memory to be allocated
  */
-u32int kmalloc_a(u32int size);
+uint32_t kmalloc_a(uint32_t size);
 
 /* kmalloc_p:
  *  Allocate a chunk of memory, size in size. The physical address
- *  is returned in pAddrPtr. pAddrPtr MUST be a valid pointer to u32int!
+ *  is returned in pAddrPtr. pAddrPtr MUST be a valid pointer to uint32_t!
  *
  *  @param pAddrPtr  Pointer to store the physical address of
  *  the page
  */
-u32int kmalloc_p(u32int sz, u32int *pAddrPtr);
+uint32_t kmalloc_p(uint32_t sz, uint32_t *pAddrPtr);
 
 /* kmalloc_p:
  *  Allocate a chunk of memory, size in size. The physical address
@@ -66,14 +66,14 @@ u32int kmalloc_p(u32int sz, u32int *pAddrPtr);
  *  @param pAddrPtr  Pointer to store the physical address of
  *  the page
  */
-u32int kmalloc_ap(u32int size, u32int *pAddrPtr);
+uint32_t kmalloc_ap(uint32_t size, uint32_t *pAddrPtr);
 
 /* kmalloc:
  *  Generic function to allocate chunk of memory, size in size.
  *
  *  @param size Size of memory to be allocated
  */
-u32int kmalloc(u32int size);
+uint32_t kmalloc(uint32_t size);
 
 /* kfree:
  * General deallocation function.

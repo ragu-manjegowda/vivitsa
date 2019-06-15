@@ -11,20 +11,20 @@ page_directory_t *g_kernelDirectory = 0;
 page_directory_t *g_currentDirectory = 0;
 
 /* Variables for house keeping, whether page frame is free or used */
-u32int *g_FrameIndexArray;
-u32int g_NumOfFrames;
+uint32_t *g_FrameIndexArray;
+uint32_t g_NumOfFrames;
 
 /*
  * Accessing g_CurrentPhysicalAddressTop defined in kheap.c through extern since
  * we use it in page_fault handler
  */
-extern u32int g_CurrentPhysicalAddressTop;
+extern uint32_t g_CurrentPhysicalAddressTop;
 
 /*
  * Function call to copy physical pages implemented in assembly.
  * Extern allows to access ASM from this C code.
  */
-extern void copy_page_physical(u32int, u32int);
+extern void copy_page_physical(uint32_t, uint32_t);
 
 /* Macros used in the bitset algorithms */
 #define INDEX_FROM_BIT(a) (a / 32)
@@ -36,28 +36,28 @@ extern void copy_page_physical(u32int, u32int);
 void page_fault(registers_t regs);
 
 /* Function to mark corresponding frame in the variable as not free */
-static void set_frame(u32int frameAddr) {
-  u32int frame = frameAddr / 0x1000;
-  u32int idx = INDEX_FROM_BIT(frame);
-  u32int off = OFFSET_FROM_BIT(frame);
+static void set_frame(uint32_t frameAddr) {
+  uint32_t frame = frameAddr / 0x1000;
+  uint32_t idx = INDEX_FROM_BIT(frame);
+  uint32_t off = OFFSET_FROM_BIT(frame);
   g_FrameIndexArray[idx] |= (0x1 << off);
 }
 
 /* Function to mark corresponding frame in the variable as free */
-static void clear_frame(u32int frameAddr) {
-  u32int frame = frameAddr / 0x1000;
-  u32int idx = INDEX_FROM_BIT(frame);
-  u32int off = OFFSET_FROM_BIT(frame);
+static void clear_frame(uint32_t frameAddr) {
+  uint32_t frame = frameAddr / 0x1000;
+  uint32_t idx = INDEX_FROM_BIT(frame);
+  uint32_t off = OFFSET_FROM_BIT(frame);
   g_FrameIndexArray[idx] &= ~(0x1 << off);
 }
 
 /* Utility function to get index of first free frame */
-static s32int first_frame() {
-  u32int i, j;
+static int32_t first_frame() {
+  uint32_t i, j;
   for (i = 0; i < INDEX_FROM_BIT(g_NumOfFrames); ++i) {
     if (g_FrameIndexArray[i] != 0xFFFFFFFF) {
       for (j = 0; j < 32; ++j) {
-        u32int toTest = 0x1 << j;
+        uint32_t toTest = 0x1 << j;
         if (!(g_FrameIndexArray[i] & toTest)) {
           return ((i * 32) + j);
         }
@@ -68,12 +68,12 @@ static s32int first_frame() {
   return -1;
 }
 
-void alloc_frame(page_t *page, u32int isKernel, u32int isWriteable) {
+void alloc_frame(page_t *page, uint32_t isKernel, uint32_t isWriteable) {
   if (page->frame != 0) {
     return;
   } else {
-    u32int idx = first_frame();
-    if (idx == (u32int)-1) {
+    uint32_t idx = first_frame();
+    if (idx == (uint32_t)-1) {
       print_screen("No Free Frame, Kernel Panic");
       while (1) {
       }
@@ -87,7 +87,7 @@ void alloc_frame(page_t *page, u32int isKernel, u32int isWriteable) {
 }
 
 void free_frame(page_t *page) {
-  u32int frame;
+  uint32_t frame;
   if (!(frame = page->frame)) {
     return;
   } else {
@@ -96,7 +96,7 @@ void free_frame(page_t *page) {
   }
 }
 
-void init_paging(u32int kernelPhysicalEnd) {
+void init_paging(uint32_t kernelPhysicalEnd) {
 
   set_physical_address_top(kernelPhysicalEnd);
 
@@ -104,30 +104,30 @@ void init_paging(u32int kernelPhysicalEnd) {
    * The size of physical memory.
    * Assuming it is KHEAP_MAX_ADDRESS big
    */
-  u32int memPageEnd = KHEAP_MAX_ADDRESS;
+  uint32_t memPageEnd = KHEAP_MAX_ADDRESS;
 
   g_NumOfFrames = (memPageEnd / 0x1000) + 1;
-  g_FrameIndexArray = (u32int *)kmalloc(INDEX_FROM_BIT(g_NumOfFrames));
-  custom_memset((u8int *)g_FrameIndexArray, 0, INDEX_FROM_BIT(g_NumOfFrames));
+  g_FrameIndexArray = (uint32_t *)kmalloc(INDEX_FROM_BIT(g_NumOfFrames));
+  custom_memset((uint8_t *)g_FrameIndexArray, 0, INDEX_FROM_BIT(g_NumOfFrames));
 
   /* Create a page directory for kernel and set it as curent page directory */
-  u32int phys;
+  uint32_t phys;
   g_kernelDirectory =
       (page_directory_t *)kmalloc_ap(sizeof(page_directory_t), &phys);
-  custom_memset((u8int *)g_kernelDirectory, 0, sizeof(page_directory_t));
+  custom_memset((uint8_t *)g_kernelDirectory, 0, sizeof(page_directory_t));
   /*
    * Get the offset of tablesPhysical from the start of the page_directory_t
    * structure.
    */
-  u32int offset =
-      (u32int)g_kernelDirectory->tablesPhysical - (u32int)g_kernelDirectory;
+  uint32_t offset =
+      (uint32_t)g_kernelDirectory->tablesPhysical - (uint32_t)g_kernelDirectory;
   g_kernelDirectory->physicalAddr = phys + offset;
 
   /*
    * Call to get pages only forces page tables to be created. We will map them
    * before we actually allocate
    */
-  u32int i = 0;
+  uint32_t i = 0;
   for (i = KHEAP_START; i < KHEAP_START + KHEAP_INITIAL_SIZE; i += 0x1000)
     get_page(i, 1, g_kernelDirectory);
 
@@ -164,7 +164,7 @@ void switch_page_directory(page_directory_t *dir) {
   g_currentDirectory = dir;
   /* Write page table physical address to cr3 */
   asm volatile("mov %0, %%cr3" ::"r"(dir->physicalAddr));
-  u32int cr0;
+  uint32_t cr0;
   /* Read cr0 register to variable cr0 */
   asm volatile("mov %%cr0, %0" : "=r"(cr0));
   /* Set enable paging bit of the cr0 variable ! */
@@ -173,19 +173,19 @@ void switch_page_directory(page_directory_t *dir) {
   asm volatile("mov %0, %%cr0" ::"r"(cr0));
 }
 
-page_t *get_page(u32int address, u8int make, page_directory_t *dir) {
+page_t *get_page(uint32_t address, uint8_t make, page_directory_t *dir) {
   /* Turn the address into an index */
   address /= 0x1000;
   /* Find the page table containing this address */
-  u32int tableIdx = address / 1024;
+  uint32_t tableIdx = address / 1024;
   /* Return page if it is already created */
   if (dir->tables[tableIdx]) {
     return &dir->tables[tableIdx]->pages[address % 1024];
   } else if (make) {
-    u32int tmp;
+    uint32_t tmp;
     dir->tables[tableIdx] =
         (page_table_t *)kmalloc_ap(sizeof(page_table_t), &tmp);
-    custom_memset((u8int *)dir->tables[tableIdx], 0, 0x1000);
+    custom_memset((uint8_t *)dir->tables[tableIdx], 0, 0x1000);
     /* PRESENT, RW, US. */
     dir->tablesPhysical[tableIdx] = tmp | 0x7;
     return &dir->tables[tableIdx]->pages[address % 1024];
@@ -200,20 +200,20 @@ void page_fault(registers_t regs) {
    * A page fault has occurred.
    * The faulting address is stored in the CR2 register.
    */
-  u32int faultingAddress;
+  uint32_t faultingAddress;
   asm volatile("mov %%cr2, %0" : "=r"(faultingAddress));
 
   /* The error code gives us details of what happened. */
   /* Page not present */
-  u32int present = !(regs.stack_contents.err_code & 0x1);
+  uint32_t present = !(regs.stack_contents.err_code & 0x1);
   /* Read Only */
-  u32int rWrite = regs.stack_contents.err_code & 0x2;
+  uint32_t rWrite = regs.stack_contents.err_code & 0x2;
   /* Accessing kernel page from User mode */
-  u32int uMode = regs.stack_contents.err_code & 0x4;
+  uint32_t uMode = regs.stack_contents.err_code & 0x4;
   /* Overwritten CPU-reserved bits of page entry */
-  u32int reserved = regs.stack_contents.err_code & 0x8;
+  uint32_t reserved = regs.stack_contents.err_code & 0x8;
   /* Caused by an instruction fetch */
-  u32int iFetch = regs.stack_contents.err_code & 0x10;
+  uint32_t iFetch = regs.stack_contents.err_code & 0x10;
 
   print_screen("Page fault! ( ");
   print_serial("Page fault! ( ");
@@ -263,12 +263,12 @@ void page_fault(registers_t regs) {
  *
  * TODO: Implement COW (Copy on Write) instead of copying the full table
  */
-static page_table_t *clone_table(page_table_t *src, u32int *physAddr) {
+static page_table_t *clone_table(page_table_t *src, uint32_t *physAddr) {
   page_table_t *table =
       (page_table_t *)kmalloc_ap(sizeof(page_table_t), physAddr);
-  custom_memset((u8int *)table, 0, sizeof(page_directory_t));
+  custom_memset((uint8_t *)table, 0, sizeof(page_directory_t));
 
-  for (u32int i = 0; i < 1024; ++i) {
+  for (uint32_t i = 0; i < 1024; ++i) {
     /* If frame exist, clone it */
     if (src->pages[i].frame) {
       /*
@@ -299,22 +299,22 @@ static page_table_t *clone_table(page_table_t *src, u32int *physAddr) {
 }
 
 page_directory_t *clone_directory(page_directory_t *src) {
-  u32int phys;
+  uint32_t phys;
   page_directory_t *dir =
       (page_directory_t *)kmalloc_ap(sizeof(page_directory_t), &phys);
-  custom_memset((u8int *)dir, 0, sizeof(page_directory_t));
+  custom_memset((uint8_t *)dir, 0, sizeof(page_directory_t));
 
   /*
    * Get the offset of tablesPhysical from the start of the page_directory_t
    * structure.
    */
-  u32int offset = (u32int)dir->tablesPhysical - (u32int)dir;
+  uint32_t offset = (uint32_t)dir->tablesPhysical - (uint32_t)dir;
 
   /* Then the physical address of dir->tablesPhysical is: */
   dir->physicalAddr = phys + offset;
 
   /* Clone page table */
-  for (u32int i = 0; i < 1024; ++i) {
+  for (uint32_t i = 0; i < 1024; ++i) {
     /* If table entry doesn't exist skip it */
     if (!src->tables[i])
       continue;
@@ -324,7 +324,7 @@ page_directory_t *clone_directory(page_directory_t *src) {
       dir->tables[i] = src->tables[i];
       dir->tablesPhysical[i] = src->tablesPhysical[i];
     } else {
-      u32int phys = 0;
+      uint32_t phys = 0;
       dir->tables[i] = clone_table(src->tables[i], &phys);
       /* PRESENT, RW, US. */
       dir->tablesPhysical[i] = phys | 0x07;

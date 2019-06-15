@@ -8,13 +8,13 @@
 typedef struct task {
   /* TODO: Add parent pid information and implement join */
   /* Process ID */
-  u32int pid;
+  uint32_t pid;
   /* Base pointer */
-  u32int ebp;
+  uint32_t ebp;
   /* Stack pointer */
-  u32int esp;
+  uint32_t esp;
   /* Instruction pointer */
-  u32int eip;
+  uint32_t eip;
   /* Pointer to process page directory */
   page_directory_t *pageDirectory;
   /* Pointer to next task */
@@ -25,7 +25,7 @@ typedef struct task {
  *  Function to initialize multitasking
  *  @param stackPointer Initial address of the stack when kernel is loaded
  */
-void initialise_multitasking(u32int stackPointer);
+void initialise_multitasking(uint32_t stackPointer);
 
 /** schedule:
  *  Schedule next task when the timer elapsed (Based of frequency variable
@@ -36,19 +36,19 @@ void schedule();
 /** fork:
  *  API to fork the process and create new one out of it
  */
-u32int fork();
+uint32_t fork();
 
 /** move_stack:
  *  Relocate stack to new address
  *  @param newStackAddress  Pointer to address where the stack need to be moved
  *  @param size             Size of the stack
  */
-void move_stack(void *newStackAddress, u32int size);
+void move_stack(void *newStackAddress, uint32_t size);
 
 /** get_pid:
  *  returns PID of the process
  *  @return  Process ID
  */
-u32int getpid();
+uint32_t getpid();
 
 #endif /* INCLUDE_SCHED_H */

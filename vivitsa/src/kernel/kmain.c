@@ -14,7 +14,7 @@
 #include <types.h>
 
 /* Function to initialize */
-void init(u32int mbootPointer, u32int stackPointer) {
+void init(uint32_t mbootPointer, uint32_t stackPointer) {
   /* Initialize segment descriptor tables */
   init_gdt();
 
@@ -34,9 +34,9 @@ void init(u32int mbootPointer, u32int stackPointer) {
    * Get Multiboot Information like module start address and multiboot physical
    * end address
    */
-  u32int initrdPhysicalStart;
-  u32int multibootPhysicalEnd;
-  u32int modsCount;
+  uint32_t initrdPhysicalStart;
+  uint32_t multibootPhysicalEnd;
+  uint32_t modsCount;
   get_multiboot_info(mbootPointer, &initrdPhysicalStart, &multibootPhysicalEnd,
                      &modsCount);
 
@@ -57,7 +57,7 @@ void init(u32int mbootPointer, u32int stackPointer) {
 /* GRUB stores a pointer to a struct in the register ebx that,
  * describes at which addresses the modules are loaded.
  */
-s32int kmain(u32int mbootPointer, u32int stackPointer) {
+int32_t kmain(uint32_t mbootPointer, uint32_t stackPointer) {
   // Initialize all modules
   init(mbootPointer, stackPointer);
 

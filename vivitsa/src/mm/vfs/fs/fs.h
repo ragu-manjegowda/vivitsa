@@ -23,19 +23,19 @@ struct fs_node;
  */
 
 /* read file */
-typedef u32int (*read_type_t)(struct fs_node *, u32int, u32int, u8int *);
+typedef uint32_t (*read_type_t)(struct fs_node *, uint32_t, uint32_t, uint8_t *);
 
 /* write to file */
-typedef u32int (*write_type_t)(struct fs_node *, u32int, u32int, u8int *);
+typedef uint32_t (*write_type_t)(struct fs_node *, uint32_t, uint32_t, uint8_t *);
 
 /* open file */
-typedef s32int (*open_type_t)(struct fs_node *, u8int write);
+typedef int32_t (*open_type_t)(struct fs_node *, uint8_t write);
 
 /* close file */
 typedef void (*close_type_t)(struct fs_node *);
 
 /* read nth entry in the directory, return 0 if index is out of bound */
-typedef u8int (*readdir_type_t)(struct fs_node *, u32int, struct fs_node *);
+typedef uint8_t (*readdir_type_t)(struct fs_node *, uint32_t, struct fs_node *);
 
 /* find the entry in directory, return 0 if not present */
 typedef struct fs_node *(*finddir_type_t)(struct fs_node *, char *name);
@@ -43,19 +43,19 @@ typedef struct fs_node *(*finddir_type_t)(struct fs_node *, char *name);
 /* File node struct */
 typedef struct fs_node {
   /* Filename (limited to 64 characters) */
-  s8int name[LEN_64];
+  int8_t name[LEN_64];
   /* Permissions mask (unix-like mask - user, group, others) */
-  u32int mask;
+  uint32_t mask;
   /* Owning user */
-  u32int uid;
+  uint32_t uid;
   /* Owning group */
-  u32int gid;
+  uint32_t gid;
   /* Node type - directory/file/mounttype */
-  u32int type;
+  uint32_t type;
   /* Device-specific - for filesystem to identify files (POSIX specific) */
-  u32int inode;
+  uint32_t inode;
   /* Size of the file, in bytes */
-  u32int length;
+  uint32_t length;
   read_type_t read;
   write_type_t write;
   open_type_t open;
@@ -64,7 +64,7 @@ typedef struct fs_node {
   finddir_type_t finddir;
   /* For MounPoint, directories and Symlinks, contents and size */
   struct fs_node *contents;
-  u32int size;
+  uint32_t size;
 } fs_node_t;
 
 /*
@@ -81,7 +81,7 @@ typedef struct fs_node {
  * copied
  *  @return         Size of data read in number of bytes
  */
-u32int read_fs(fs_node_t *node, u32int offset, u32int size, u8int *buffer);
+uint32_t read_fs(fs_node_t *node, uint32_t offset, uint32_t size, uint8_t *buffer);
 
 /** write_fs:
  *  write to the file specified by node.
@@ -92,7 +92,7 @@ u32int read_fs(fs_node_t *node, u32int offset, u32int size, u8int *buffer);
  *  @param buffer       Pointer to a buffer to which the contents are to be
  *                      copied
  */
-u32int write_fs(fs_node_t *node, u32int offset, u32int size, u8int *buffer);
+uint32_t write_fs(fs_node_t *node, uint32_t offset, uint32_t size, uint8_t *buffer);
 
 /** open_fs:
  *  open the file specified by node.
@@ -102,7 +102,7 @@ u32int write_fs(fs_node_t *node, u32int offset, u32int size, u8int *buffer);
  *  @param  write   Flag to specify mode, 1 write, 0 read
  *  @return         file descriptor (a uniqure number) if success -1 otherwise
  */
-s32int open_fs(fs_node_t *node, u8int write);
+int32_t open_fs(fs_node_t *node, uint8_t write);
 
 /** close_fs:
  *  close the file specified by node.
@@ -119,7 +119,7 @@ void close_fs(fs_node_t *node);
  *  @param  directory   Pointer to directory entry at index if exist, return 0
  *                      if success 0 otherwise
  */
-u8int readdir_fs(fs_node_t *node, u32int index, fs_node_t *directory);
+uint8_t readdir_fs(fs_node_t *node, uint32_t index, fs_node_t *directory);
 
 /** findir_fs:
  *  if file/directory in the directory specified by node.
@@ -128,6 +128,6 @@ u8int readdir_fs(fs_node_t *node, u32int index, fs_node_t *directory);
  *  @param  name    name of the directory or file to find
  *  @return         Pointer to file/directory node if exist 0 otherwise
  */
-fs_node_t *finddir_fs(fs_node_t *node, s8int *name);
+fs_node_t *finddir_fs(fs_node_t *node, int8_t *name);
 
 #endif /* INCLUDE_FS_H */

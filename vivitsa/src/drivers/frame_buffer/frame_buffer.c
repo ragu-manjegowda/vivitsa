@@ -1,11 +1,11 @@
 #include "frame_buffer.h"
 #include <io.h>
 
-static s8int *fb = (s8int *)FB_BASE_ADDRESS;
-static u16int CURSOR_POS = 0;
-static u16int CURSOR_POS_MAX = 2000;
-static u16int BACKGROUND_COLOR = FB_GREEN;
-static u16int FOREGROUND_COLOR = FB_DARK_GREY;
+static int8_t *fb = (int8_t *)FB_BASE_ADDRESS;
+static uint16_t CURSOR_POS = 0;
+static uint16_t CURSOR_POS_MAX = 2000;
+static uint16_t BACKGROUND_COLOR = FB_GREEN;
+static uint16_t FOREGROUND_COLOR = FB_DARK_GREY;
 
 /* fb_move_cursor:
  *  Moves the cursor of the framebuffer to the CURSOR_POS global variable
@@ -24,8 +24,8 @@ void fb_move_cursor() {
  *  @param end End position
  */
 
-void fb_clear(u16int start, u16int end) {
-  for (u16int i = start; i < end; i++) {
+void fb_clear(uint16_t start, uint16_t end) {
+  for (uint16_t i = start; i < end; i++) {
     fb[2 * i] = ' ';
     fb[2 * i + 1] = ((0 & 0x0F) << 4) | (15 & 0x0F);
   }
@@ -46,9 +46,9 @@ void fb_clear_all() {
  *  @param fg The foreground color
  *  @param bg The background color
  */
-void fb_write_cell(s8int c, u8int fg, u8int bg) {
+void fb_write_cell(int8_t c, uint8_t fg, uint8_t bg) {
   if (c == '\n') {
-    u16int cursor_temp_pos = CURSOR_POS;
+    uint16_t cursor_temp_pos = CURSOR_POS;
     CURSOR_POS = ((CURSOR_POS / 79) + 1) * 80;
     if (CURSOR_POS >= CURSOR_POS_MAX) {
       fb_clear(0, CURSOR_POS_MAX);
@@ -67,8 +67,8 @@ void fb_write_cell(s8int c, u8int fg, u8int bg) {
   }
 }
 
-s32int fb_write(s8int *buf, u32int len) {
-  u32int index_to_buffer = 0;
+int32_t fb_write(int8_t *buf, uint32_t len) {
+  uint32_t index_to_buffer = 0;
   while (index_to_buffer < len) {
     fb_write_cell(buf[index_to_buffer], BACKGROUND_COLOR, FOREGROUND_COLOR);
     fb_move_cursor();
@@ -77,7 +77,7 @@ s32int fb_write(s8int *buf, u32int len) {
   return 0;
 }
 
-void fb_set_color(u16int background, u16int foreground) {
+void fb_set_color(uint16_t background, uint16_t foreground) {
   BACKGROUND_COLOR = background;
   FOREGROUND_COLOR = foreground;
 }
